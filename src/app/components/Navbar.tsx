@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useState } from 'react';
-import './Navbar.scss';
+import Link from "next/link";
+import { useState } from "react";
+import "./Navbar.scss";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -15,10 +15,16 @@ export default function Navbar() {
           ☰
         </button>
       </div>
-      <ul className={`nav-links ${open ? 'open' : ''}`}>
-        <li><Link href="/">Home</Link></li>
-        <li><Link href="/dashboard">Dashboard</Link></li>
-        <li><Link href="/about">Sign In / Sign Up</Link></li>
+      <ul className={`nav-links ${open ? "open" : ""}`}>
+        <li>
+          <Link href="/">Home</Link>
+        </li>
+        <li>
+          <Link href="/dashboard">Dashboard</Link>
+        </li>
+        <li>
+          <Link href="/about">Sign In / Sign Up</Link>
+        </li>
       </ul>
     </nav>
   );
