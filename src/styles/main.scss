@@ -1,0 +1,15 @@
+@import '../styles/variables';
+@import '../styles/mixins';
+@import '../styles/utilities';
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-geist-sans);
+  background-color: #fff;
+  color: #222;
+}
