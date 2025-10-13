@@ -1,3 +1,7 @@
+@mixin page-padding {
+  padding: 5rem 1rem 1rem 1rem;
+}
+
 @mixin flex-center {
   display: flex;
   justify-content: center;

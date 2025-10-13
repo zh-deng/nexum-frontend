@@ -1,6 +1,5 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import "./home.scss";
 
 export default function Home() {
-	return <div>Test</div>;
+  return <div className="home-page">Home</div>;
 }
