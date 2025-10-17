@@ -1,0 +1,6 @@
+.home-page {
+  @include page-settings;
+
+  background-color: yellow;
+  height: 200vh;
+}
