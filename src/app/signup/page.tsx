@@ -1,19 +1,36 @@
+"use client";
+
 import Link from "next/link";
 import "./signup.scss";
+import SignupForm, {
+	SignUpFormData,
+} from "../../components/auth/SingupForm/SignupForm";
+import { signupUser } from "../../lib/api/auth";
+import { useRouter } from "next/navigation";
 
-export default function SignInPage() {
-  return (
-    <main className="signup-page">
-      <h1>Sign Up</h1>
-      <form>
-        <input type="text" placeholder="First Name" required />
-        <input type="text" placeholder="Last Name" required />
-        <input type="email" placeholder="Email" required />
-        <input type="password" placeholder="Password" required />
-        <input type="password" placeholder="Repeat-Password" required />
-        <button type="submit">Sign Up</button>
-      </form>
-      <Link href="/signin">You have an account already? Sign In!</Link>
-    </main>
-  );
-}
+const SignupPage = () => {
+	const router = useRouter();
+
+	async function handleSignup(data: SignUpFormData) {
+		const { repeatPassword, ...payload } = data;
+
+		try {
+			await signupUser(payload);
+			router.push("/login");
+		} catch (error: any) {
+			console.error("Signup error:", error);
+		}
+	}
+
+	return (
+		<div className="signup-page">
+			<div className="form-container">
+				<h1>Sign Up</h1>
+				<SignupForm onSubmit={handleSignup} />
+				<Link href="/login">You have an account already? Log in!</Link>
+			</div>
+		</div>
+	);
+};
+
+export default SignupPage;

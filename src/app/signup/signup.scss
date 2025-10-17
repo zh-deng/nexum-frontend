@@ -1,14 +1,16 @@
-.signup-page {
-  @include page-padding;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  align-items: center;
+@use "../../styles/mixins" as *;
 
-  form {
-    width: 100%;
+.signup-page {
+  @include page-settings;
+  @include flex-center;
+
+  border: 1px solid red;
+
+  .form-container {
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    align-items: center;
+    width: 100%;
   }
 }
