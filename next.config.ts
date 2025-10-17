@@ -5,9 +5,9 @@ const nextConfig: NextConfig = {
   sassOptions: {
     includePaths: ["./styles"],
     prependData: `
-      @import "~@/styles/variables";
-      @import "~@/styles/mixins";
-      @import "~@/styles/utilities";
+      @use "~@/styles/variables" as *;
+      @use "~@/styles/mixins" as *;
+      @use "~@/styles/utilities" as *;
     `,
   },
 };

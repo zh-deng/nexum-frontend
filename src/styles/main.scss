@@ -1,7 +1,3 @@
-@import "../styles/variables";
-@import "../styles/mixins";
-@import "../styles/utilities";
-
 * {
   box-sizing: border-box;
   margin: 0;
@@ -11,4 +7,8 @@
 body {
   font-family: var(--font-geist-sans);
   color: #222;
+}
+
+.radix-textfield {
+  padding-bottom: 0px !important;
 }

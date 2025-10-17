@@ -1,5 +1,6 @@
-@mixin page-padding {
+@mixin page-settings {
   padding: 5rem 1rem 1rem 1rem;
+  height: 100vh;
 }
 
 @mixin flex-center {
