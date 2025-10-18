@@ -45,7 +45,7 @@ const LoginForm = ({ onSubmit, defaultValues }: LoginFormProps) => {
           <span className="error">{errors.password.message}</span>
         )}
       </div>
-      <Button type="submit" mt={"6"} disabled={isSubmitting}>
+      <Button type="submit" mt={"4"} disabled={isSubmitting}>
         Log In
       </Button>
     </form>

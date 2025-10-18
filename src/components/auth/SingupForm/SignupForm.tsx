@@ -75,7 +75,7 @@ const SignupForm = ({ onSubmit, defaultValues }: SignupFormProps) => {
           <span className="error">{errors.repeatPassword.message}</span>
         )}
       </div>
-      <Button type="submit" mt={"6"} disabled={isSubmitting}>
+      <Button type="submit" mt={"4"} disabled={isSubmitting}>
         Sign Up
       </Button>
     </form>
