@@ -1,7 +1,7 @@
-import "./dashboard.scss";
+import { redirect } from "next/navigation";
 
-const Dashboard = () => {
-  return <div className="dashboard-page">Dashboard</div>;
+const DashboardRoot = () => {
+  redirect("/dashboard/jobs");
 };
 
-export default Dashboard;
+export default DashboardRoot;
