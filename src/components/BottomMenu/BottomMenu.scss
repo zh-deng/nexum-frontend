@@ -1,0 +1,15 @@
+.button-menu {
+  height: 4rem;
+  display: flex;
+
+  .menu-item {
+    @include flex-center;
+
+    flex: 1;
+    cursor: pointer;
+  }
+
+  .active-item {
+    background-color: green;
+  }
+}
