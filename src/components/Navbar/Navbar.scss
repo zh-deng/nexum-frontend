@@ -39,8 +39,9 @@
   background-color: lightgreen;
 }
 
-.hamburger {
-  font-size: 1.5rem;
+.hamburger-button {
+  @include flex-center;
+
   background: none;
   border: none;
   cursor: pointer;

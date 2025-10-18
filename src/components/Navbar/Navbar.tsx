@@ -6,6 +6,7 @@ import "./Navbar.scss";
 import { useAuth } from "../../context/AuthContext";
 import { logoutUser } from "../../lib/api/auth";
 import { useRouter } from "next/navigation";
+import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 
 const Navbar = () => {
   const { user, setUser } = useAuth();
@@ -65,10 +66,10 @@ const Navbar = () => {
         <div className="container-right">
           {user && <div className="user-logo">{userInitials}</div>}
           <button
-            className="hamburger"
+            className="hamburger-button"
             onClick={() => setHamburgerOpen(!hamburgerOpen)}
           >
-            ☰
+            <HamburgerMenuIcon width="32" height="32" />
           </button>
         </div>
       </div>
