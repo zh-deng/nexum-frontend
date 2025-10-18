@@ -41,10 +41,9 @@ const BottomMenu = () => {
     <div className="button-menu">
       {menuItems.map((item, index) => {
         return (
-          <>
+          <div className="item-container" key={item.name}>
             <div
               className={`menu-item ${activeItem === item.route ? "active-item" : ""}`}
-              key={item.name}
               onClick={() => navigateTo(item.route)}
             >
               {item.name}
@@ -52,7 +51,7 @@ const BottomMenu = () => {
             {index !== menuItems.length - 1 && (
               <Separator orientation="vertical" size={"4"} />
             )}
-          </>
+          </div>
         );
       })}
     </div>
