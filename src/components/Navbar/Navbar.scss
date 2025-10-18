@@ -25,6 +25,20 @@
   font-weight: bold;
 }
 
+.container-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-logo {
+  font-weight: 700;
+  border: 1px solid;
+  padding: 0.2rem;
+  border-radius: 0.5rem;
+  background-color: lightgreen;
+}
+
 .hamburger {
   font-size: 1.5rem;
   background: none;
@@ -46,6 +60,16 @@
 
   &.open {
     display: flex;
+  }
+
+  button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    border: none;
+    background-color: red;
+    font-weight: 500;
+    line-height: 1.5rem;
   }
 
   li a {

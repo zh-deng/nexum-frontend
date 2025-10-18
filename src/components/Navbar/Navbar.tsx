@@ -3,12 +3,18 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import "./Navbar.scss";
+import { useAuth } from "../../context/AuthContext";
+import { logoutUser } from "../../lib/api/auth";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
+  const { user, setUser } = useAuth();
   const [navbarHidden, setNavbarHidden] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [hamburgerOpen, setHamburgerOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+  const userInitials = user?.username?.slice(0, 2).toUpperCase();
 
   useEffect(() => {
     function handleOutsideClick(event: MouseEvent) {
@@ -38,24 +44,37 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
 
-  function closeHamburger(): void {
+  function closeHamburger() {
     setHamburgerOpen(false);
+  }
+
+  async function handleLogout() {
+    try {
+      await logoutUser();
+      setUser(null);
+      router.push("/login");
+    } catch (error: unknown) {
+      console.error("Logout failed:", error);
+    }
   }
 
   return (
     <nav className={`navbar ${navbarHidden ? "hidden" : ""}`} ref={menuRef}>
       <div className="nav-header">
         <div className="logo">Nexum</div>
-        <button
-          className="hamburger"
-          onClick={() => setHamburgerOpen(!hamburgerOpen)}
-        >
-          ☰
-        </button>
+        <div className="container-right">
+          <div className="user-logo">{userInitials}</div>
+          <button
+            className="hamburger"
+            onClick={() => setHamburgerOpen(!hamburgerOpen)}
+          >
+            ☰
+          </button>
+        </div>
       </div>
       <ul
         className={`nav-links ${hamburgerOpen ? "open" : ""}`}
-        onClick={() => closeHamburger()}
+        onClick={closeHamburger}
       >
         <li>
           <Link href="/">Home</Link>
@@ -64,7 +83,13 @@ const Navbar = () => {
           <Link href="/dashboard">Dashboard</Link>
         </li>
         <li>
-          <Link href="/login">Log In / Sign Up</Link>
+          {user ? (
+            <button onClick={handleLogout}>
+              <a>Log Out</a>
+            </button>
+          ) : (
+            <Link href="/login">Log In / Sign Up</Link>
+          )}
         </li>
       </ul>
     </nav>

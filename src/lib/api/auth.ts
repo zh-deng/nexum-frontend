@@ -35,3 +35,31 @@ export async function loginUser(data: LoginDto) {
 
   return await res.json();
 }
+
+export async function logoutUser() {
+  const res = await fetch(`${API_BASE}/auth/logout`, {
+    method: "POST",
+    credentials: "include",
+  });
+
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.message || "Logout failed");
+  }
+
+  return await res.json();
+}
+
+export async function getCurrentUser() {
+  const res = await fetch(`${API_BASE}/auth/me`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.message || "Fetching user failed");
+  }
+
+  return await res.json();
+}

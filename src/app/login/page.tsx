@@ -5,15 +5,19 @@ import "./login.scss";
 import LoginForm, {
   LoginFormData,
 } from "../../components/auth/LoginForm/LoginForm";
-import { loginUser } from "../../lib/api/auth";
+import { getCurrentUser, loginUser } from "../../lib/api/auth";
 import { useRouter } from "next/navigation";
+import { useAuth } from "../../context/AuthContext";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { setUser } = useAuth();
 
   async function handleLogin(data: LoginFormData) {
     try {
       await loginUser(data);
+      const user = await getCurrentUser();
+      setUser(user);
       router.push("/dashboard");
     } catch (error: unknown) {
       console.error("Signup error:", error);
