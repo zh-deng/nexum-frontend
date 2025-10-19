@@ -5,8 +5,6 @@ import "@radix-ui/themes/styles.css";
 import { Theme } from "@radix-ui/themes";
 import Navbar from "../components/Navbar/Navbar";
 import ClientLayout from "./ClientLayout";
-import { QueryClientProvider } from "@tanstack/react-query";
-import { queryClient } from "../lib/react-query";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,20 +29,18 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <QueryClientProvider client={queryClient}>
-          <Theme
-            appearance="light"
-            accentColor="mint"
-            grayColor="slate"
-            radius="large"
-            scaling="95%"
-          >
-            <ClientLayout>
-              <Navbar />
-              {children}
-            </ClientLayout>
-          </Theme>
-        </QueryClientProvider>
+        <Theme
+          appearance="light"
+          accentColor="mint"
+          grayColor="slate"
+          radius="large"
+          scaling="95%"
+        >
+          <ClientLayout>
+            <Navbar />
+            {children}
+          </ClientLayout>
+        </Theme>
       </body>
     </html>
   );
