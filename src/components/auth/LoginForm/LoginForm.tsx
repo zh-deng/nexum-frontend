@@ -25,6 +25,7 @@ const LoginForm = ({ onSubmit, defaultValues }: LoginFormProps) => {
 
   return (
     <form className="login-form" onSubmit={handleSubmit(onSubmit)}>
+      {/* TODO handle email input better and validation */}
       <div>
         <TextField.Root
           className="radix-textfield"

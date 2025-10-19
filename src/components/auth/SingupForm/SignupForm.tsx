@@ -41,6 +41,7 @@ const SignupForm = ({ onSubmit, defaultValues }: SignupFormProps) => {
           <span className="error">{errors.username.message}</span>
         )}
       </div>
+      {/* TODO handle email input better and validation */}
       <div>
         <TextField.Root
           className="radix-textfield"
