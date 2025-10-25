@@ -1,0 +1,19 @@
+.jobs-page {
+  height: 100%;
+  position: relative;
+  padding: 0.5rem;
+
+  .add-button {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    width: 60px;
+    height: 60px;
+  }
+
+  .jobs-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}

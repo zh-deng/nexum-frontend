@@ -1,5 +1,5 @@
 import { LoginDto, SignUpDto } from "../../types/auth";
-import { API_BASE } from "../../util/environment";
+import { API_BASE } from "../../utils/environment";
 
 export async function signupUser(data: SignUpDto) {
   const res = await fetch(`${API_BASE}/auth/signup`, {
