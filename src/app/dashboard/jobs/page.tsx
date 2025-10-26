@@ -10,7 +10,7 @@ import ApplicationCard from "../../../components/ApplicationCard/ApplicationCard
 
 const JobsPage = () => {
   const [showAppForm, setShowAppForm] = useState<boolean>(false);
-  const [expandedCard, setExpandedCard] = useState<string | null>(null);
+  const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
   const { data } = useApplications();
 
   return (
@@ -21,12 +21,16 @@ const JobsPage = () => {
           <ApplicationCard
             key={app.id}
             data={app}
-            expandedCard={expandedCard}
-            setExpandedCard={setExpandedCard}
+            expandedCardId={expandedCardId}
+            setExpandedCardId={setExpandedCardId}
           />
         ))}
       </div>
-      <IconButton className="add-button" onClick={() => setShowAppForm(true)}>
+      <IconButton
+        className="add-button"
+        variant="surface"
+        onClick={() => setShowAppForm(true)}
+      >
         <PlusIcon width="32" height="32" />
       </IconButton>
       {showAppForm && <ApplicationForm onClose={() => setShowAppForm(false)} />}
