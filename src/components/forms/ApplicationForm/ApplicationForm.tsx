@@ -1,9 +1,8 @@
-import { Button, IconButton, TextArea, TextField } from "@radix-ui/themes";
+import { Button, IconButton } from "@radix-ui/themes";
 import "./ApplicationForm.scss";
 import { Cross1Icon } from "@radix-ui/react-icons";
 import Dropdown from "../../Dropdown/Dropdown";
 import { useState } from "react";
-import { createApplication } from "../../../lib/api/application";
 import { CreateApplicationDto } from "../../../types/dtos/create-application.dto";
 import CompanyForm from "../CompanyForm/CompanyForm";
 import { CreateCompanyDto } from "../../../types/dtos/create-company.dto";
@@ -16,6 +15,8 @@ import { removeEmptyStrings } from "../../../utils/helper";
 import { useForm } from "react-hook-form";
 import { useCreateApplication } from "../../../hooks/application/useCreateApplication";
 import { ApplicationDto } from "../../../types/dtos/application.dto";
+import FloatingTextField from "../../FloatingTextField/FloatingTextField";
+import FloatingTextArea from "../../FloatingTextArea/FloatingTextArea";
 
 type ApplicationFormProps = {
   data?: ApplicationDto;
@@ -107,7 +108,7 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
       <p className="required-tooltip">required*</p>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div>
-          <TextField.Root
+          <FloatingTextField
             className="radix-textfield"
             placeholder="Job Title*"
             {...register("jobTitle", {
@@ -115,23 +116,26 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
               validate: (value) =>
                 value.trim() !== "" || "Job title cannot be empty",
             })}
+            value={watch("jobTitle")}
           />
           {errors.jobTitle && (
             <span className="error">{errors.jobTitle.message}</span>
           )}
         </div>
         <div>
-          <TextField.Root
+          <FloatingTextField
             className="radix-textfield"
             placeholder="Job Description"
             {...register("jobDescription")}
+            value={watch("jobDescription")}
           />
         </div>
         <div>
-          <TextField.Root
+          <FloatingTextField
             className="radix-textfield"
             placeholder="Job Link"
             {...register("jobLink")}
+            value={watch("jobLink")}
           />
         </div>
         <div>
@@ -146,7 +150,7 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
         </div>
         {company !== "Company*" && (
           <div>
-            <CompanyForm register={register} errors={errors} />
+            <CompanyForm register={register} watch={watch} errors={errors} />
           </div>
         )}
         <div>
@@ -188,7 +192,12 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
           />
         </div>
         <div>
-          <TextArea placeholder="Notes" size={"3"} {...register("notes")} />
+          <FloatingTextArea
+            placeholder="Notes"
+            size={"3"}
+            {...register("notes")}
+            value={watch("notes")}
+          />
         </div>
         <Button type="submit" mt={"4"} disabled={isSubmitting}>
           Create

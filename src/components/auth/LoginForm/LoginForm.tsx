@@ -2,7 +2,8 @@
 
 import { useForm } from "react-hook-form";
 import "./LoginForm.scss";
-import { Button, TextField } from "@radix-ui/themes";
+import { Button } from "@radix-ui/themes";
+import FloatingTextField from "../../FloatingTextField/FloatingTextField";
 
 export type LoginFormData = {
   email: string;
@@ -27,7 +28,7 @@ const LoginForm = ({ onSubmit, defaultValues }: LoginFormProps) => {
     <form className="login-form" onSubmit={handleSubmit(onSubmit)}>
       {/* TODO handle email input better and validation */}
       <div>
-        <TextField.Root
+        <FloatingTextField
           className="radix-textfield"
           placeholder="Email"
           type="email"
@@ -36,7 +37,7 @@ const LoginForm = ({ onSubmit, defaultValues }: LoginFormProps) => {
         {errors.email && <span className="error">{errors.email.message}</span>}
       </div>
       <div>
-        <TextField.Root
+        <FloatingTextField
           className="radix-textfield"
           placeholder="Password"
           type="password"

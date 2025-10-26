@@ -1,8 +1,9 @@
 "use client";
 
-import { Button, TextField } from "@radix-ui/themes";
+import { Button } from "@radix-ui/themes";
 import "./SignupForm.scss";
 import { useForm } from "react-hook-form";
+import FloatingTextField from "../../FloatingTextField/FloatingTextField";
 
 export type SignUpFormData = {
   username: string;
@@ -31,7 +32,7 @@ const SignupForm = ({ onSubmit, defaultValues }: SignupFormProps) => {
   return (
     <form className="signup-form" onSubmit={handleSubmit(onSubmit)}>
       <div>
-        <TextField.Root
+        <FloatingTextField
           className="radix-textfield"
           placeholder="Username"
           type="text"
@@ -43,7 +44,7 @@ const SignupForm = ({ onSubmit, defaultValues }: SignupFormProps) => {
       </div>
       {/* TODO handle email input better and validation */}
       <div>
-        <TextField.Root
+        <FloatingTextField
           className="radix-textfield"
           placeholder="Email"
           type="email"
@@ -52,7 +53,7 @@ const SignupForm = ({ onSubmit, defaultValues }: SignupFormProps) => {
         {errors.email && <span className="error">{errors.email.message}</span>}
       </div>
       <div>
-        <TextField.Root
+        <FloatingTextField
           className="radix-textfield"
           placeholder="Password"
           type="password"
@@ -63,7 +64,7 @@ const SignupForm = ({ onSubmit, defaultValues }: SignupFormProps) => {
         )}
       </div>
       <div>
-        <TextField.Root
+        <FloatingTextField
           className="radix-textfield"
           placeholder="Repeat-Password"
           type="password"

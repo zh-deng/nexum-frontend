@@ -1,18 +1,20 @@
-import { TextArea, TextField } from "@radix-ui/themes";
 import "./CompanyForm.scss";
-import { FieldErrors, UseFormRegister } from "react-hook-form";
+import { FieldErrors, UseFormRegister, UseFormWatch } from "react-hook-form";
 import { CreateApplicationDto } from "../../../types/dtos/create-application.dto";
+import FloatingTextField from "../../FloatingTextField/FloatingTextField";
+import FloatingTextArea from "../../FloatingTextArea/FloatingTextArea";
 
 type CompanyFormProps = {
   register: UseFormRegister<CreateApplicationDto>;
+  watch: UseFormWatch<CreateApplicationDto>;
   errors: FieldErrors<CreateApplicationDto>;
 };
 
-const CompanyForm = ({ register, errors }: CompanyFormProps) => {
+const CompanyForm = ({ register, watch, errors }: CompanyFormProps) => {
   return (
     <div className="company-form">
       <div>
-        <TextField.Root
+        <FloatingTextField
           className="radix-textfield"
           placeholder="Company Name*"
           {...register("company.name", {
@@ -20,94 +22,107 @@ const CompanyForm = ({ register, errors }: CompanyFormProps) => {
             validate: (value) =>
               value?.trim() !== "" || "Company name cannot be empty",
           })}
+          value={watch("company.name")}
         />
         {errors.company?.name && (
           <span className="error">{errors.company.name.message}</span>
         )}
       </div>
       <div>
-        <TextField.Root
+        <FloatingTextField
           className="radix-textfield"
           placeholder="Website"
           {...register("company.website")}
+          value={watch("company.website")}
         />
       </div>
       <div>
-        <TextField.Root
+        <FloatingTextField
           className="radix-textfield"
           placeholder="Street"
           {...register("company.street")}
+          value={watch("company.street")}
         />
       </div>
       <div>
-        <TextField.Root
+        <FloatingTextField
           className="radix-textfield"
           placeholder="City"
           {...register("company.city")}
+          value={watch("company.city")}
         />
       </div>
       <div>
-        <TextField.Root
+        <FloatingTextField
           className="radix-textfield"
           placeholder="State"
           {...register("company.state")}
+          value={watch("company.state")}
         />
       </div>
       <div>
-        <TextField.Root
+        <FloatingTextField
           className="radix-textfield"
           placeholder="ZIP Code"
           {...register("company.zipCode")}
+          value={watch("company.zipCode")}
         />
       </div>
       <div>
-        <TextField.Root
+        <FloatingTextField
           className="radix-textfield"
           placeholder="Country"
           {...register("company.country")}
+          value={watch("company.country")}
         />
       </div>
       <div>
-        <TextField.Root
+        <FloatingTextField
           className="radix-textfield"
           placeholder="Industry"
           {...register("company.industry")}
+          value={watch("company.industry")}
         />
       </div>
       <div>
-        <TextField.Root
+        <FloatingTextField
           className="radix-textfield"
           placeholder="Company Size"
           {...register("company.companySize")}
+          value={watch("company.companySize")}
         />
       </div>
       <div>
-        <TextField.Root
+        <FloatingTextField
           className="radix-textfield"
           placeholder="Contact Name"
           {...register("company.contactName")}
+          value={watch("company.contactName")}
         />
       </div>
       <div>
-        <TextField.Root
+        <FloatingTextField
           className="radix-textfield"
           placeholder="Contact Email"
           {...register("company.contactEmail")}
+          value={watch("company.contactEmail")}
         />
       </div>
       {/* TODO handle email inputs better with validaton */}
       <div>
-        <TextField.Root
+        <FloatingTextField
           className="radix-textfield"
           placeholder="Contact Phone"
           {...register("company.contactPhone")}
+          value={watch("company.contactPhone")}
         />
       </div>
       <div>
-        <TextArea
+        <FloatingTextArea
           placeholder="Notes"
           size={"3"}
           {...register("company.notes")}
+          value={watch("company.notes")}
         />
       </div>
       {/* TODO add company logo? */}
