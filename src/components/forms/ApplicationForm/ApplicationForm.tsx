@@ -203,7 +203,12 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
           Create
         </Button>
       </form>
-      <IconButton className="cancel-button" onClick={onClose} size={"3"}>
+      <IconButton
+        className="cancel-button"
+        onClick={onClose}
+        size={"4"}
+        radius={"small"}
+      >
         <Cross1Icon width="32" height="32" />
       </IconButton>
     </div>
