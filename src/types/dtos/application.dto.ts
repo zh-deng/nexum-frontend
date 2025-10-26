@@ -26,6 +26,7 @@ export type ApplicationDto = {
   workLocation: WorkLocation;
   priority: Priority;
   notes?: string;
+  favorited?: boolean;
   status: ApplicationStatus;
   fileUrls: string[];
   reminders: string[];

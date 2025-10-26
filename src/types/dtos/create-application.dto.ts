@@ -10,6 +10,7 @@ export type CreateApplicationDto = {
   workLocation?: WorkLocation;
   priority?: Priority;
   notes?: string;
+  favorited?: boolean;
   status?: ApplicationStatus;
   fileUrls: string[];
 };
