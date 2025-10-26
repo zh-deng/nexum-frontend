@@ -1,136 +1,113 @@
 import { TextArea, TextField } from "@radix-ui/themes";
 import "./CompanyForm.scss";
-import { CreateCompanyDto } from "../../../types/dtos/create-company.dto";
-import { UpdateCompanyDto } from "../../../types/dtos/update-company.dto";
+import { FieldErrors, UseFormRegister } from "react-hook-form";
+import { CreateApplicationDto } from "../../../types/dtos/create-application.dto";
 
 type CompanyFormProps = {
-  value: CreateCompanyDto | UpdateCompanyDto;
-  onChange: (updated: CreateCompanyDto | UpdateCompanyDto) => void;
+  register: UseFormRegister<CreateApplicationDto>;
+  errors: FieldErrors<CreateApplicationDto>;
 };
 
-const CompanyForm = ({ value, onChange }: CompanyFormProps) => {
-  function handleFieldChange<
-    K extends keyof (CreateCompanyDto | UpdateCompanyDto),
-  >(key: K, val: (CreateCompanyDto | UpdateCompanyDto)[K]) {
-    onChange({ ...value, [key]: val });
-  }
-
+const CompanyForm = ({ register, errors }: CompanyFormProps) => {
   return (
     <div className="company-form">
       <div>
         <TextField.Root
           className="radix-textfield"
           placeholder="Company Name*"
-          type="text"
-          value={value.name}
-          onChange={(e) => handleFieldChange("name", e.target.value)}
+          {...register("company.name", {
+            required: "Company name is required",
+            validate: (value) =>
+              value?.trim() !== "" || "Company name cannot be empty",
+          })}
         />
+        {errors.company?.name && (
+          <span className="error">{errors.company.name.message}</span>
+        )}
       </div>
       <div>
         <TextField.Root
           className="radix-textfield"
           placeholder="Website"
-          type="text"
-          value={value.website}
-          onChange={(e) => handleFieldChange("website", e.target.value)}
+          {...register("company.website")}
         />
       </div>
       <div>
         <TextField.Root
           className="radix-textfield"
           placeholder="Street"
-          type="text"
-          value={value.street}
-          onChange={(e) => handleFieldChange("street", e.target.value)}
+          {...register("company.street")}
         />
       </div>
       <div>
         <TextField.Root
           className="radix-textfield"
           placeholder="City"
-          type="text"
-          value={value.city}
-          onChange={(e) => handleFieldChange("city", e.target.value)}
+          {...register("company.city")}
         />
       </div>
       <div>
         <TextField.Root
           className="radix-textfield"
           placeholder="State"
-          type="text"
-          value={value.state}
-          onChange={(e) => handleFieldChange("state", e.target.value)}
+          {...register("company.state")}
         />
       </div>
       <div>
         <TextField.Root
           className="radix-textfield"
           placeholder="ZIP Code"
-          type="text"
-          value={value.zipCode}
-          onChange={(e) => handleFieldChange("zipCode", e.target.value)}
+          {...register("company.zipCode")}
         />
       </div>
       <div>
         <TextField.Root
           className="radix-textfield"
           placeholder="Country"
-          type="text"
-          value={value.country}
-          onChange={(e) => handleFieldChange("country", e.target.value)}
+          {...register("company.country")}
         />
       </div>
       <div>
         <TextField.Root
           className="radix-textfield"
           placeholder="Industry"
-          type="text"
-          value={value.industry}
-          onChange={(e) => handleFieldChange("industry", e.target.value)}
+          {...register("company.industry")}
         />
       </div>
       <div>
         <TextField.Root
           className="radix-textfield"
           placeholder="Company Size"
-          type="text"
-          value={value.companySize}
-          onChange={(e) => handleFieldChange("companySize", e.target.value)}
+          {...register("company.companySize")}
         />
       </div>
       <div>
         <TextField.Root
           className="radix-textfield"
           placeholder="Contact Name"
-          type="text"
-          value={value.contactName}
-          onChange={(e) => handleFieldChange("contactName", e.target.value)}
+          {...register("company.contactName")}
         />
       </div>
       <div>
         <TextField.Root
           className="radix-textfield"
           placeholder="Contact Email"
-          type="text"
-          value={value.contactEmail}
-          onChange={(e) => handleFieldChange("contactEmail", e.target.value)}
+          {...register("company.contactEmail")}
         />
       </div>
+      {/* TODO handle email inputs better with validaton */}
       <div>
         <TextField.Root
           className="radix-textfield"
           placeholder="Contact Phone"
-          type="text"
-          value={value.contactPhone}
-          onChange={(e) => handleFieldChange("contactPhone", e.target.value)}
+          {...register("company.contactPhone")}
         />
       </div>
       <div>
         <TextArea
           placeholder="Notes"
           size={"3"}
-          value={value.notes}
-          onChange={(e) => handleFieldChange("notes", e.target.value)}
+          {...register("company.notes")}
         />
       </div>
       {/* TODO add company logo? */}
