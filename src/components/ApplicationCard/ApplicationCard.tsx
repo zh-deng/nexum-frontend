@@ -18,12 +18,14 @@ type ApplicationCardProps = {
   data: ApplicationDto;
   expandedCardId: string | null;
   setExpandedCardId: React.Dispatch<React.SetStateAction<string | null>>;
+  editApplication: () => void;
 };
 
 const ApplicationCard = ({
   data,
   expandedCardId,
   setExpandedCardId,
+  editApplication,
 }: ApplicationCardProps) => {
   const {
     id,
@@ -255,7 +257,7 @@ const ApplicationCard = ({
           </Card>
           <IconButton
             className="edit-button"
-            onClick={() => {}}
+            onClick={editApplication}
             size={"4"}
             radius="small"
           >

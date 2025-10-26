@@ -1,8 +1,13 @@
 .jobs-page {
   height: 100%;
+  width: 100%;
   padding: 0.5rem;
   overflow-y: scroll;
   position: relative;
+
+  &.no-scroll {
+    overflow: hidden;
+  }
 
   .add-button {
     position: fixed;
@@ -16,5 +21,6 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    width: 100%;
   }
 }

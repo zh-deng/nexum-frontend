@@ -15,8 +15,14 @@ import {
 import { removeEmptyStrings } from "../../../utils/helper";
 import { useForm } from "react-hook-form";
 import { useCreateApplication } from "../../../hooks/application/useCreateApplication";
+import { ApplicationDto } from "../../../types/dtos/application.dto";
 
-const ApplicationForm = ({ onClose }: { onClose: () => void }) => {
+type ApplicationFormProps = {
+  data?: ApplicationDto;
+  onClose: () => void;
+};
+
+const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
   const {
     register,
     handleSubmit,
@@ -24,7 +30,7 @@ const ApplicationForm = ({ onClose }: { onClose: () => void }) => {
     setValue,
     watch,
   } = useForm<CreateApplicationDto>({
-    defaultValues: {
+    defaultValues: data ?? {
       jobTitle: "",
       company: {
         name: "",
