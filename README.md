@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Nexum Frontend
 
-## Getting Started
+Nexum is a web application for tracking and managing job applications — a modern, organized alternative to keeping everything in a spreadsheet. It helps users log applications, sort and search them easily, and (soon) visualize progress with charts and reminders for interviews.
 
-First, run the development server:
+This repository contains the **frontend** for Nexum, built with **Next.js**, **TypeScript**, and **Radix UI**.
+
+## 🚀 Features
+
+- 📋 Track and manage job applications efficiently  
+- 🔍 Search and sort applications by various criteria  
+- 📊 (Upcoming) Charts and statistics for:
+  - Applications sent
+  - Rejections
+  - Scheduled interviews  
+- 🔔 (Upcoming) Notification and reminder system for interviews  
+- 🧩 Modern, responsive UI built with Radix UI and TypeScript  
+
+## 🛠️ Tech Stack
+
+- **Framework:** [Next.js](https://nextjs.org/)  
+- **Language:** [TypeScript](https://www.typescriptlang.org/)  
+- **UI Library:** [Radix UI](https://www.radix-ui.com/)  
+- **Package Manager:** [pnpm](https://pnpm.io/)  
+
+## ⚙️ Prerequisites
+
+Before you begin, make sure you have installed:
+
+- **Node.js** (v18 or later)  
+- **pnpm** (v8 or later)
+
+You’ll also need the **Nexum backend** running locally to provide API data.
+
+## 🧠 Running Nexum Locally (Frontend + Backend)
+
+Follow these steps to run the full application locally:
+
+### 1. Clone Both Repositories
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Backend
+git clone https://github.com/yourusername/nexum-backend.git
+
+# Frontend
+git clone https://github.com/yourusername/nexum-frontend.git
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Start the Backend
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+In one terminal:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+cd nexum-backend
+pnpm install
+pnpm run dev
+```
 
-## Learn More
+The backend will start on http://localhost:5000
 
-To learn more about Next.js, take a look at the following resources:
+### 3. Start the Frontend
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+In another terminal:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+cd nexum-frontend
+pnpm install
+pnpm run dev
+```
 
-## Deploy on Vercel
+The frontend will start on http://localhost:3000
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 4. Open the App
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Visit 👉 http://localhost:3000
+The frontend automatically connects to the backend running on port 5000.
