@@ -12,37 +12,47 @@ import {
   Priority,
   WorkLocation,
 } from "../../../types/enums";
-import { removeEmptyStrings } from "../../../util/helper";
+import { removeEmptyStrings } from "../../../utils/helper";
+import { useForm } from "react-hook-form";
 
 const ApplicationForm = ({ onClose }: { onClose: () => void }) => {
-  const [formData, setFormData] = useState<CreateApplicationDto>({
-    jobTitle: "",
-    company: {
-      name: "",
-      website: "",
-      street: "",
-      city: "",
-      state: "",
-      zipCode: "",
-      country: "",
-      industry: "",
-      companySize: "",
-      contactName: "",
-      contactEmail: "",
-      contactPhone: "",
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    setValue,
+    watch,
+  } = useForm<CreateApplicationDto>({
+    defaultValues: {
+      jobTitle: "",
+      company: {
+        name: "",
+        website: "",
+        street: "",
+        city: "",
+        state: "",
+        zipCode: "",
+        country: "",
+        industry: "",
+        companySize: "",
+        contactName: "",
+        contactEmail: "",
+        contactPhone: "",
+        notes: "",
+        logoUrl: "",
+      } as CreateCompanyDto,
+      jobLink: "",
+      jobDescription: "",
+      workLocation: undefined,
+      priority: undefined,
       notes: "",
-      logoUrl: "",
-    } as CreateCompanyDto,
-    jobLink: "",
-    jobDescription: "",
-    workLocation: undefined,
-    priority: undefined,
-    notes: "",
-    status: undefined,
-    fileUrls: [],
+      status: undefined,
+      fileUrls: [],
+    },
   });
 
   const [company, setCompany] = useState<string>("Company*");
+  const [showCompanyError, setShowCompanyError] = useState<boolean>(false);
   const workLocationOptions = ["ON_SITE", "REMOTE", "HYBRID", "UNSURE"];
   const priorityOptions = ["LOW", "MEDIUM", "HIGH"];
   const statusOptions = [
@@ -57,12 +67,10 @@ const ApplicationForm = ({ onClose }: { onClose: () => void }) => {
     "WITHDRAWN",
   ];
 
-  function handleChange<K extends keyof CreateApplicationDto>(
-    key: K,
-    value: CreateApplicationDto[K],
-  ) {
-    setFormData((prev) => ({ ...prev, [key]: value }));
-  }
+  const handleCompanyChange = (selected: string) => {
+    setCompany(selected);
+    setShowCompanyError(false);
+  };
 
   function getCompanies() {
     return [];
@@ -70,9 +78,14 @@ const ApplicationForm = ({ onClose }: { onClose: () => void }) => {
 
   function handleFileChange() {}
 
-  async function handleSubmit() {
+  async function onSubmit(data: CreateApplicationDto) {
+    if (company === "Company*") {
+      setShowCompanyError(true);
+      return;
+    }
+
     try {
-      const cleanedData = removeEmptyStrings(formData);
+      const cleanedData = removeEmptyStrings(data);
       await createApplication(cleanedData);
       onClose();
     } catch (error: unknown) {
@@ -83,75 +96,73 @@ const ApplicationForm = ({ onClose }: { onClose: () => void }) => {
   return (
     <div className="app-form">
       <p className="form-header">Create new application</p>
-      <form onSubmit={handleSubmit}>
+      <p className="required-tooltip">required*</p>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div>
           <TextField.Root
             className="radix-textfield"
             placeholder="Job Title*"
-            type="text"
-            value={formData.jobTitle}
-            onChange={(e) => handleChange("jobTitle", e.target.value)}
+            {...register("jobTitle", {
+              required: "Job title is required",
+              validate: (value) =>
+                value.trim() !== "" || "Job title cannot be empty",
+            })}
           />
+          {errors.jobTitle && (
+            <span className="error">{errors.jobTitle.message}</span>
+          )}
         </div>
         <div>
           <TextField.Root
             className="radix-textfield"
             placeholder="Job Description"
-            type="text"
-            value={formData.jobDescription}
-            onChange={(e) => handleChange("jobDescription", e.target.value)}
+            {...register("jobDescription")}
           />
         </div>
         <div>
           <TextField.Root
             className="radix-textfield"
             placeholder="Job Link"
-            type="text"
-            value={formData.jobLink}
-            onChange={(e) => handleChange("jobLink", e.target.value)}
+            {...register("jobLink")}
           />
         </div>
         <div>
           <Dropdown
             name={company}
             options={["Add new company", ...getCompanies()]}
-            onChange={(selected) => setCompany(selected)}
+            onChange={handleCompanyChange}
           />
+          {showCompanyError && company === "Company*" && (
+            <span className="error">Please select a company</span>
+          )}
         </div>
         {company !== "Company*" && (
           <div>
-            <CompanyForm
-              value={formData.company}
-              onChange={(updatedCompany) =>
-                handleChange("company", updatedCompany)
-              }
-            />
+            <CompanyForm register={register} errors={errors} />
           </div>
         )}
         <div>
           <Dropdown
-            name={formData.workLocation || "Work Location"}
+            name={watch("workLocation") || "Work Location"}
             options={workLocationOptions}
             onChange={(selected) =>
-              handleChange("workLocation", selected as WorkLocation)
+              setValue("workLocation", selected as WorkLocation)
             }
           />
         </div>
         <div>
           <Dropdown
-            name={formData.priority || "Priority"}
+            name={watch("priority") || "Priority"}
             options={priorityOptions}
-            onChange={(selected) =>
-              handleChange("priority", selected as Priority)
-            }
+            onChange={(selected) => setValue("priority", selected as Priority)}
           />
         </div>
         <div>
           <Dropdown
-            name={formData.status || "Status"}
+            name={watch("status") || "Status"}
             options={statusOptions}
             onChange={(selected) =>
-              handleChange("status", selected as ApplicationStatus)
+              setValue("status", selected as ApplicationStatus)
             }
           />
         </div>
@@ -169,14 +180,9 @@ const ApplicationForm = ({ onClose }: { onClose: () => void }) => {
           />
         </div>
         <div>
-          <TextArea
-            placeholder="Notes"
-            size={"3"}
-            value={formData.notes}
-            onChange={(e) => handleChange("notes", e.target.value)}
-          />
+          <TextArea placeholder="Notes" size={"3"} {...register("notes")} />
         </div>
-        <Button type="submit" mt={"4"}>
+        <Button type="submit" mt={"4"} disabled={isSubmitting}>
           Create
         </Button>
       </form>
