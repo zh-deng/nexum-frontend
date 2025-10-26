@@ -12,18 +12,18 @@ import { ApplicationDto } from "../../types/dtos/application.dto";
 import "./ApplicationCard.scss";
 import { Pencil2Icon, StarFilledIcon } from "@radix-ui/react-icons";
 import { Priority } from "../../types/enums";
-import { motion } from "framer-motion";
+import { useEffect, useRef } from "react";
 
 type ApplicationCardProps = {
   data: ApplicationDto;
-  expandedCard: string | null;
-  setExpandedCard: React.Dispatch<React.SetStateAction<string | null>>;
+  expandedCardId: string | null;
+  setExpandedCardId: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
 const ApplicationCard = ({
   data,
-  expandedCard,
-  setExpandedCard,
+  expandedCardId,
+  setExpandedCardId,
 }: ApplicationCardProps) => {
   const {
     id,
@@ -53,13 +53,26 @@ const ApplicationCard = ({
     notes: companyNotes,
   } = company;
 
-  const isActive = id === expandedCard;
+  const cardRef = useRef<HTMLDivElement>(null);
+  const isActive = id === expandedCardId;
+  const prevActiveRef = useRef(isActive);
   const priorityBadgeColor =
     priority === Priority.LOW
       ? "yellow"
       : priority === Priority.MEDIUM
         ? "orange"
         : "crimson";
+
+  useEffect(() => {
+    // Only scroll when transitioning from collapsed to expanded
+    if (isActive && !prevActiveRef.current && cardRef.current) {
+      cardRef.current.scrollIntoView({
+        behavior: "instant",
+        block: "start",
+      });
+    }
+    prevActiveRef.current = isActive;
+  }, [isActive]);
 
   function getJobUrl() {
     if (!jobLink) return;
@@ -73,11 +86,11 @@ const ApplicationCard = ({
   }
 
   function handleToggleExpand() {
-    setExpandedCard(isActive ? null : id);
+    setExpandedCardId(isActive ? null : id);
   }
 
   return (
-    <div className="application-card">
+    <div id={`card-${id}`} ref={cardRef} className="application-card">
       <Card onClick={handleToggleExpand}>
         <Flex align={"center"} justify={"between"} gap={"2"}>
           {/* TODO add bookmark feature */}
