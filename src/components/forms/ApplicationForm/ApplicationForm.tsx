@@ -14,6 +14,7 @@ import {
 } from "../../../types/enums";
 import { removeEmptyStrings } from "../../../utils/helper";
 import { useForm } from "react-hook-form";
+import { useCreateApplication } from "../../../hooks/application/useCreateApplication";
 
 const ApplicationForm = ({ onClose }: { onClose: () => void }) => {
   const {
@@ -51,6 +52,7 @@ const ApplicationForm = ({ onClose }: { onClose: () => void }) => {
     },
   });
 
+  const createApplication = useCreateApplication();
   const [company, setCompany] = useState<string>("Company*");
   const [showCompanyError, setShowCompanyError] = useState<boolean>(false);
   const workLocationOptions = ["ON_SITE", "REMOTE", "HYBRID", "UNSURE"];
@@ -86,7 +88,7 @@ const ApplicationForm = ({ onClose }: { onClose: () => void }) => {
 
     try {
       const cleanedData = removeEmptyStrings(data);
-      await createApplication(cleanedData);
+      await createApplication.mutateAsync(cleanedData);
       onClose();
     } catch (error: unknown) {
       console.error("Create application error:", error);
