@@ -10,7 +10,7 @@ import {
 } from "@radix-ui/themes";
 import { ApplicationDto } from "../../types/dtos/application.dto";
 import "./ApplicationCard.scss";
-import { Pencil2Icon, StarFilledIcon } from "@radix-ui/react-icons";
+import { Pencil2Icon, StarFilledIcon, StarIcon } from "@radix-ui/react-icons";
 import { Priority } from "../../types/enums";
 import { useEffect, useRef } from "react";
 
@@ -34,6 +34,7 @@ const ApplicationCard = ({
     workLocation,
     priority,
     notes,
+    favorited,
     status,
   } = data;
   const {
@@ -94,7 +95,11 @@ const ApplicationCard = ({
       <Card onClick={handleToggleExpand}>
         <Flex align={"center"} justify={"between"} gap={"2"}>
           {/* TODO add bookmark feature */}
-          {true && <StarFilledIcon width="16" height="16" />}
+          {favorited ? (
+            <StarFilledIcon width="16" height="16" />
+          ) : (
+            <StarIcon width="16" height="16" />
+          )}
           <Box style={{ minWidth: 0, flex: 1 }}>
             <Flex align={"center"} gap={"3"}>
               <Avatar size={"4"} src={logoUrl} fallback="C" />
@@ -117,17 +122,17 @@ const ApplicationCard = ({
       {isActive && (
         <div className="expanded-container">
           <Card>
-            <Box height={"3rem"}>
-              <Flex gap={"2"} height={"100%"} align={"center"}>
-                <Badge size={"3"} color={priorityBadgeColor}>
-                  <Text size={"3"}>Priority: {priority}</Text>
-                </Badge>
-                <Badge size={"3"} color="cyan">
-                  <Text size={"3"}>Type: {workLocation}</Text>
-                </Badge>
-              </Flex>
-            </Box>
             <Flex direction={"column"} gap={"5"}>
+              <Box height={"3rem"}>
+                <Flex gap={"2"} height={"100%"} align={"center"}>
+                  <Badge size={"3"} color={priorityBadgeColor}>
+                    <Text size={"3"}>Priority: {priority}</Text>
+                  </Badge>
+                  <Badge size={"3"} color="cyan">
+                    <Text size={"3"}>Type: {workLocation}</Text>
+                  </Badge>
+                </Flex>
+              </Box>
               {jobLink && (
                 <Box
                   style={{ minWidth: 0, overflow: "hidden" }}
@@ -210,28 +215,40 @@ const ApplicationCard = ({
                       )}
                     </Flex>
                   )}
-                  <Flex gap={"3"}>
-                    <Text weight={"medium"}>Industry:</Text>
-                    <Text>{industry}</Text>
-                  </Flex>
-                  <Flex gap={"3"}>
-                    <Text weight={"medium"}>Company Size:</Text>
-                    <Text>{companySize} employees</Text>
-                  </Flex>
-                  <Flex direction={"column"}>
-                    <Text weight={"medium"}>Contact:</Text>
-                    <Badge size={"3"}>
-                      <Flex direction={"column"}>
-                        <Text size={"3"}>{contactName}</Text>
-                        <Text size={"3"}>{contactEmail}</Text>
-                        <Text size={"3"}>{contactPhone}</Text>
-                      </Flex>
-                    </Badge>
-                  </Flex>
-                  <Flex direction={"column"}>
-                    <Text weight={"medium"}>Company Notes:</Text>
-                    <Text>{companyNotes}</Text>
-                  </Flex>
+                  {industry && (
+                    <Flex gap={"3"}>
+                      <Text weight={"medium"}>Industry:</Text>
+                      <Text>{industry}</Text>
+                    </Flex>
+                  )}
+                  {companySize && (
+                    <Flex gap={"3"}>
+                      <Text weight={"medium"}>Company Size:</Text>
+                      <Text>{companySize} employees</Text>
+                    </Flex>
+                  )}
+                  {(contactName || contactEmail || contactPhone) && (
+                    <Flex direction={"column"}>
+                      <Text weight={"medium"}>Contact:</Text>
+                      <Badge size={"3"}>
+                        <Flex direction={"column"}>
+                          {contactName && <Text size={"3"}>{contactName}</Text>}
+                          {contactEmail && (
+                            <Text size={"3"}>{contactEmail}</Text>
+                          )}
+                          {contactPhone && (
+                            <Text size={"3"}>{contactPhone}</Text>
+                          )}
+                        </Flex>
+                      </Badge>
+                    </Flex>
+                  )}
+                  {companyNotes && (
+                    <Flex direction={"column"}>
+                      <Text weight={"medium"}>Company Notes:</Text>
+                      <Text>{companyNotes}</Text>
+                    </Flex>
+                  )}
                 </Flex>
               </Card>
             </Flex>
