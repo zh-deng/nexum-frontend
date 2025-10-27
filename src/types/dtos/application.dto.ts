@@ -1,26 +1,12 @@
 import { ApplicationStatus, Priority, WorkLocation } from "../enums";
+import { CompanyDto } from "./company.dto";
+import { LogItemDto } from "./log-item.dto";
 
 export type ApplicationDto = {
   id: string;
   jobTitle: string;
   companyId: string;
-  company: {
-    id: string;
-    name: string;
-    website?: string;
-    street?: string;
-    city?: string;
-    state?: string;
-    zipCode?: string;
-    country?: string;
-    industry?: string;
-    companySize?: string;
-    contactName?: string;
-    contactEmail?: string;
-    contactPhone?: string;
-    notes?: string;
-    logoUrl?: string;
-  };
+  company: CompanyDto;
   jobLink?: string;
   jobDescription?: string;
   workLocation: WorkLocation;
@@ -31,7 +17,7 @@ export type ApplicationDto = {
   fileUrls: string[];
   reminders: string[];
   interviews: string[];
-  logItems: string[];
+  logItems: LogItemDto[];
   createdAt: string;
   updatedAt: string;
 };

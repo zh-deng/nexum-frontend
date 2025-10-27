@@ -1,6 +1,6 @@
-export type UpdateCompanyDto = {
+export type CompanyDto = {
   id: string;
-  name?: string;
+  name: string;
   website?: string;
   street?: string;
   city?: string;
