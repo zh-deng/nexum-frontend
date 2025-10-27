@@ -2,7 +2,7 @@ import { Button, IconButton } from "@radix-ui/themes";
 import "./ApplicationForm.scss";
 import { Cross1Icon } from "@radix-ui/react-icons";
 import Dropdown from "../../Dropdown/Dropdown";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CreateApplicationDto } from "../../../types/dtos/create-application.dto";
 import CompanyForm from "../CompanyForm/CompanyForm";
 import { CreateCompanyDto } from "../../../types/dtos/create-company.dto";
@@ -17,9 +17,12 @@ import { useCreateApplication } from "../../../hooks/application/useCreateApplic
 import { ApplicationDto } from "../../../types/dtos/application.dto";
 import FloatingTextField from "../../FloatingTextField/FloatingTextField";
 import FloatingTextArea from "../../FloatingTextArea/FloatingTextArea";
+import { useCompanies } from "../../../hooks/company/useCompanies";
+import { UpdateApplicationDto } from "../../../types/dtos/update-application.dto";
+import { useUpdateApplication } from "../../../hooks/application/useUpdateApplication";
 
 type ApplicationFormProps = {
-  data?: ApplicationDto;
+  data?: UpdateApplicationDto;
   onClose: () => void;
 };
 
@@ -30,7 +33,8 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
     formState: { errors, isSubmitting },
     setValue,
     watch,
-  } = useForm<CreateApplicationDto>({
+    resetField,
+  } = useForm<CreateApplicationDto | UpdateApplicationDto>({
     defaultValues: data ?? {
       jobTitle: "",
       company: {
@@ -59,11 +63,17 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
     },
   });
 
+  const { data: companiesData } = useCompanies();
   const createApplication = useCreateApplication();
+  const updateApplication = useUpdateApplication();
   const [company, setCompany] = useState<string>("Company*");
   const [showCompanyError, setShowCompanyError] = useState<boolean>(false);
-  const workLocationOptions = ["ON_SITE", "REMOTE", "HYBRID", "UNSURE"];
-  const priorityOptions = ["LOW", "MEDIUM", "HIGH"];
+  const workLocationOptions = ["ON_SITE", "REMOTE", "HYBRID", "UNSURE"].filter(
+    (elem) => elem !== watch("workLocation"),
+  );
+  const priorityOptions = ["LOW", "MEDIUM", "HIGH"].filter(
+    (elem) => elem !== watch("priority"),
+  );
   const statusOptions = [
     "DRAFT",
     "APPLIED",
@@ -74,20 +84,41 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
     "REJECTED",
     "GHOSTED",
     "WITHDRAWN",
-  ];
+  ].filter((elem) => elem !== watch("status"));
+
+  useEffect(() => {
+    if (!data) return;
+
+    setCompany(data.company.name!);
+  }, [data?.company]);
 
   const handleCompanyChange = (selected: string) => {
     setCompany(selected);
     setShowCompanyError(false);
+
+    if (selected === "Add new company") {
+      resetField("company");
+    } else {
+      const companyData = companiesData.find(
+        (element) => element.name === selected,
+      );
+
+      setValue("company", companyData!);
+    }
   };
 
-  function getCompanies() {
-    return [];
+  function getCompanyNames(): string[] {
+    return [
+      "Add new company",
+      ...companiesData
+        .map((company) => company.name)
+        .filter((name) => name !== company),
+    ];
   }
 
   function handleFileChange() {}
 
-  async function onSubmit(data: CreateApplicationDto) {
+  async function onSubmit(data: CreateApplicationDto | UpdateApplicationDto) {
     if (company === "Company*") {
       setShowCompanyError(true);
       return;
@@ -95,10 +126,21 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
 
     try {
       const cleanedData = removeEmptyStrings(data);
-      await createApplication.mutateAsync(cleanedData);
+
+      if ("id" in data && data.id) {
+        const { reminders, interviews, logItems, ...rest } = cleanedData;
+        await updateApplication.mutateAsync({ id: data.id, data: rest });
+      } else {
+        const {
+          company: { applications, ...cleanCompany },
+          ...rest
+        } = cleanedData;
+
+        await createApplication.mutateAsync({ company: cleanCompany, ...rest });
+      }
       onClose();
     } catch (error: unknown) {
-      console.error("Create application error:", error);
+      console.error("Create or update application error:", error);
     }
   }
 
@@ -141,7 +183,7 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
         <div>
           <Dropdown
             name={company}
-            options={["Add new company", ...getCompanies()]}
+            options={getCompanyNames()}
             onChange={handleCompanyChange}
           />
           {showCompanyError && company === "Company*" && (
