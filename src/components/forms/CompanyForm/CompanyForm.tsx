@@ -3,11 +3,12 @@ import { FieldErrors, UseFormRegister, UseFormWatch } from "react-hook-form";
 import { CreateApplicationDto } from "../../../types/dtos/create-application.dto";
 import FloatingTextField from "../../FloatingTextField/FloatingTextField";
 import FloatingTextArea from "../../FloatingTextArea/FloatingTextArea";
+import { UpdateApplicationDto } from "../../../types/dtos/update-application.dto";
 
 type CompanyFormProps = {
-  register: UseFormRegister<CreateApplicationDto>;
-  watch: UseFormWatch<CreateApplicationDto>;
-  errors: FieldErrors<CreateApplicationDto>;
+  register: UseFormRegister<CreateApplicationDto | UpdateApplicationDto>;
+  watch: UseFormWatch<CreateApplicationDto | UpdateApplicationDto>;
+  errors: FieldErrors<CreateApplicationDto | UpdateApplicationDto>;
 };
 
 const CompanyForm = ({ register, watch, errors }: CompanyFormProps) => {
@@ -22,7 +23,7 @@ const CompanyForm = ({ register, watch, errors }: CompanyFormProps) => {
             validate: (value) =>
               value?.trim() !== "" || "Company name cannot be empty",
           })}
-          value={watch("company.name")}
+          value={watch("company.name") ?? ""}
         />
         {errors.company?.name && (
           <span className="error">{errors.company.name.message}</span>
@@ -33,7 +34,7 @@ const CompanyForm = ({ register, watch, errors }: CompanyFormProps) => {
           className="radix-textfield"
           placeholder="Website"
           {...register("company.website")}
-          value={watch("company.website")}
+          value={watch("company.website") ?? ""}
         />
       </div>
       <div>
@@ -41,7 +42,7 @@ const CompanyForm = ({ register, watch, errors }: CompanyFormProps) => {
           className="radix-textfield"
           placeholder="Street"
           {...register("company.street")}
-          value={watch("company.street")}
+          value={watch("company.street") ?? ""}
         />
       </div>
       <div>
@@ -49,7 +50,7 @@ const CompanyForm = ({ register, watch, errors }: CompanyFormProps) => {
           className="radix-textfield"
           placeholder="City"
           {...register("company.city")}
-          value={watch("company.city")}
+          value={watch("company.city") ?? ""}
         />
       </div>
       <div>
@@ -57,7 +58,7 @@ const CompanyForm = ({ register, watch, errors }: CompanyFormProps) => {
           className="radix-textfield"
           placeholder="State"
           {...register("company.state")}
-          value={watch("company.state")}
+          value={watch("company.state") ?? ""}
         />
       </div>
       <div>
@@ -65,7 +66,7 @@ const CompanyForm = ({ register, watch, errors }: CompanyFormProps) => {
           className="radix-textfield"
           placeholder="ZIP Code"
           {...register("company.zipCode")}
-          value={watch("company.zipCode")}
+          value={watch("company.zipCode") ?? ""}
         />
       </div>
       <div>
@@ -73,7 +74,7 @@ const CompanyForm = ({ register, watch, errors }: CompanyFormProps) => {
           className="radix-textfield"
           placeholder="Country"
           {...register("company.country")}
-          value={watch("company.country")}
+          value={watch("company.country") ?? ""}
         />
       </div>
       <div>
@@ -81,7 +82,7 @@ const CompanyForm = ({ register, watch, errors }: CompanyFormProps) => {
           className="radix-textfield"
           placeholder="Industry"
           {...register("company.industry")}
-          value={watch("company.industry")}
+          value={watch("company.industry") ?? ""}
         />
       </div>
       <div>
@@ -89,7 +90,7 @@ const CompanyForm = ({ register, watch, errors }: CompanyFormProps) => {
           className="radix-textfield"
           placeholder="Company Size"
           {...register("company.companySize")}
-          value={watch("company.companySize")}
+          value={watch("company.companySize") ?? ""}
         />
       </div>
       <div>
@@ -97,7 +98,7 @@ const CompanyForm = ({ register, watch, errors }: CompanyFormProps) => {
           className="radix-textfield"
           placeholder="Contact Name"
           {...register("company.contactName")}
-          value={watch("company.contactName")}
+          value={watch("company.contactName") ?? ""}
         />
       </div>
       <div>
@@ -105,7 +106,7 @@ const CompanyForm = ({ register, watch, errors }: CompanyFormProps) => {
           className="radix-textfield"
           placeholder="Contact Email"
           {...register("company.contactEmail")}
-          value={watch("company.contactEmail")}
+          value={watch("company.contactEmail") ?? ""}
         />
       </div>
       {/* TODO handle email inputs better with validaton */}
@@ -114,7 +115,7 @@ const CompanyForm = ({ register, watch, errors }: CompanyFormProps) => {
           className="radix-textfield"
           placeholder="Contact Phone"
           {...register("company.contactPhone")}
-          value={watch("company.contactPhone")}
+          value={watch("company.contactPhone") ?? ""}
         />
       </div>
       <div>
@@ -122,7 +123,7 @@ const CompanyForm = ({ register, watch, errors }: CompanyFormProps) => {
           placeholder="Notes"
           size={"3"}
           {...register("company.notes")}
-          value={watch("company.notes")}
+          value={watch("company.notes") ?? ""}
         />
       </div>
       {/* TODO add company logo? */}

@@ -12,6 +12,5 @@ export type UpdateApplicationDto = {
   priority?: Priority;
   notes?: string;
   favorited?: boolean;
-  status?: ApplicationStatus;
   fileUrls: string[];
 };

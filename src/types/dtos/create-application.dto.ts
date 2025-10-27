@@ -12,5 +12,6 @@ export type CreateApplicationDto = {
   notes?: string;
   favorited?: boolean;
   status?: ApplicationStatus;
+  logItemDate: string;
   fileUrls: string[];
 };

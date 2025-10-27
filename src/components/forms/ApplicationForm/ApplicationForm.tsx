@@ -1,4 +1,4 @@
-import { Button, IconButton } from "@radix-ui/themes";
+import { Button, Card, Flex, IconButton, Text } from "@radix-ui/themes";
 import "./ApplicationForm.scss";
 import { Cross1Icon } from "@radix-ui/react-icons";
 import Dropdown from "../../Dropdown/Dropdown";
@@ -59,6 +59,7 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
       priority: undefined,
       notes: "",
       status: undefined,
+      logItemDate: new Date().toISOString().split("T")[0],
       fileUrls: [],
     },
   });
@@ -158,7 +159,7 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
               validate: (value) =>
                 value.trim() !== "" || "Job title cannot be empty",
             })}
-            value={watch("jobTitle")}
+            value={watch("jobTitle") ?? ""}
           />
           {errors.jobTitle && (
             <span className="error">{errors.jobTitle.message}</span>
@@ -169,7 +170,7 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
             className="radix-textfield"
             placeholder="Job Description"
             {...register("jobDescription")}
-            value={watch("jobDescription")}
+            value={watch("jobDescription") ?? ""}
           />
         </div>
         <div>
@@ -177,7 +178,7 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
             className="radix-textfield"
             placeholder="Job Link"
             {...register("jobLink")}
-            value={watch("jobLink")}
+            value={watch("jobLink") ?? ""}
           />
         </div>
         <div>
@@ -211,15 +212,29 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
             onChange={(selected) => setValue("priority", selected as Priority)}
           />
         </div>
-        <div>
-          <Dropdown
-            name={watch("status") || "Status"}
-            options={statusOptions}
-            onChange={(selected) =>
-              setValue("status", selected as ApplicationStatus)
-            }
-          />
-        </div>
+        {!data && (
+          <Card>
+            <Flex direction={"column"} gap={"3"} align={"center"}>
+              <Dropdown
+                name={watch("status") || "Status"}
+                options={statusOptions}
+                onChange={(selected) =>
+                  setValue("status", selected as ApplicationStatus)
+                }
+              />
+              <Flex align={"center"} gap={"4"}>
+                <Text weight={"bold"}>SINCE</Text>
+                <FloatingTextField
+                  className="radix-textfield"
+                  placeholder="Status Date"
+                  type={"date"}
+                  {...register("logItemDate")}
+                  value={watch("logItemDate") ?? ""}
+                />
+              </Flex>
+            </Flex>
+          </Card>
+        )}
         {/* TODO replace dummy file upload */}
         <div>
           <label htmlFor="file-upload">
@@ -238,7 +253,7 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
             placeholder="Notes"
             size={"3"}
             {...register("notes")}
-            value={watch("notes")}
+            value={watch("notes") ?? ""}
           />
         </div>
         <Button type="submit" mt={"4"} disabled={isSubmitting}>
