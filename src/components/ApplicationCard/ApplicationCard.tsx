@@ -10,9 +10,19 @@ import {
 } from "@radix-ui/themes";
 import { ApplicationDto } from "../../types/dtos/application.dto";
 import "./ApplicationCard.scss";
-import { Pencil2Icon, StarFilledIcon, StarIcon } from "@radix-ui/react-icons";
-import { Priority } from "../../types/enums";
-import { useEffect, useRef } from "react";
+import {
+  Pencil2Icon,
+  StarFilledIcon,
+  StarIcon,
+  TrashIcon,
+} from "@radix-ui/react-icons";
+import { ApplicationStatus, Priority } from "../../types/enums";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useToggleFavorite } from "../../hooks/application/useUpdateApplication";
+import { formatDateUs } from "../../utils/helper";
+import { LogItemDto } from "../../types/dtos/log-item.dto";
+import ConfirmationModal from "../ConfirmationModal/ConfirmationModal";
+import { useDeleteApplication } from "../../hooks/application/useDeleteApplication";
 
 type ApplicationCardProps = {
   data: ApplicationDto;
@@ -38,6 +48,7 @@ const ApplicationCard = ({
     notes,
     favorited,
     status,
+    logItems,
   } = data;
   const {
     name,
@@ -56,6 +67,10 @@ const ApplicationCard = ({
     notes: companyNotes,
   } = company;
 
+  const [showConfirmationModal, setShowConfirmationModal] =
+    useState<boolean>(false);
+  const toggleFavorite = useToggleFavorite();
+  const deleteApplication = useDeleteApplication();
   const cardRef = useRef<HTMLDivElement>(null);
   const isActive = id === expandedCardId;
   const prevActiveRef = useRef(isActive);
@@ -65,6 +80,19 @@ const ApplicationCard = ({
       : priority === Priority.MEDIUM
         ? "orange"
         : "crimson";
+
+  const calculateDays = useMemo(() => {
+    const logItemTime = logItems.find(
+      (item) => item.status === ApplicationStatus.APPLIED,
+    )?.date;
+
+    if (!logItemTime) return "0 Days";
+
+    const totalDays = Math.floor(
+      (Date.now() - new Date(logItemTime).getTime()) / (1000 * 60 * 60 * 24),
+    );
+    return `${totalDays ?? 0} Days`;
+  }, [logItems]);
 
   useEffect(() => {
     // Only scroll when transitioning from collapsed to expanded
@@ -84,8 +112,20 @@ const ApplicationCard = ({
     return url.startsWith("http") ? url : `https://${url}`;
   }
 
-  function calculateDays() {
-    return "1 D";
+  async function handleDeleteApplication() {
+    try {
+      await deleteApplication.mutateAsync(id);
+    } catch (error: unknown) {
+      console.error("Delete application error:", error);
+    }
+  }
+
+  async function handleToggleFavorite() {
+    try {
+      await toggleFavorite.mutateAsync(data.id);
+    } catch (error: unknown) {
+      console.error("Toggle favorite error:", error);
+    }
   }
 
   function handleToggleExpand() {
@@ -96,7 +136,6 @@ const ApplicationCard = ({
     <div id={`card-${id}`} ref={cardRef} className="application-card">
       <Card onClick={handleToggleExpand}>
         <Flex align={"center"} justify={"between"} gap={"2"}>
-          {/* TODO add bookmark feature */}
           {favorited ? (
             <StarFilledIcon width="16" height="16" />
           ) : (
@@ -104,7 +143,7 @@ const ApplicationCard = ({
           )}
           <Box style={{ minWidth: 0, flex: 1 }}>
             <Flex align={"center"} gap={"3"}>
-              <Avatar size={"4"} src={logoUrl} fallback="C" />
+              <Avatar size={"4"} src={logoUrl} fallback={name.charAt(0)} />
               <Box style={{ minWidth: 0, overflow: "hidden" }}>
                 <Text as="div" weight={"bold"} truncate>
                   {name}
@@ -116,14 +155,39 @@ const ApplicationCard = ({
             </Flex>
           </Box>
           <Box style={{ textAlign: "right", flexShrink: 0 }}>
-            <Text as="div">{status}</Text>
-            <Text as="div">{calculateDays()}</Text>
+            <Badge size={"2"}>{status}</Badge>
+            <Text as="div">{calculateDays}</Text>
           </Box>
         </Flex>
       </Card>
       {isActive && (
         <div className="expanded-container">
           <Card>
+            <Flex justify={"end"} gap={"3"}>
+              <IconButton
+                onClick={handleToggleFavorite}
+                size={"4"}
+                radius="small"
+                color={"yellow"}
+              >
+                {favorited ? (
+                  <StarFilledIcon width="24" height="24" />
+                ) : (
+                  <StarIcon width="24" height="24" />
+                )}
+              </IconButton>
+              <IconButton onClick={editApplication} size={"4"} radius="small">
+                <Pencil2Icon width="24" height="24" />
+              </IconButton>
+              <IconButton
+                onClick={() => setShowConfirmationModal(true)}
+                size={"4"}
+                radius="small"
+                color="red"
+              >
+                <TrashIcon width="24" height="24" />
+              </IconButton>
+            </Flex>
             <Flex direction={"column"} gap={"5"}>
               <Box height={"3rem"}>
                 <Flex gap={"2"} height={"100%"} align={"center"}>
@@ -253,18 +317,33 @@ const ApplicationCard = ({
                   )}
                 </Flex>
               </Card>
+              <Flex direction={"column"} gap={"2"}>
+                <Text weight={"medium"}>History:</Text>
+                {logItems
+                  .slice()
+                  .reverse()
+                  .map((logItem: LogItemDto) => {
+                    return (
+                      <Card key={logItem.id}>
+                        <Flex gap={"3"} align={"center"} justify={"between"}>
+                          <Text>{formatDateUs(new Date(logItem.date!))}</Text>
+                          <Badge size={"3"}>
+                            <Text>{logItem.status}</Text>
+                          </Badge>
+                        </Flex>
+                      </Card>
+                    );
+                  })}
+              </Flex>
             </Flex>
           </Card>
-          <IconButton
-            className="edit-button"
-            onClick={editApplication}
-            size={"4"}
-            radius="small"
-          >
-            <Pencil2Icon width="24" height="24" />
-          </IconButton>
         </div>
       )}
+      <ConfirmationModal
+        isOpen={showConfirmationModal}
+        onConfirmation={handleDeleteApplication}
+        onAbortion={() => setShowConfirmationModal(false)}
+      />
     </div>
   );
 };
