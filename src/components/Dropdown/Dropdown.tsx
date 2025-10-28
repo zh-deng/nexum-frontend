@@ -1,16 +1,16 @@
 import { Button, DropdownMenu } from "@radix-ui/themes";
-import { useState } from "react";
 
 type DropdownProps = {
   name: string;
   options: string[];
+  width?: string;
   onChange: (value: string) => void;
 };
 
-const Dropdown = ({ name, options, onChange }: DropdownProps) => {
+const Dropdown = ({ name, options, onChange, width }: DropdownProps) => {
   return (
     <DropdownMenu.Root>
-      <DropdownMenu.Trigger style={{ width: "100%" }}>
+      <DropdownMenu.Trigger style={{ width: `${width ?? "100%"}` }}>
         <Button variant="soft">
           {name}
           <DropdownMenu.TriggerIcon />

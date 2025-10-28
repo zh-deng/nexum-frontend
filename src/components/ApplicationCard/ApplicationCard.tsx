@@ -2,13 +2,13 @@ import {
   Avatar,
   Badge,
   Box,
+  Button,
   Card,
   Flex,
   IconButton,
   Link,
   Text,
 } from "@radix-ui/themes";
-import { ApplicationDto } from "../../types/dtos/application.dto";
 import "./ApplicationCard.scss";
 import {
   Pencil2Icon,
@@ -20,9 +20,11 @@ import { ApplicationStatus, Priority } from "../../types/enums";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useToggleFavorite } from "../../hooks/application/useUpdateApplication";
 import { formatDateUs } from "../../utils/helper";
-import { LogItemDto } from "../../types/dtos/log-item.dto";
 import ConfirmationModal from "../ConfirmationModal/ConfirmationModal";
 import { useDeleteApplication } from "../../hooks/application/useDeleteApplication";
+import StatusModal from "../StatusModal/StatusModal";
+import { ApplicationDto } from "../../types/dtos/application/application.dto";
+import { LogItemDto } from "../../types/dtos/log-item/log-item.dto";
 
 type ApplicationCardProps = {
   data: ApplicationDto;
@@ -69,6 +71,7 @@ const ApplicationCard = ({
 
   const [showConfirmationModal, setShowConfirmationModal] =
     useState<boolean>(false);
+  const [showStatusModal, setShowStatusModal] = useState<boolean>(false);
   const toggleFavorite = useToggleFavorite();
   const deleteApplication = useDeleteApplication();
   const cardRef = useRef<HTMLDivElement>(null);
@@ -163,7 +166,14 @@ const ApplicationCard = ({
       {isActive && (
         <div className="expanded-container">
           <Card>
-            <Flex justify={"end"} gap={"3"}>
+            <Flex justify={"between"}>
+              <Button
+                size={"4"}
+                radius={"small"}
+                onClick={() => setShowStatusModal(true)}
+              >
+                <Text>Update Status</Text>
+              </Button>
               <IconButton
                 onClick={handleToggleFavorite}
                 size={"4"}
@@ -343,6 +353,12 @@ const ApplicationCard = ({
         isOpen={showConfirmationModal}
         onConfirmation={handleDeleteApplication}
         onAbortion={() => setShowConfirmationModal(false)}
+      />
+      <StatusModal
+        applicationId={id}
+        isOpen={showStatusModal}
+        logItems={logItems}
+        onClose={() => setShowStatusModal(false)}
       />
     </div>
   );
