@@ -1,9 +1,9 @@
 import "./CompanyForm.scss";
 import { FieldErrors, UseFormRegister, UseFormWatch } from "react-hook-form";
-import { CreateApplicationDto } from "../../../types/dtos/create-application.dto";
 import FloatingTextField from "../../FloatingTextField/FloatingTextField";
 import FloatingTextArea from "../../FloatingTextArea/FloatingTextArea";
-import { UpdateApplicationDto } from "../../../types/dtos/update-application.dto";
+import { CreateApplicationDto } from "../../../types/dtos/application/create-application.dto";
+import { UpdateApplicationDto } from "../../../types/dtos/application/update-application.dto";
 
 type CompanyFormProps = {
   register: UseFormRegister<CreateApplicationDto | UpdateApplicationDto>;

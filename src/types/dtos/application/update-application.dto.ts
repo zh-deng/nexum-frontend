@@ -1,6 +1,6 @@
-import { WorkLocation, Priority, ApplicationStatus } from "../enums";
-import { CreateCompanyDto } from "./create-company.dto";
-import { UpdateCompanyDto } from "./update-company.dto";
+import { WorkLocation, Priority } from "../../enums";
+import { CreateCompanyDto } from "../company/create-company.dto";
+import { UpdateCompanyDto } from "../company/update-company.dto";
 
 export type UpdateApplicationDto = {
   id: string;

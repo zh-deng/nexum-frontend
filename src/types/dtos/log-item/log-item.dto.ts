@@ -1,4 +1,4 @@
-import { ApplicationStatus } from "../enums";
+import { ApplicationStatus } from "../../enums";
 
 export type LogItemDto = {
   id: string;

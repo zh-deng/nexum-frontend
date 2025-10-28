@@ -53,13 +53,13 @@ const JobsPage = () => {
       case SortType.DATE_NEW:
         preSortedApplicaton = [...preSortedApplicaton].sort(
           (a, b) =>
-            new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime(),
+            new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
         );
         break;
       case SortType.DATE_OLD:
         preSortedApplicaton = [...preSortedApplicaton].sort(
           (a, b) =>
-            new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+            new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime(),
         );
         break;
       case SortType.PRIORITY:
@@ -98,7 +98,6 @@ const JobsPage = () => {
 
   function updateSort(selected: string) {
     setSortBy(selected);
-    console.log("TEST");
   }
 
   return (

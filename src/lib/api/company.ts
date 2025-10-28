@@ -1,4 +1,4 @@
-import { CompanyDto } from "../../types/dtos/company.dto";
+import { CompanyDto } from "../../types/dtos/company/company.dto";
 import { API_BASE } from "../../utils/environment";
 
 export async function getAllCompanies(): Promise<CompanyDto[]> {

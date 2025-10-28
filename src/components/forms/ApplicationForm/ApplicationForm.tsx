@@ -3,9 +3,8 @@ import "./ApplicationForm.scss";
 import { Cross1Icon } from "@radix-ui/react-icons";
 import Dropdown from "../../Dropdown/Dropdown";
 import { useEffect, useState } from "react";
-import { CreateApplicationDto } from "../../../types/dtos/create-application.dto";
 import CompanyForm from "../CompanyForm/CompanyForm";
-import { CreateCompanyDto } from "../../../types/dtos/create-company.dto";
+import { CreateCompanyDto } from "../../../types/dtos/company/create-company.dto";
 import {
   ApplicationStatus,
   Priority,
@@ -14,12 +13,12 @@ import {
 import { removeEmptyStrings } from "../../../utils/helper";
 import { useForm } from "react-hook-form";
 import { useCreateApplication } from "../../../hooks/application/useCreateApplication";
-import { ApplicationDto } from "../../../types/dtos/application.dto";
 import FloatingTextField from "../../FloatingTextField/FloatingTextField";
 import FloatingTextArea from "../../FloatingTextArea/FloatingTextArea";
 import { useCompanies } from "../../../hooks/company/useCompanies";
-import { UpdateApplicationDto } from "../../../types/dtos/update-application.dto";
 import { useUpdateApplication } from "../../../hooks/application/useUpdateApplication";
+import { CreateApplicationDto } from "../../../types/dtos/application/create-application.dto";
+import { UpdateApplicationDto } from "../../../types/dtos/application/update-application.dto";
 
 type ApplicationFormProps = {
   data?: UpdateApplicationDto;

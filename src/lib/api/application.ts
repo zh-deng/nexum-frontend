@@ -1,6 +1,6 @@
-import { ApplicationDto } from "../../types/dtos/application.dto";
-import { CreateApplicationDto } from "../../types/dtos/create-application.dto";
-import { UpdateApplicationDto } from "../../types/dtos/update-application.dto";
+import { ApplicationDto } from "../../types/dtos/application/application.dto";
+import { CreateApplicationDto } from "../../types/dtos/application/create-application.dto";
+import { UpdateApplicationDto } from "../../types/dtos/application/update-application.dto";
 import { API_BASE } from "../../utils/environment";
 
 export async function createApplication(

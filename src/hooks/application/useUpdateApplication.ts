@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toggleFavorite, updateApplication } from "../../lib/api/application";
-import { UpdateApplicationDto } from "../../types/dtos/update-application.dto";
+import { UpdateApplicationDto } from "../../types/dtos/application/update-application.dto";
 
 export const useUpdateApplication = () => {
   const queryClient = useQueryClient();
