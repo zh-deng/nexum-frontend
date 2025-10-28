@@ -245,16 +245,15 @@ const StatusModal = ({
               .reverse()
               .map((logItem: LogItemDto) => {
                 return (
-                  <>
+                  <div key={logItem.id}>
                     {form.id === logItem.id ? (
                       <StatusInputContainer
                         applicationId={applicationId}
                         form={form}
                         setForm={setForm}
-                        key={logItem.id}
                       />
                     ) : (
-                      <Card key={logItem.id}>
+                      <Card>
                         <Flex align={"center"} justify={"between"}>
                           <Text>{formatDateUs(new Date(logItem.date!))}</Text>
                           <Flex align={"center"} gap={"4"}>
@@ -273,7 +272,7 @@ const StatusModal = ({
                         <Text>{logItem.notes}</Text>
                       </Card>
                     )}
-                  </>
+                  </div>
                 );
               })}
           </Flex>
