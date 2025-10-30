@@ -1,4 +1,4 @@
-import { TextArea } from "@radix-ui/themes";
+import { Button, TextArea } from "@radix-ui/themes";
 import { useState, useEffect } from "react";
 import type { ComponentPropsWithoutRef } from "react";
 import "./FloatingTextArea.scss";
@@ -10,10 +10,12 @@ function FloatingTextArea({
   value,
   ...props
 }: FloatingTextAreaProps) {
-  const [hasValue, setHasValue] = useState(false);
+  const [hasValue, setHasValue] = useState<boolean>(false);
+  const [hasNote, setHasNote] = useState<boolean>(false);
 
   useEffect(() => {
     setHasValue(!!value);
+    setHasNote(!!value);
   }, [value]);
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -22,17 +24,25 @@ function FloatingTextArea({
   };
 
   return (
-    <div className="floating-textarea">
-      <TextArea
-        {...props}
-        value={value}
-        placeholder={placeholder}
-        onChange={handleChange}
-      />
-      {hasValue && placeholder && (
-        <label className="floating-label">{placeholder}</label>
+    <>
+      {hasNote ? (
+        <div className="floating-textarea">
+          <TextArea
+            {...props}
+            value={value}
+            placeholder={placeholder}
+            onChange={handleChange}
+          />
+          {hasValue && placeholder && (
+            <label className="floating-label">{placeholder}</label>
+          )}
+        </div>
+      ) : (
+        <div>
+          <Button onClick={() => setHasNote(true)}>Add Note</Button>
+        </div>
       )}
-    </div>
+    </>
   );
 }
 
