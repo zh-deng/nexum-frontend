@@ -7,6 +7,7 @@ import { useAuth } from "../../context/AuthContext";
 import { logoutUser } from "../../lib/api/auth";
 import { useRouter } from "next/navigation";
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
+import { Avatar } from "@radix-ui/themes";
 
 const Navbar = () => {
   const { user, setUser } = useAuth();
@@ -64,7 +65,14 @@ const Navbar = () => {
       <div className="nav-header">
         <div className="logo">Nexum</div>
         <div className="container-right">
-          {user && <div className="user-logo">{userInitials}</div>}
+          {user && (
+            <Avatar
+              className="user-logo"
+              size={"2"}
+              color={"indigo"}
+              fallback={userInitials!}
+            />
+          )}
           <button
             className="hamburger-button"
             onClick={() => setHamburgerOpen(!hamburgerOpen)}
