@@ -10,7 +10,13 @@ import {
   Priority,
   WorkLocation,
 } from "../../../types/enums";
-import { removeEmptyStrings } from "../../../utils/helper";
+import {
+  combineDateWithTime,
+  getPriorityLabel,
+  getPriorityValue,
+  getTodayLocalDate,
+  removeEmptyStrings,
+} from "../../../utils/helper";
 import { useForm } from "react-hook-form";
 import { useCreateApplication } from "../../../hooks/application/useCreateApplication";
 import FloatingTextField from "../../FloatingTextField/FloatingTextField";
@@ -58,7 +64,7 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
       priority: undefined,
       notes: "",
       status: undefined,
-      logItemDate: new Date().toISOString().split("T")[0],
+      logItemDate: getTodayLocalDate(),
       fileUrls: [],
     },
   });
@@ -71,9 +77,14 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
   const workLocationOptions = ["ON_SITE", "REMOTE", "HYBRID", "UNSURE"].filter(
     (elem) => elem !== watch("workLocation"),
   );
-  const priorityOptions = ["LOW", "MEDIUM", "HIGH"].filter(
-    (elem) => elem !== watch("priority"),
+  const currentPriority = watch("priority");
+  const currentPriorityLabel = currentPriority
+    ? getPriorityLabel(currentPriority)
+    : "Priority";
+  const priorityOptions = ["HIGH", "MEDIUM", "LOW"].filter(
+    (elem) => elem !== currentPriorityLabel,
   );
+
   const statusOptions = [
     "DRAFT",
     "APPLIED",
@@ -133,10 +144,19 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
       } else {
         const {
           company: { applications, ...cleanCompany },
+          logItemDate,
           ...rest
         } = cleanedData;
 
-        await createApplication.mutateAsync({ company: cleanCompany, ...rest });
+        const fullTimestamp = logItemDate
+          ? combineDateWithTime(logItemDate)
+          : new Date().toISOString();
+
+        await createApplication.mutateAsync({
+          company: cleanCompany,
+          logItemDate: fullTimestamp,
+          ...rest,
+        });
       }
       onClose();
     } catch (error: unknown) {
@@ -206,9 +226,11 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
         </div>
         <div>
           <Dropdown
-            name={watch("priority") || "Priority"}
+            name={currentPriorityLabel}
             options={priorityOptions}
-            onChange={(selected) => setValue("priority", selected as Priority)}
+            onChange={(selected) =>
+              setValue("priority", getPriorityValue(selected))
+            }
           />
         </div>
         {!data && (

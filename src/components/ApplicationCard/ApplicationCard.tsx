@@ -14,12 +14,16 @@ import {
   Pencil2Icon,
   StarFilledIcon,
   StarIcon,
+  StopwatchIcon,
   TrashIcon,
 } from "@radix-ui/react-icons";
-import { ApplicationStatus, Priority } from "../../types/enums";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useToggleFavorite } from "../../hooks/application/useUpdateApplication";
-import { formatDateUs } from "../../utils/helper";
+import {
+  calculateDays,
+  formatDateUs,
+  getPriorityLabel,
+} from "../../utils/helper";
 import ConfirmationModal from "../ConfirmationModal/ConfirmationModal";
 import { useDeleteApplication } from "../../hooks/application/useDeleteApplication";
 import StatusModal from "../StatusModal/StatusModal";
@@ -78,23 +82,10 @@ const ApplicationCard = ({
   const isActive = id === expandedCardId;
   const prevActiveRef = useRef(isActive);
   const priorityBadgeColor =
-    priority === Priority.LOW
-      ? "yellow"
-      : priority === Priority.MEDIUM
-        ? "orange"
-        : "crimson";
+    priority === 3 ? "yellow" : priority === 2 ? "orange" : "crimson";
 
-  const calculateDays = useMemo(() => {
-    const logItemTime = logItems.find(
-      (item) => item.status === ApplicationStatus.APPLIED,
-    )?.date;
-
-    if (!logItemTime) return "0 Days";
-
-    const totalDays = Math.floor(
-      (Date.now() - new Date(logItemTime).getTime()) / (1000 * 60 * 60 * 24),
-    );
-    return `${totalDays ?? 0} Days`;
+  const dayInfo = useMemo(() => {
+    return calculateDays(logItems);
   }, [logItems]);
 
   useEffect(() => {
@@ -159,7 +150,9 @@ const ApplicationCard = ({
           </Box>
           <Box style={{ textAlign: "right", flexShrink: 0 }}>
             <Badge size={"2"}>{status}</Badge>
-            <Text as="div">{calculateDays}</Text>
+            <Text as="div">
+              {dayInfo ? dayInfo : <StopwatchIcon width={"28"} height={"16"} />}
+            </Text>
           </Box>
         </Flex>
       </Card>
@@ -202,7 +195,9 @@ const ApplicationCard = ({
               <Box height={"3rem"}>
                 <Flex gap={"2"} height={"100%"} align={"center"}>
                   <Badge size={"3"} color={priorityBadgeColor}>
-                    <Text size={"3"}>Priority: {priority}</Text>
+                    <Text size={"3"}>
+                      Priority: {getPriorityLabel(priority)}
+                    </Text>
                   </Badge>
                   <Badge size={"3"} color="cyan">
                     <Text size={"3"}>Type: {workLocation}</Text>
