@@ -1,18 +1,18 @@
 export enum Priority {
-  LOW = "LOW",
-  MEDIUM = "MEDIUM",
-  HIGH = "HIGH",
+  HIGH = 1,
+  MEDIUM = 2,
+  LOW = 3,
 }
 
 export enum ApplicationStatus {
-  DRAFT = "DRAFT",
   APPLIED = "APPLIED",
+  DECLINED_OFFER = "DECLINED_OFFER",
+  DRAFT = "DRAFT",
+  GHOSTED = "GHOSTED",
+  HIRED = "HIRED",
   INTERVIEW = "INTERVIEW",
   OFFER = "OFFER",
-  HIRED = "HIRED",
-  DECLINED_OFFER = "DECLINED_OFFER",
   REJECTED = "REJECTED",
-  GHOSTED = "GHOSTED",
   WITHDRAWN = "WITHDRAWN",
 }
 
@@ -24,9 +24,9 @@ export enum WorkLocation {
 }
 
 export enum SortType {
-  DATE_OLD = "DATE_OLD",
   DATE_NEW = "DATE_NEW",
-  PRIORITY = "PRIORITY",
+  DATE_OLD = "DATE_OLD",
   ALPHABETICAL_TITLE = "ALPHABETICAL_TITLE",
   ALPHABETICAL_COMPANY = "ALPHABETICAL_COMPANY",
+  PRIORITY = "PRIORITY",
 }

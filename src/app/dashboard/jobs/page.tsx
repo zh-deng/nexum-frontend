@@ -13,67 +13,55 @@ import { useMemo, useRef, useState } from "react";
 import ApplicationForm from "../../../components/forms/ApplicationForm/ApplicationForm";
 import { useApplications } from "../../../hooks/application/useApplications";
 import ApplicationCard from "../../../components/ApplicationCard/ApplicationCard";
-import { SortType } from "../../../types/enums";
+import { ApplicationStatus, SortType } from "../../../types/enums";
 import Dropdown from "../../../components/Dropdown/Dropdown";
 import FloatingTextField from "../../../components/FloatingTextField/FloatingTextField";
+import { useDebounce } from "../../../hooks/useDebounce";
+import PaginationControls from "../../../components/PaginationControls/PaginationControls";
 
 const JobsPage = () => {
   const [showAppForm, setShowAppForm] = useState<boolean>(false);
   const [showUpdateAppForm, setShowUpdateAppForm] = useState<boolean>(false);
   const [showFilterOptions, setShowFilterOptions] = useState<boolean>(false);
   const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
-  const [sortBy, setSortBy] = useState<string>(SortType.DATE_NEW);
-  const { data } = useApplications();
+
   const pageRef = useRef<HTMLDivElement>(null);
 
-  const sortOptions = [
-    "ALPHABETICAL_TITLE",
-    "ALPHABETICAL_COMPANY",
-    "DATE_NEW",
-    "DATE_OLD",
-    "PRIORITY",
-  ].filter((elem) => elem !== sortBy);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
+  const [statusFilter, setStatusFilter] = useState<string>("");
+  const [sortBy, setSortBy] = useState<SortType>(SortType.DATE_NEW);
 
-  const sortedApplications = useMemo(() => {
-    if (!data) return [];
+  // Debounce search
+  const debouncedSearch = useDebounce(searchQuery, 300);
 
-    let preSortedApplicaton = data;
+  const { data } = useApplications({
+    searchQuery: debouncedSearch,
+    status: statusFilter,
+    page: currentPage,
+    limit: pageSize,
+    sortBy: sortBy,
+  });
 
-    switch (sortBy) {
-      case SortType.ALPHABETICAL_TITLE:
-        preSortedApplicaton = [...preSortedApplicaton].sort((a, b) =>
-          a.jobTitle.localeCompare(b.jobTitle),
-        );
-        break;
-      case SortType.ALPHABETICAL_COMPANY:
-        preSortedApplicaton = [...preSortedApplicaton].sort((a, b) =>
-          a.company.name.localeCompare(b.company.name),
-        );
-        break;
-      case SortType.DATE_NEW:
-        preSortedApplicaton = [...preSortedApplicaton].sort(
-          (a, b) =>
-            new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
-        );
-        break;
-      case SortType.DATE_OLD:
-        preSortedApplicaton = [...preSortedApplicaton].sort(
-          (a, b) =>
-            new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime(),
-        );
-        break;
-      case SortType.PRIORITY:
-        const priorityOrder = { HIGH: 1, MEDIUM: 2, LOW: 3 };
-        preSortedApplicaton = [...preSortedApplicaton].sort(
-          (a, b) => priorityOrder[a.priority] - priorityOrder[b.priority],
-        );
-        break;
-    }
+  const applications = data?.data || [];
+  const pagination = data?.pagination;
 
-    return preSortedApplicaton
+  const sortOptions = Object.values(SortType).filter(
+    (option) => option !== sortBy,
+  );
+
+  const statusOptions = ["ALL", ...Object.values(ApplicationStatus)].filter(
+    (option) => option !== statusFilter,
+  );
+
+  const favoritedApplications = useMemo(() => {
+    if (!applications) return [];
+
+    return applications
       .slice()
       .sort((a, b) => Number(b.favorited) - Number(a.favorited));
-  }, [data, sortBy]);
+  }, [applications]);
 
   function openUpdateAppForm() {
     setShowUpdateAppForm(true);
@@ -83,6 +71,16 @@ const JobsPage = () => {
   function openAppForm() {
     setShowAppForm(true);
     scrollToTop();
+  }
+
+  function closeUpdateAppForm() {
+    setShowUpdateAppForm(false);
+    setExpandedCardId(null);
+  }
+
+  function closeAppForm() {
+    setShowAppForm(false);
+    setExpandedCardId(null);
   }
 
   function scrollToTop() {
@@ -97,7 +95,23 @@ const JobsPage = () => {
   }
 
   function updateSort(selected: string) {
-    setSortBy(selected);
+    setSortBy(selected as SortType);
+  }
+
+  // Reset to page 1 when search or filters change
+  function handleSearchChange(value: string) {
+    setSearchQuery(value);
+    setCurrentPage(1);
+  }
+
+  function handleStatusChange(value: string) {
+    setStatusFilter(value === "All" ? "" : value);
+    setCurrentPage(1);
+  }
+
+  function handlePageSizeChange(size: string) {
+    setPageSize(parseInt(size));
+    setCurrentPage(1);
   }
 
   return (
@@ -124,50 +138,84 @@ const JobsPage = () => {
                 />
               </div>
             </div>
+            <div className="status-dropdown-container">
+              <p>Filter By Status:</p>
+              <div className="status-dropdown">
+                <Dropdown
+                  name={statusFilter || "All"}
+                  options={statusOptions}
+                  onChange={handleStatusChange}
+                />
+              </div>
+            </div>
             <div className="keyword-container">
               <div className="keyword-input">
-                <p>Search By:</p>
-                <FloatingTextField placeholder="Keywords" />
+                <p>Search:</p>
+                <FloatingTextField
+                  placeholder="Search by title, company, location..."
+                  value={searchQuery}
+                  onChange={(e) => handleSearchChange(e.target.value)}
+                />
               </div>
-              <div>
+              <div className="page-size-input">
                 <p>Page Size: </p>
                 <Dropdown
-                  name={"10"}
-                  options={["20", "50", "All"]}
-                  onChange={function (value: string): void {
-                    throw new Error("Function not implemented.");
-                  }}
+                  name={pageSize.toString()}
+                  options={["10", "20", "50", "100"]}
+                  onChange={handlePageSizeChange}
                 />
               </div>
             </div>
           </Card>
         )}
       </div>
-      {/* TODO add pagination */}
-      <div className="pagination-container">
-        <div>First | Previous | Page 1 / 2 | Next | Last</div>
-      </div>
+      {pagination && (
+        <div className="results-info">
+          Showing {applications.length} of {pagination.total} applications
+          {debouncedSearch && ` matching "${debouncedSearch}"`}
+        </div>
+      )}
+      {pagination && pagination.totalPages > 1 && (
+        <PaginationControls
+          pagination={pagination}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+        />
+      )}
       <div className="jobs-content">
-        {sortedApplications.map((app) => (
-          <div key={app.id}>
-            <ApplicationCard
-              data={app}
-              expandedCardId={expandedCardId}
-              setExpandedCardId={setExpandedCardId}
-              editApplication={openUpdateAppForm}
-            />
-            {showUpdateAppForm && expandedCardId === app.id && (
-              <ApplicationForm
+        {applications.length === 0 ? (
+          <Card className="empty-state">
+            <Flex height={"6rem"} justify={"center"} align={"center"}>
+              <Text size={"4"} weight={"medium"}>
+                {searchQuery || statusFilter
+                  ? "No applications found"
+                  : "No applications yet"}
+              </Text>
+            </Flex>
+          </Card>
+        ) : (
+          favoritedApplications.map((app) => (
+            <div key={app.id}>
+              <ApplicationCard
                 data={app}
-                onClose={() => setShowUpdateAppForm(false)}
+                expandedCardId={expandedCardId}
+                setExpandedCardId={setExpandedCardId}
+                editApplication={openUpdateAppForm}
               />
-            )}
-          </div>
-        ))}
+              {showUpdateAppForm && expandedCardId === app.id && (
+                <ApplicationForm data={app} onClose={closeUpdateAppForm} />
+              )}
+            </div>
+          ))
+        )}
       </div>
-      <div className="pagination-container">
-        <div>First | Previous | Page 1 / 2 | Next | Last</div>
-      </div>
+      {pagination && pagination.totalPages > 1 && (
+        <PaginationControls
+          pagination={pagination}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+        />
+      )}
       <IconButton
         className="add-button"
         variant="surface"
@@ -175,7 +223,7 @@ const JobsPage = () => {
       >
         <PlusIcon width="32" height="32" />
       </IconButton>
-      {showAppForm && <ApplicationForm onClose={() => setShowAppForm(false)} />}
+      {showAppForm && <ApplicationForm onClose={closeAppForm} />}
     </div>
   );
 };

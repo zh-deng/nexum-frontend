@@ -1,4 +1,9 @@
-import { WorkLocation, Priority, ApplicationStatus } from "../../enums";
+import {
+  WorkLocation,
+  Priority,
+  ApplicationStatus,
+  SortType,
+} from "../../enums";
 import { CompanyDto } from "../company/company.dto";
 import { LogItemDto } from "../log-item/log-item.dto";
 
@@ -20,4 +25,26 @@ export type ApplicationDto = {
   logItems: LogItemDto[];
   createdAt: string;
   updatedAt: string;
+};
+
+export type Pagination = {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  hasNext: boolean;
+  hasPrev: boolean;
+};
+
+export type PaginatedApplicationsResponse = {
+  data: ApplicationDto[];
+  pagination: Pagination;
+};
+
+export type GetApplicationsParams = {
+  searchQuery?: string;
+  status?: string;
+  page?: number;
+  limit?: number;
+  sortBy?: SortType;
 };

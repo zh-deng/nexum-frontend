@@ -13,6 +13,7 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    margin-top: 0.5rem;
 
     .jobs-sort-filter {
       padding: 0.5rem;
@@ -24,8 +25,20 @@
         display: flex;
         align-items: center;
         gap: 1rem;
+        justify-content: space-between;
 
         .sort-dropdown {
+          width: 60%;
+        }
+      }
+
+      .status-dropdown-container {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        justify-content: space-between;
+
+        .status-dropdown {
           width: 60%;
         }
       }
@@ -37,15 +50,23 @@
 
         .keyword-input {
           width: 70%;
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+
+        .page-size-input {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
         }
       }
     }
   }
 
-  .pagination-container {
-    display: flex;
-    justify-content: center;
-    padding: 0.5rem 0;
+  .results-info {
+    padding: 0.5rem;
+    text-align: center;
   }
 
   .add-button {

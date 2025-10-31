@@ -1,6 +1,11 @@
-import { ApplicationDto } from "../../types/dtos/application/application.dto";
+import {
+  ApplicationDto,
+  GetApplicationsParams,
+  PaginatedApplicationsResponse,
+} from "../../types/dtos/application/application.dto";
 import { CreateApplicationDto } from "../../types/dtos/application/create-application.dto";
 import { UpdateApplicationDto } from "../../types/dtos/application/update-application.dto";
+import { ApplicationStatus } from "../../types/enums";
 import { API_BASE } from "../../utils/environment";
 
 export async function createApplication(
@@ -72,8 +77,31 @@ export async function deleteApplication(id: string): Promise<ApplicationDto> {
   return await res.json();
 }
 
-export async function getAllApplications(): Promise<ApplicationDto[]> {
-  const res = await fetch(`${API_BASE}/applications`, {
+export async function getAllApplications(
+  params?: GetApplicationsParams,
+): Promise<PaginatedApplicationsResponse> {
+  const { page = 1, limit = 20, searchQuery, status, sortBy } = params || {};
+
+  const searchParams = new URLSearchParams();
+
+  // Always add page and limit (with defaults)
+  searchParams.append("page", page.toString());
+  searchParams.append("limit", limit.toString());
+
+  if (searchQuery?.trim()) {
+    searchParams.append("q", searchQuery);
+  }
+  if (status) {
+    searchParams.append("status", status);
+  }
+
+  if (sortBy) {
+    searchParams.append("sortBy", sortBy);
+  }
+
+  const url = `${API_BASE}/applications?${searchParams.toString()}`;
+
+  const res = await fetch(url, {
     method: "GET",
     credentials: "include",
   });
