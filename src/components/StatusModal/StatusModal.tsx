@@ -8,7 +8,12 @@ import {
   Text,
 } from "@radix-ui/themes";
 import "./StatusModal.scss";
-import { formatDateUs } from "../../utils/helper";
+import {
+  combineDateWithTime,
+  formatDateUs,
+  getStatusOptions,
+  getTodayLocalDate,
+} from "../../utils/helper";
 import {
   CheckIcon,
   Cross1Icon,
@@ -24,29 +29,28 @@ import { useCreateLogItem } from "../../hooks/log-item/useCreateLogItem";
 import { useUpdateLogItem } from "../../hooks/log-item/useUpdateLogItem";
 import { LogItemDto } from "../../types/dtos/log-item/log-item.dto";
 import { useDeleteLogItem } from "../../hooks/log-item/useDeleteLogItem";
+import ConfirmationModal from "../ConfirmationModal/ConfirmationModal";
+import { ApplicationStatus } from "../../types/enums";
 
 type StatusInputContainerProps = {
   applicationId: string;
+  statusOptions: ApplicationStatus[];
   form: LogItemForm;
   setForm: React.Dispatch<React.SetStateAction<LogItemForm>>;
 };
 
 const StatusInputContainer = ({
   applicationId,
+  statusOptions,
   form,
   setForm,
 }: StatusInputContainerProps) => {
-  const statusOptions = [
-    "DRAFT",
-    "APPLIED",
-    "INTERVIEW",
-    "OFFER",
-    "HIRED",
-    "DECLINED_OFFER",
-    "REJECTED",
-    "GHOSTED",
-    "WITHDRAWN",
-  ].filter((elem) => elem !== form.status);
+  const options = statusOptions.filter((elem) => elem !== form.status);
+  const fullDate = new Date(form.date).toISOString();
+
+  const [showConfirmationModal, setShowConfirmationModal] =
+    useState<boolean>(false);
+  const [statusError, setStatusError] = useState<string>("");
 
   const createLogItem = useCreateLogItem();
   const updateLogItem = useUpdateLogItem();
@@ -63,30 +67,50 @@ const StatusInputContainer = ({
     } else {
       const { name, value } = input;
       setForm((prev) => ({ ...prev, [name]: value }));
+
+      if (name === "status" && value) {
+        setStatusError("");
+      }
     }
   }
 
   function resetId() {
     setForm({ id: null, status: "", date: "", notes: "" });
+    setStatusError("");
   }
 
   async function createOrUpdateLogItem() {
+    // Validate status before submitting
+    if (!form.status) {
+      setStatusError("Please select a status");
+      return;
+    }
+
     try {
       const { id, date, ...rest } = form;
 
       if (form.id === -1) {
+        const fullTimestamp = date
+          ? combineDateWithTime(date)
+          : new Date().toISOString();
+
         await createLogItem.mutateAsync({
           applicationId: applicationId,
-          date: new Date(date).toISOString(),
+          date: fullTimestamp,
           ...rest,
         });
       } else {
         if (typeof id !== "string") return;
 
+        const transferDate =
+          fullDate.split("T")[0] === new Date(date).toISOString().split("T")[0]
+            ? fullDate
+            : new Date(date).toISOString();
+
         await updateLogItem.mutateAsync({
           id,
           data: {
-            date: new Date(date).toISOString(),
+            date: transferDate,
             ...rest,
           },
         });
@@ -123,7 +147,7 @@ const StatusInputContainer = ({
           <Dropdown
             width="50%"
             name={form.status || "Status"}
-            options={statusOptions}
+            options={options}
             onChange={(value) => handleChange({ name: "status", value: value })}
           />
         </Flex>
@@ -135,6 +159,11 @@ const StatusInputContainer = ({
             handleChange({ name: "notes", value: value.target.value })
           }
         />
+        {statusError && (
+          <Text size="2" color="red">
+            {statusError}
+          </Text>
+        )}
         <Flex justify={"between"}>
           <Flex gap={"4"}>
             <IconButton
@@ -153,21 +182,27 @@ const StatusInputContainer = ({
               <Cross1Icon width={"24"} height={"24"} />
             </IconButton>
           </Flex>
-          {form.id !== -1 && (
+          {form.id !== -1 && form.status !== ApplicationStatus.DRAFT && (
             <IconButton
               size={"3"}
               radius={"small"}
               color={"red"}
-              onClick={handleDeleteLogItem}
+              onClick={() => setShowConfirmationModal(true)}
             >
               <TrashIcon width={"24"} height={"24"} />
             </IconButton>
           )}
         </Flex>
       </Flex>
+      <ConfirmationModal
+        isOpen={showConfirmationModal}
+        onConfirmation={handleDeleteLogItem}
+        onAbortion={() => setShowConfirmationModal(false)}
+      />
     </Card>
   );
 };
+
 type StatusModalProps = {
   applicationId: string;
   isOpen: boolean;
@@ -194,13 +229,15 @@ const StatusModal = ({
     date: "",
     notes: "",
   };
+
+  const statusOptions = getStatusOptions(logItems);
   const [form, setForm] = useState<LogItemForm>(initialForm);
 
   function openStatusForm(logItem?: LogItemDto) {
     setForm({
       id: logItem?.id ?? -1,
       status: logItem?.status ?? "",
-      date: logItem?.date ?? "",
+      date: logItem?.date ?? getTodayLocalDate(),
       notes: logItem?.notes ?? "",
     });
   }
@@ -237,6 +274,7 @@ const StatusModal = ({
               <StatusInputContainer
                 applicationId={applicationId}
                 form={form}
+                statusOptions={statusOptions}
                 setForm={setForm}
               />
             )}
@@ -249,6 +287,7 @@ const StatusModal = ({
                     {form.id === logItem.id ? (
                       <StatusInputContainer
                         applicationId={applicationId}
+                        statusOptions={statusOptions}
                         form={form}
                         setForm={setForm}
                       />
