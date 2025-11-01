@@ -91,7 +91,7 @@ export function calculateDays(logItems: LogItemDto[]) {
           (1000 * 60 * 60 * 24),
       )
     : null;
-  console.log(logItems);
+
   const recentItem =
     logItems.length > 0
       ? [...logItems].sort(

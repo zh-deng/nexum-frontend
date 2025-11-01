@@ -120,7 +120,7 @@ const CompanyForm = ({ register, watch, errors }: CompanyFormProps) => {
       </div>
       <div>
         <FloatingTextArea
-          placeholder="Notes"
+          placeholder="Company Notes"
           size={"3"}
           {...register("company.notes")}
           value={watch("company.notes") ?? ""}

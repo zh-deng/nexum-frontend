@@ -39,7 +39,12 @@ function FloatingTextArea({
         </div>
       ) : (
         <div>
-          <Button onClick={() => setHasNote(true)}>Add Note</Button>
+          <Button
+            style={{ cursor: "pointer" }}
+            onClick={() => setHasNote(true)}
+          >
+            Add {placeholder}
+          </Button>
         </div>
       )}
     </>

@@ -77,7 +77,12 @@ const SignupForm = ({ onSubmit, defaultValues }: SignupFormProps) => {
           <span className="error">{errors.repeatPassword.message}</span>
         )}
       </div>
-      <Button type="submit" mt={"4"} disabled={isSubmitting}>
+      <Button
+        type="submit"
+        style={{ cursor: "pointer" }}
+        mt={"4"}
+        disabled={isSubmitting}
+      >
         Sign Up
       </Button>
     </form>
