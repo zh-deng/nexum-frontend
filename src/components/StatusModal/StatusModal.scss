@@ -7,8 +7,13 @@
   transform: translate(-50%, -50%);
   height: 70%;
   width: 95%;
-  z-index: 50;
+  z-index: 50000;
   background-color: white;
   padding: 1rem;
-  overflow-y: scroll;
+  overflow-y: auto;
+
+  @include respond-to(md) {
+    width: 50%;
+    max-width: 500px;
+  }
 }

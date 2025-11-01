@@ -1,12 +1,25 @@
 .button-menu {
   height: 4rem;
+  width: 100%;
   display: flex;
-  border-top: 1px solid lightgray;
+  justify-content: center;
+  position: fixed;
+  bottom: 0;
+  border-top: 1px solid gray;
+
+  @include respond-to(sm) {
+    border-top: unset;
+  }
+
+  @include respond-to(md) {
+    height: 5rem;
+  }
 
   .item-container {
     flex: 1;
     cursor: pointer;
     display: flex;
+    background-color: lightgray;
 
     .menu-item {
       @include flex-center;
@@ -17,6 +30,6 @@
   }
 
   .active-item {
-    background-color: green;
+    background-color: white;
   }
 }

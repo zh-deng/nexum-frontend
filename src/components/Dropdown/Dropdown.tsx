@@ -4,14 +4,24 @@ type DropdownProps = {
   name: string;
   options: string[];
   width?: string;
+  disabled?: boolean;
   onChange: (value: string) => void;
 };
 
-const Dropdown = ({ name, options, onChange, width }: DropdownProps) => {
+const Dropdown = ({
+  name,
+  options,
+  onChange,
+  width,
+  disabled,
+}: DropdownProps) => {
   return (
     <DropdownMenu.Root>
-      <DropdownMenu.Trigger style={{ width: `${width ?? "100%"}` }}>
-        <Button variant="soft">
+      <DropdownMenu.Trigger
+        style={{ width: `${width ?? "100%"}` }}
+        disabled={disabled}
+      >
+        <Button variant="soft" style={{ cursor: "pointer" }}>
           {name}
           <DropdownMenu.TriggerIcon />
         </Button>

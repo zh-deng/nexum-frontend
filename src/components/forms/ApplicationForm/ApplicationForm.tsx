@@ -259,7 +259,7 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
         {/* TODO replace dummy file upload */}
         <div>
           <label htmlFor="file-upload">
-            <Button>Upload files</Button>
+            <Button style={{ cursor: "pointer" }}>Upload files</Button>
           </label>
           <input
             id="file-upload"
@@ -271,18 +271,24 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
         </div>
         <div>
           <FloatingTextArea
-            placeholder="Notes"
+            placeholder="Job Notes"
             size={"3"}
             {...register("notes")}
             value={watch("notes") ?? ""}
           />
         </div>
-        <Button type="submit" mt={"4"} disabled={isSubmitting}>
+        <Button
+          type="submit"
+          style={{ cursor: "pointer" }}
+          mt={"4"}
+          disabled={isSubmitting}
+        >
           Create
         </Button>
       </form>
       <IconButton
         className="cancel-button"
+        style={{ cursor: "pointer" }}
         onClick={onClose}
         size={"4"}
         radius={"small"}

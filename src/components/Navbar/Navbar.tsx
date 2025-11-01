@@ -6,8 +6,9 @@ import "./Navbar.scss";
 import { useAuth } from "../../context/AuthContext";
 import { logoutUser } from "../../lib/api/auth";
 import { useRouter } from "next/navigation";
-import { HamburgerMenuIcon } from "@radix-ui/react-icons";
+import { EnterIcon, ExitIcon, HamburgerMenuIcon } from "@radix-ui/react-icons";
 import { Avatar } from "@radix-ui/themes";
+import { useBreakpoint } from "../../hooks/useBreakpoint";
 
 const Navbar = () => {
   const { user, setUser } = useAuth();
@@ -17,6 +18,7 @@ const Navbar = () => {
   const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const userInitials = user?.username?.slice(0, 2).toUpperCase();
+  const { isSm, isMd } = useBreakpoint();
 
   useEffect(() => {
     function handleOutsideClick(event: MouseEvent) {
@@ -46,6 +48,10 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
 
+  useEffect(() => {
+    setHamburgerOpen(false);
+  }, [isSm]);
+
   function closeHamburger() {
     setHamburgerOpen(false);
   }
@@ -64,6 +70,37 @@ const Navbar = () => {
     <nav className={`navbar ${navbarHidden ? "hidden" : ""}`} ref={menuRef}>
       <div className="nav-header">
         <div className="logo">Nexum</div>
+        {isSm ? (
+          <ul className="nav-links-desktop">
+            <li>
+              <Link href="/">Home</Link>
+            </li>
+            <li>
+              <Link href="/dashboard">Dashboard</Link>
+            </li>
+          </ul>
+        ) : (
+          <ul
+            className={`nav-links ${hamburgerOpen ? "open" : ""}`}
+            onClick={closeHamburger}
+          >
+            <li>
+              <Link href="/">Home</Link>
+            </li>
+            <li>
+              <Link href="/dashboard">Dashboard</Link>
+            </li>
+            <li>
+              {user ? (
+                <button onClick={handleLogout}>
+                  <a>Log Out</a>
+                </button>
+              ) : (
+                <Link href="/login">Log In / Sign Up</Link>
+              )}
+            </li>
+          </ul>
+        )}
         <div className="container-right">
           {user && (
             <Avatar
@@ -73,34 +110,38 @@ const Navbar = () => {
               fallback={userInitials!}
             />
           )}
-          <button
-            className="hamburger-button"
-            onClick={() => setHamburgerOpen(!hamburgerOpen)}
-          >
-            <HamburgerMenuIcon width="32" height="32" />
-          </button>
+          {isMd ? (
+            <>
+              {user ? (
+                <a onClick={handleLogout}>Log Out</a>
+              ) : (
+                <Link href="/login">Log In / Sign Up</Link>
+              )}
+            </>
+          ) : (
+            <>
+              {isSm ? (
+                <button className="login-logout-button">
+                  {user ? (
+                    <ExitIcon width={26} height={20} onClick={handleLogout} />
+                  ) : (
+                    <Link href="/login">
+                      <EnterIcon width={26} height={20} />
+                    </Link>
+                  )}
+                </button>
+              ) : (
+                <button
+                  className="hamburger-button"
+                  onClick={() => setHamburgerOpen(!hamburgerOpen)}
+                >
+                  <HamburgerMenuIcon width={32} height={32} />
+                </button>
+              )}
+            </>
+          )}
         </div>
       </div>
-      <ul
-        className={`nav-links ${hamburgerOpen ? "open" : ""}`}
-        onClick={closeHamburger}
-      >
-        <li>
-          <Link href="/">Home</Link>
-        </li>
-        <li>
-          <Link href="/dashboard">Dashboard</Link>
-        </li>
-        <li>
-          {user ? (
-            <button onClick={handleLogout}>
-              <a>Log Out</a>
-            </button>
-          ) : (
-            <Link href="/login">Log In / Sign Up</Link>
-          )}
-        </li>
-      </ul>
     </nav>
   );
 };

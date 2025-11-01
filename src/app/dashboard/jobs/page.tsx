@@ -18,6 +18,7 @@ import Dropdown from "../../../components/Dropdown/Dropdown";
 import FloatingTextField from "../../../components/FloatingTextField/FloatingTextField";
 import { useDebounce } from "../../../hooks/useDebounce";
 import PaginationControls from "../../../components/PaginationControls/PaginationControls";
+import JobOptions from "../../../components/JobSettings/JobSettings";
 
 const JobsPage = () => {
   const [showAppForm, setShowAppForm] = useState<boolean>(false);
@@ -120,12 +121,18 @@ const JobsPage = () => {
       ref={pageRef}
     >
       <div className="sort-filter-container">
-        <Card onClick={toggleSortFilter}>
-          <Flex align={"center"} justify={"center"} gap={"2"}>
-            <Text>{`${showFilterOptions ? "Hide" : "Show"} Sort and Filter`}</Text>
-            {showFilterOptions ? <ChevronUpIcon /> : <ChevronDownIcon />}
-          </Flex>
-        </Card>
+        <Flex align={"center"} gap={"4"}>
+          <Card
+            onClick={toggleSortFilter}
+            style={{ flex: 1, cursor: "pointer" }}
+          >
+            <Flex align={"center"} justify={"center"} gap={"2"}>
+              <Text>{`${showFilterOptions ? "Hide" : "Show"} Sort and Filter`}</Text>
+              {showFilterOptions ? <ChevronUpIcon /> : <ChevronDownIcon />}
+            </Flex>
+          </Card>
+          <JobOptions />
+        </Flex>
         {showFilterOptions && (
           <Card className="jobs-sort-filter">
             <div className="sort-dropdown-container">
@@ -194,11 +201,12 @@ const JobsPage = () => {
             </Flex>
           </Card>
         ) : (
-          favoritedApplications.map((app) => (
-            <div key={app.id}>
+          favoritedApplications.map((app, index) => (
+            <div className="application-card-wrapper" key={app.id}>
               <ApplicationCard
                 data={app}
                 expandedCardId={expandedCardId}
+                positionIndex={index}
                 setExpandedCardId={setExpandedCardId}
                 editApplication={openUpdateAppForm}
               />
@@ -217,6 +225,7 @@ const JobsPage = () => {
         />
       )}
       <IconButton
+        style={{ cursor: "pointer" }}
         className="add-button"
         variant="surface"
         onClick={openAppForm}

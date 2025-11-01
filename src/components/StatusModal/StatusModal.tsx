@@ -133,73 +133,79 @@ const StatusInputContainer = ({
   }
 
   return (
-    <Card>
-      <Flex direction={"column"} gap={"4"}>
-        <Flex justify={"between"}>
-          <FloatingTextField
-            type={"date"}
-            placeholder="Action Date"
-            value={form.date ? form.date.slice(0, 10) : ""}
+    <div className="status-input-container">
+      <Card>
+        <Flex direction={"column"} gap={"4"}>
+          <Flex justify={"between"}>
+            <FloatingTextField
+              type={"date"}
+              placeholder="Action Date"
+              value={form.date ? form.date.slice(0, 10) : ""}
+              onChange={(value) =>
+                handleChange({ name: "date", value: value.target.value })
+              }
+            />
+            <Dropdown
+              width="50%"
+              name={form.status || "Status"}
+              options={options}
+              onChange={(value) =>
+                handleChange({ name: "status", value: value })
+              }
+            />
+          </Flex>
+          <FloatingTextArea
+            placeholder="Notes"
+            size={"3"}
+            value={form.notes}
             onChange={(value) =>
-              handleChange({ name: "date", value: value.target.value })
+              handleChange({ name: "notes", value: value.target.value })
             }
           />
-          <Dropdown
-            width="50%"
-            name={form.status || "Status"}
-            options={options}
-            onChange={(value) => handleChange({ name: "status", value: value })}
-          />
-        </Flex>
-        <FloatingTextArea
-          placeholder="Notes"
-          size={"3"}
-          value={form.notes}
-          onChange={(value) =>
-            handleChange({ name: "notes", value: value.target.value })
-          }
-        />
-        {statusError && (
-          <Text size="2" color="red">
-            {statusError}
-          </Text>
-        )}
-        <Flex justify={"between"}>
-          <Flex gap={"4"}>
-            <IconButton
-              size={"3"}
-              radius={"small"}
-              onClick={createOrUpdateLogItem}
-            >
-              <CheckIcon width={"24"} height={"24"} />
-            </IconButton>
-            <IconButton
-              size={"3"}
-              radius={"small"}
-              color={"crimson"}
-              onClick={resetId}
-            >
-              <Cross1Icon width={"24"} height={"24"} />
-            </IconButton>
-          </Flex>
-          {form.id !== -1 && form.status !== ApplicationStatus.DRAFT && (
-            <IconButton
-              size={"3"}
-              radius={"small"}
-              color={"red"}
-              onClick={() => setShowConfirmationModal(true)}
-            >
-              <TrashIcon width={"24"} height={"24"} />
-            </IconButton>
+          {statusError && (
+            <Text size="2" color="red">
+              {statusError}
+            </Text>
           )}
+          <Flex justify={"between"}>
+            <Flex gap={"4"}>
+              <IconButton
+                style={{ cursor: "pointer" }}
+                size={"3"}
+                radius={"small"}
+                onClick={createOrUpdateLogItem}
+              >
+                <CheckIcon width={"24"} height={"24"} />
+              </IconButton>
+              <IconButton
+                style={{ cursor: "pointer" }}
+                size={"3"}
+                radius={"small"}
+                color={"crimson"}
+                onClick={resetId}
+              >
+                <Cross1Icon width={"24"} height={"24"} />
+              </IconButton>
+            </Flex>
+            {form.id !== -1 && form.status !== ApplicationStatus.DRAFT && (
+              <IconButton
+                size={"3"}
+                radius={"small"}
+                color={"red"}
+                onClick={() => setShowConfirmationModal(true)}
+              >
+                <TrashIcon width={"24"} height={"24"} />
+              </IconButton>
+            )}
+          </Flex>
         </Flex>
-      </Flex>
-      <ConfirmationModal
-        isOpen={showConfirmationModal}
-        onConfirmation={handleDeleteLogItem}
-        onAbortion={() => setShowConfirmationModal(false)}
-      />
-    </Card>
+        <ConfirmationModal
+          isOpen={showConfirmationModal}
+          onConfirmation={handleDeleteLogItem}
+          onAbortion={() => setShowConfirmationModal(false)}
+        />
+      </Card>
+    </div>
   );
 };
 
@@ -254,6 +260,7 @@ const StatusModal = ({
       <Flex direction={"column"} gap={"4"}>
         <Flex justify={"end"}>
           <IconButton
+            style={{ cursor: "pointer" }}
             size={"3"}
             radius={"small"}
             color={"crimson"}
@@ -262,13 +269,18 @@ const StatusModal = ({
             <Cross1Icon width={"24"} height={"24"} />
           </IconButton>
         </Flex>
-        <Button size={"3"} radius={"small"} onClick={() => openStatusForm()}>
+        <Button
+          style={{ cursor: "pointer" }}
+          size={"3"}
+          radius={"small"}
+          onClick={() => openStatusForm()}
+        >
           <Flex align={"center"} gap={"4"}>
             <PlusIcon width={"20"} height={"20"} />
             <Text weight={"bold"}>Add new status</Text>
           </Flex>
         </Button>
-        <Box overflowY={"scroll"}>
+        <Box overflowY={"auto"}>
           <Flex direction={"column"} gap={"2"}>
             {form.id === -1 && (
               <StatusInputContainer
@@ -300,6 +312,7 @@ const StatusModal = ({
                               <Text>{logItem.status}</Text>
                             </Badge>
                             <IconButton
+                              style={{ cursor: "pointer" }}
                               size={"3"}
                               radius={"small"}
                               onClick={() => openStatusForm(logItem)}

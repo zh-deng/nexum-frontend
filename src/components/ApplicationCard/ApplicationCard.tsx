@@ -29,12 +29,14 @@ import { useDeleteApplication } from "../../hooks/application/useDeleteApplicati
 import StatusModal from "../StatusModal/StatusModal";
 import { ApplicationDto } from "../../types/dtos/application/application.dto";
 import { LogItemDto } from "../../types/dtos/log-item/log-item.dto";
+import { useBreakpoint } from "../../hooks/useBreakpoint";
 
 type ApplicationCardProps = {
   data: ApplicationDto;
   expandedCardId: string | null;
   setExpandedCardId: React.Dispatch<React.SetStateAction<string | null>>;
   editApplication: () => void;
+  positionIndex: number;
 };
 
 const ApplicationCard = ({
@@ -42,6 +44,7 @@ const ApplicationCard = ({
   expandedCardId,
   setExpandedCardId,
   editApplication,
+  positionIndex,
 }: ApplicationCardProps) => {
   const {
     id,
@@ -83,6 +86,7 @@ const ApplicationCard = ({
   const prevActiveRef = useRef(isActive);
   const priorityBadgeColor =
     priority === 3 ? "yellow" : priority === 2 ? "orange" : "crimson";
+  const { isSm } = useBreakpoint();
 
   const dayInfo = useMemo(() => {
     return calculateDays(logItems);
@@ -128,15 +132,15 @@ const ApplicationCard = ({
 
   return (
     <div id={`card-${id}`} ref={cardRef} className="application-card">
-      <Card onClick={handleToggleExpand}>
+      <Card onClick={handleToggleExpand} style={{ cursor: "pointer" }}>
         <Flex align={"center"} justify={"between"} gap={"2"}>
-          {favorited ? (
-            <StarFilledIcon width="16" height="16" />
-          ) : (
-            <StarIcon width="16" height="16" />
-          )}
           <Box style={{ minWidth: 0, flex: 1 }}>
             <Flex align={"center"} gap={"3"}>
+              {favorited ? (
+                <StarFilledIcon width="16" height="16" />
+              ) : (
+                <StarIcon width="16" height="16" />
+              )}
               <Avatar size={"4"} src={logoUrl} fallback={name.charAt(0)} />
               <Box style={{ minWidth: 0, overflow: "hidden" }}>
                 <Text as="div" weight={"bold"} truncate>
@@ -159,37 +163,47 @@ const ApplicationCard = ({
       {isActive && (
         <div className="expanded-container">
           <Card>
-            <Flex justify={"between"}>
+            <Flex justify={"between"} align={"center"}>
               <Button
-                size={"4"}
+                style={{ cursor: "pointer" }}
+                size={isSm ? "4" : "3"}
                 radius={"small"}
                 onClick={() => setShowStatusModal(true)}
               >
                 <Text>Update Status</Text>
               </Button>
-              <IconButton
-                onClick={handleToggleFavorite}
-                size={"4"}
-                radius="small"
-                color={"yellow"}
-              >
-                {favorited ? (
-                  <StarFilledIcon width="24" height="24" />
-                ) : (
-                  <StarIcon width="24" height="24" />
-                )}
-              </IconButton>
-              <IconButton onClick={editApplication} size={"4"} radius="small">
-                <Pencil2Icon width="24" height="24" />
-              </IconButton>
-              <IconButton
-                onClick={() => setShowConfirmationModal(true)}
-                size={"4"}
-                radius="small"
-                color="red"
-              >
-                <TrashIcon width="24" height="24" />
-              </IconButton>
+              <Flex gap={"3"}>
+                <IconButton
+                  style={{ cursor: "pointer" }}
+                  onClick={handleToggleFavorite}
+                  size={"4"}
+                  radius="small"
+                  color={"yellow"}
+                >
+                  {favorited ? (
+                    <StarFilledIcon width="24" height="24" />
+                  ) : (
+                    <StarIcon width="24" height="24" />
+                  )}
+                </IconButton>
+                <IconButton
+                  style={{ cursor: "pointer" }}
+                  onClick={editApplication}
+                  size={"4"}
+                  radius="small"
+                >
+                  <Pencil2Icon width="24" height="24" />
+                </IconButton>
+                <IconButton
+                  style={{ cursor: "pointer" }}
+                  onClick={() => setShowConfirmationModal(true)}
+                  size={"4"}
+                  radius="small"
+                  color="red"
+                >
+                  <TrashIcon width="24" height="24" />
+                </IconButton>
+              </Flex>
             </Flex>
             <Flex direction={"column"} gap={"5"}>
               <Box height={"3rem"}>

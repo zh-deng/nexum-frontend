@@ -1,18 +1,33 @@
 .app-form {
   height: 100%;
-  position: absolute;
+  position: fixed;
   width: 100%;
   top: 0;
   left: 0;
   z-index: 500;
   background-color: white;
-  padding: 2rem;
-  overflow-y: scroll;
+  padding: 1rem;
+  overflow-y: auto;
+
+  @include respond-to(md) {
+    width: 50%;
+    max-width: 600px;
+    height: 75%;
+    border: 1px solid lightgray;
+    border-radius: 0.5rem;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 
   .cancel-button {
     position: fixed;
     right: 12px;
     top: 76px;
+
+    @include respond-to(md) {
+      top: 12px;
+    }
   }
 
   .form-header {

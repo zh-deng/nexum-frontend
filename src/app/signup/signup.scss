@@ -8,5 +8,12 @@
     gap: 1rem;
     align-items: center;
     width: 100%;
+
+    @include respond-to(sm) {
+      border: 1px solid;
+      padding: 1rem;
+      border-radius: 0.25rem;
+      max-width: 400px;
+    }
   }
 }
