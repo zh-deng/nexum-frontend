@@ -30,3 +30,12 @@ export enum SortType {
   ALPHABETICAL_COMPANY = "ALPHABETICAL_COMPANY",
   PRIORITY = "PRIORITY",
 }
+
+export enum TimeFrameType {
+  PAST_MONTH = "Past Month",
+  PAST_3_MONTHS = "Past 3 Months",
+  PAST_6_MONTHS = "Past 6 Months",
+  PAST_12_MONTHS = "Past 12 Months",
+  THIS_YEAR = "This Year",
+  ALL_TIME = "All Time",
+}
