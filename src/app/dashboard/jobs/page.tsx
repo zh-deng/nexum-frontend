@@ -201,12 +201,11 @@ const JobsPage = () => {
             </Flex>
           </Card>
         ) : (
-          favoritedApplications.map((app, index) => (
+          favoritedApplications.map((app) => (
             <div className="application-card-wrapper" key={app.id}>
               <ApplicationCard
                 data={app}
                 expandedCardId={expandedCardId}
-                positionIndex={index}
                 setExpandedCardId={setExpandedCardId}
                 editApplication={openUpdateAppForm}
               />

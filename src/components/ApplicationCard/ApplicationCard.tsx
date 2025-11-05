@@ -36,7 +36,6 @@ type ApplicationCardProps = {
   expandedCardId: string | null;
   setExpandedCardId: React.Dispatch<React.SetStateAction<string | null>>;
   editApplication: () => void;
-  positionIndex: number;
 };
 
 const ApplicationCard = ({
@@ -44,7 +43,6 @@ const ApplicationCard = ({
   expandedCardId,
   setExpandedCardId,
   editApplication,
-  positionIndex,
 }: ApplicationCardProps) => {
   const {
     id,
@@ -176,7 +174,7 @@ const ApplicationCard = ({
                 <IconButton
                   style={{ cursor: "pointer" }}
                   onClick={handleToggleFavorite}
-                  size={"4"}
+                  size={isSm ? "4" : "3"}
                   radius="small"
                   color={"yellow"}
                 >
@@ -189,7 +187,7 @@ const ApplicationCard = ({
                 <IconButton
                   style={{ cursor: "pointer" }}
                   onClick={editApplication}
-                  size={"4"}
+                  size={isSm ? "4" : "3"}
                   radius="small"
                 >
                   <Pencil2Icon width="24" height="24" />
@@ -197,7 +195,7 @@ const ApplicationCard = ({
                 <IconButton
                   style={{ cursor: "pointer" }}
                   onClick={() => setShowConfirmationModal(true)}
-                  size={"4"}
+                  size={isSm ? "4" : "3"}
                   radius="small"
                   color="red"
                 >
