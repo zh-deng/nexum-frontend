@@ -179,3 +179,12 @@ export const combineDateWithTime = (dateString: string): string => {
     isToday ? now.getMilliseconds() : 0,
   ).toISOString();
 };
+
+export function getEnumKeyByValue<T extends Record<string, string | number>>(
+  enumObj: T,
+  value: T[keyof T],
+): keyof T | undefined {
+  return Object.keys(enumObj).find(
+    (key) => enumObj[key as keyof T] === value,
+  ) as keyof T | undefined;
+}
