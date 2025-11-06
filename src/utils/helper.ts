@@ -151,7 +151,9 @@ export function getStatusOptions(logItems: LogItemDto[]) {
     : statusOptions;
 
   // remove status which already have logs
-  const result = filteredStatusOptions.filter((s) => !logItemOptions.has(s));
+  const result = filteredStatusOptions.filter((s) =>
+    s === ApplicationStatus.INTERVIEW ? true : !logItemOptions.has(s),
+  );
 
   return result;
 }

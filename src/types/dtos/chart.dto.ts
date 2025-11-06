@@ -21,3 +21,15 @@ type BarChartData = {
   WITHDRAWN: number;
   total: number;
 }[];
+
+type SankeyChartData = {
+  nodes: {
+    name: string;
+    category?: string;
+  }[];
+  links: {
+    source: string;
+    target: string;
+    value: number;
+  }[];
+};
