@@ -10,12 +10,12 @@ import {
 import "./SankeyChart.scss";
 import { useEffect, useRef } from "react";
 
-type SankeyNodeData = {
+export type SankeyNodeData = {
   name: string;
   category: string;
 };
 
-type SankeyLinkData = {
+export type SankeyLinkData = {
   source: string;
   target: string;
   value: number;

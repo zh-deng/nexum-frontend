@@ -35,8 +35,8 @@ const StatisticsPage = () => {
       chart = (
         <PieChart
           pieChartData={pieChartData}
-          width={isSm ? 500 : 300}
-          height={isSm ? 400 : 250}
+          width={isLg ? 600 : isSm ? 500 : 300}
+          height={isLg ? 500 : isSm ? 400 : 250}
         />
       );
       break;
@@ -54,7 +54,8 @@ const StatisticsPage = () => {
       break;
     }
     case "sankey-chart": {
-      // if (!data) chart = <Text weight={"bold"}>No Data Yet</Text>;
+      if (!sankeyChartData) chart = <Text weight={"bold"}>No Data Yet</Text>;
+
       chart = <SankeyChart sankeyChartData={sankeyChartData} />;
       break;
     }

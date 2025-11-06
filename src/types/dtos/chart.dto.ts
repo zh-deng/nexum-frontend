@@ -1,3 +1,8 @@
+import {
+  SankeyLinkData,
+  SankeyNodeData,
+} from "../../components/SankeyChart/SankeyChart";
+
 type PieChartData = {
   appliedCount: number;
   interviewCount: number;
@@ -23,13 +28,6 @@ type BarChartData = {
 }[];
 
 type SankeyChartData = {
-  nodes: {
-    name: string;
-    category?: string;
-  }[];
-  links: {
-    source: string;
-    target: string;
-    value: number;
-  }[];
+  nodes: SankeyNodeData[];
+  links: SankeyLinkData[];
 };

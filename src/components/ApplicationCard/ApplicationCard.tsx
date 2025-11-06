@@ -84,7 +84,7 @@ const ApplicationCard = ({
   const prevActiveRef = useRef(isActive);
   const priorityBadgeColor =
     priority === 3 ? "yellow" : priority === 2 ? "orange" : "crimson";
-  const { isSm } = useBreakpoint();
+  const { isSm, isLg } = useBreakpoint();
 
   const dayInfo = useMemo(() => {
     return calculateDays(logItems);
@@ -130,7 +130,13 @@ const ApplicationCard = ({
 
   return (
     <div id={`card-${id}`} ref={cardRef} className="application-card">
-      <Card onClick={handleToggleExpand} style={{ cursor: "pointer" }}>
+      <Card
+        onClick={handleToggleExpand}
+        style={{
+          cursor: "pointer",
+          backgroundColor: `${isActive ? "yellow" : "unset"}`,
+        }}
+      >
         <Flex align={"center"} justify={"between"} gap={"2"}>
           <Box style={{ minWidth: 0, flex: 1 }}>
             <Flex align={"center"} gap={"3"}>
@@ -164,7 +170,7 @@ const ApplicationCard = ({
             <Flex justify={"between"} align={"center"}>
               <Button
                 style={{ cursor: "pointer" }}
-                size={isSm ? "4" : "3"}
+                size={isLg ? "3" : isSm ? "4" : "3"}
                 radius={"small"}
                 onClick={() => setShowStatusModal(true)}
               >
@@ -174,7 +180,7 @@ const ApplicationCard = ({
                 <IconButton
                   style={{ cursor: "pointer" }}
                   onClick={handleToggleFavorite}
-                  size={isSm ? "4" : "3"}
+                  size={isLg ? "3" : isSm ? "4" : "3"}
                   radius="small"
                   color={"yellow"}
                 >
@@ -187,7 +193,7 @@ const ApplicationCard = ({
                 <IconButton
                   style={{ cursor: "pointer" }}
                   onClick={editApplication}
-                  size={isSm ? "4" : "3"}
+                  size={isLg ? "3" : isSm ? "4" : "3"}
                   radius="small"
                 >
                   <Pencil2Icon width="24" height="24" />
@@ -195,7 +201,7 @@ const ApplicationCard = ({
                 <IconButton
                   style={{ cursor: "pointer" }}
                   onClick={() => setShowConfirmationModal(true)}
-                  size={isSm ? "4" : "3"}
+                  size={isLg ? "3" : isSm ? "4" : "3"}
                   radius="small"
                   color="red"
                 >
