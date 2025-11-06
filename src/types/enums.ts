@@ -39,3 +39,8 @@ export enum TimeFrameType {
   THIS_YEAR = "This Year",
   ALL_TIME = "All Time",
 }
+
+export enum InterviewStatus {
+  UPCOMING = "UPCOMING",
+  DONE = "DONE",
+}

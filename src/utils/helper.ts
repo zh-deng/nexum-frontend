@@ -31,12 +31,23 @@ export function removeEmptyStrings(obj: any): any {
   return cleaned;
 }
 
-export function formatDateUs(date: Date) {
-  return date.toLocaleString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
+export function formatDateUs(date: Date, includeTime: boolean = false) {
+  return date.toLocaleString(
+    "en-US",
+    includeTime
+      ? {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        }
+      : {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        },
+  );
 }
 
 export const PriorityLabel: Record<Priority, string> = {
