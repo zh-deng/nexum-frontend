@@ -11,6 +11,7 @@ import Dropdown from "../../../components/Dropdown/Dropdown";
 import { TimeFrameType } from "../../../types/enums";
 import { useBreakpoint } from "../../../hooks/useBreakpoint";
 import { useBarChart } from "../../../hooks/chart/useBarChart";
+import { useSankesChart } from "../../../hooks/chart/useSankeyChart";
 
 const StatisticsPage = () => {
   const [chartStyle, setChartStyle] = useState<string>("pie-chart");
@@ -23,6 +24,7 @@ const StatisticsPage = () => {
   const { isSm, isMd, isLg } = useBreakpoint();
   const { data: pieChartData } = usePieChart(timeFrame);
   const { data: barChartData } = useBarChart(timeFrame);
+  const { data: sankeyChartData } = useSankesChart(timeFrame);
 
   let chart;
 
@@ -53,7 +55,7 @@ const StatisticsPage = () => {
     }
     case "sankey-chart": {
       // if (!data) chart = <Text weight={"bold"}>No Data Yet</Text>;
-      chart = <SankeyChart />;
+      chart = <SankeyChart sankeyChartData={sankeyChartData} />;
       break;
     }
   }
