@@ -255,7 +255,7 @@ const BarChart = ({
         `translate(${(width - legendWidth) / 2}, ${(margin.top - legendHeight) / 2})`,
       );
     }
-  }, [data, width, height, isMd]);
+  }, [barChartData, width, height, isSm, isMd]);
 
   return <svg ref={svgRef} width={width} height={height} />;
 };
