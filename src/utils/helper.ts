@@ -151,7 +151,9 @@ export function getStatusOptions(logItems: LogItemDto[]) {
     : statusOptions;
 
   // remove status which already have logs
-  const result = filteredStatusOptions.filter((s) => !logItemOptions.has(s));
+  const result = filteredStatusOptions.filter((s) =>
+    s === ApplicationStatus.INTERVIEW ? true : !logItemOptions.has(s),
+  );
 
   return result;
 }
@@ -179,3 +181,12 @@ export const combineDateWithTime = (dateString: string): string => {
     isToday ? now.getMilliseconds() : 0,
   ).toISOString();
 };
+
+export function getEnumKeyByValue<T extends Record<string, string | number>>(
+  enumObj: T,
+  value: T[keyof T],
+): keyof T | undefined {
+  return Object.keys(enumObj).find(
+    (key) => enumObj[key as keyof T] === value,
+  ) as keyof T | undefined;
+}
