@@ -11,13 +11,14 @@ import {
 } from "@radix-ui/themes";
 import { InterviewDto } from "../../types/dtos/interview/interview.dto";
 import "./InterviewCard.scss";
-import { formatDateUs } from "../../utils/helper";
+import { formatDateUs, getTodayLocalDate } from "../../utils/helper";
 import { ClockIcon, Pencil2Icon, TrashIcon } from "@radix-ui/react-icons";
 import ConfirmationModal from "../ConfirmationModal/ConfirmationModal";
 import { useState } from "react";
 import FloatingTextField from "../FloatingTextField/FloatingTextField";
 import Dropdown from "../Dropdown/Dropdown";
 import FloatingTextArea from "../FloatingTextArea/FloatingTextArea";
+import { InterviewStatus } from "../../types/enums";
 
 type InterviewFormContainerProps = {
   form: InterviewForm;
@@ -28,6 +29,10 @@ const InterviewFormContainer = ({
   form,
   setForm,
 }: InterviewFormContainerProps) => {
+  const interviewStatusOptions = Object.values(InterviewStatus).filter(
+    (option) => option !== form.status,
+  );
+
   return (
     <Dialog.Root>
       <Dialog.Trigger>
@@ -44,15 +49,20 @@ const InterviewFormContainer = ({
             <Text as="div" size="2" mb="1" weight="bold">
               Date
             </Text>
-            <FloatingTextField placeholder="Date" type="date" />
+            <FloatingTextField
+              placeholder="Date"
+              type="date"
+              isFloating={false}
+              value={form.date ? form.date.slice(0, 10) : ""}
+            />
           </Box>
           <Box>
             <Text as="div" size="2" mb="1" weight="bold">
               Status
             </Text>
             <Dropdown
-              name={"Test"}
-              options={[]}
+              name={form.status ?? "Status"}
+              options={interviewStatusOptions}
               onChange={function (value: string): void {
                 throw new Error("Function not implemented.");
               }}
@@ -62,7 +72,11 @@ const InterviewFormContainer = ({
             <Text as="div" size="2" mb="1" weight="bold">
               Notes
             </Text>
-            <FloatingTextArea placeholder="Notes" />
+            <FloatingTextArea
+              placeholder="Notes"
+              value={form.notes}
+              isFloating={false}
+            />
           </Box>
         </Flex>
 
@@ -94,10 +108,10 @@ type InterviewForm = {
 
 const InterviewCard = ({ data }: InterviewCardProps) => {
   const initialForm = {
-    id: null,
-    status: "",
-    date: "",
-    notes: "",
+    id: data.id ?? -1,
+    status: data.status ?? undefined,
+    date: data.date ?? getTodayLocalDate(),
+    notes: data.notes ?? "",
   };
 
   const [showConfirmationModal, setShowConfirmationModal] =
@@ -122,7 +136,7 @@ const InterviewCard = ({ data }: InterviewCardProps) => {
         >
           <Flex align={"center"} gap={"4"}>
             <Text>{formatDateUs(new Date(data.date), true)}</Text>
-            <Badge>{data.status}</Badge>
+            <Badge size={"3"}>{data.status}</Badge>
           </Flex>
           <Flex gap={"2"}>
             <InterviewFormContainer form={form} setForm={setForm} />
