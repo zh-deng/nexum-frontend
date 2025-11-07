@@ -1,3 +1,8 @@
+import {
+  BarChartData,
+  PieChartData,
+  SankeyChartData,
+} from "../../types/dtos/chart.dto";
 import { TimeFrameType } from "../../types/enums";
 import { API_BASE } from "../../utils/environment";
 import { getEnumKeyByValue } from "../../utils/helper";

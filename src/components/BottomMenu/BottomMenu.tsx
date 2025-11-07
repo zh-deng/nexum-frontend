@@ -28,8 +28,8 @@ const BottomMenu = () => {
       route: "reminders",
     },
     {
-      name: "Statistics",
-      route: "statistics",
+      name: "Analytics",
+      route: "analytics",
     },
   ];
   const currentRoute = pathname.split("/").pop() || "jobs";

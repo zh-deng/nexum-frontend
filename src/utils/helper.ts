@@ -79,15 +79,10 @@ export function calculateDays(logItems: LogItemDto[]) {
     ApplicationStatus.WITHDRAWN,
   ]);
 
-  // const logItemOptions = new Set<ApplicationStatus>(
-  // 	logItems.map((item) => item.status)
-  // );
-
   const appliedItem = logItems.find(
     (item) => item.status === ApplicationStatus.APPLIED,
   );
 
-  // const finishedItem = [...finishedStatus].find((s) => logItemOptions.has(s));
   const finishedItem = logItems.find((item) => finishedStatus.has(item.status));
 
   if (finishedItem && appliedItem) {

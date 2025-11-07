@@ -3,7 +3,7 @@ import {
   SankeyNodeData,
 } from "../../components/SankeyChart/SankeyChart";
 
-type PieChartData = {
+export type PieChartData = {
   appliedCount: number;
   interviewCount: number;
   ghostedCount: number;
@@ -14,7 +14,7 @@ type PieChartData = {
   withdrawnCount: number;
 };
 
-type BarChartData = {
+export type BarChartData = {
   period: string;
   APPLIED: number;
   INTERVIEW: number;
@@ -27,7 +27,7 @@ type BarChartData = {
   total: number;
 }[];
 
-type SankeyChartData = {
+export type SankeyChartData = {
   nodes: SankeyNodeData[];
   links: SankeyLinkData[];
 };

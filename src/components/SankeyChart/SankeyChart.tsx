@@ -9,6 +9,7 @@ import {
 } from "d3-sankey";
 import "./SankeyChart.scss";
 import { useEffect, useRef } from "react";
+import { SankeyChartData } from "../../types/dtos/chart.dto";
 
 export type SankeyNodeData = {
   name: string;
@@ -19,11 +20,6 @@ export type SankeyLinkData = {
   source: string;
   target: string;
   value: number;
-};
-
-type SankeyChartData = {
-  nodes: SankeyNodeData[];
-  links: SankeyLinkData[];
 };
 
 type SankeyChartProps = {
