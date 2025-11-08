@@ -6,6 +6,8 @@ import { CreateApplicationDto } from "../../../types/dtos/application/create-app
 import { UpdateApplicationDto } from "../../../types/dtos/application/update-application.dto";
 import { useEffect, useState } from "react";
 import { Button } from "@radix-ui/themes";
+import { CreateCompanyDto } from "../../../types/dtos/company/create-company.dto";
+import { UpdateCompanyDto } from "../../../types/dtos/company/update-company.dto";
 
 type CompanyFormProps = {
   register: UseFormRegister<CreateApplicationDto | UpdateApplicationDto>;
@@ -16,12 +18,18 @@ type CompanyFormProps = {
 const CompanyForm = ({ register, watch, errors }: CompanyFormProps) => {
   const [extraInfoRequired, setExtraInfoRequired] = useState<boolean>(false);
 
-  const companyValues = watch("company");
+  const companyValues: (CreateCompanyDto | UpdateCompanyDto) & {
+    id?: string;
+    userId?: string;
+    createdAt?: string;
+    updatedAt?: string;
+  } = watch("company");
 
   useEffect(() => {
     if (!companyValues) return;
 
-    const { name, ...otherFields } = companyValues;
+    const { id, userId, createdAt, updatedAt, name, ...otherFields } =
+      companyValues;
 
     // Check if any other field has a non-empty value
     const hasExtraData = Object.values(otherFields).some(

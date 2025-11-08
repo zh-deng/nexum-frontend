@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import "./BarChart.scss";
 import * as d3 from "d3";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
+import { BarChartData } from "../../types/dtos/chart.dto";
 
 type SubCategory = {
   label: string;

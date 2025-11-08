@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import "./PieChart.scss";
 import * as d3 from "d3";
+import { PieChartData } from "../../types/dtos/chart.dto";
 
 export type PieData = {
   label: string;

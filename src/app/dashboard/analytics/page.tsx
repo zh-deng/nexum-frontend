@@ -2,7 +2,7 @@
 
 import { Box, Flex, RadioCards, Text } from "@radix-ui/themes";
 import PieChart, { PieData } from "../../../components/PieChart/PieChart";
-import "./statistics.scss";
+import "./analytics.scss";
 import { useState } from "react";
 import BarChart from "../../../components/BarChart/BarChart";
 import SankeyChart from "../../../components/SankeyChart/SankeyChart";
@@ -13,7 +13,7 @@ import { useBreakpoint } from "../../../hooks/useBreakpoint";
 import { useBarChart } from "../../../hooks/chart/useBarChart";
 import { useSankesChart } from "../../../hooks/chart/useSankeyChart";
 
-const StatisticsPage = () => {
+const AnalyticsPage = () => {
   const [chartStyle, setChartStyle] = useState<string>("pie-chart");
   const [timeFrame, setTimeFrame] = useState<TimeFrameType>(
     TimeFrameType.PAST_MONTH,
@@ -62,7 +62,7 @@ const StatisticsPage = () => {
   }
 
   return (
-    <div className="statistics-page">
+    <div className="analytics-page">
       <div className="chart-selector">
         <Box maxWidth="480px" width={"100%"}>
           <RadioCards.Root
@@ -105,4 +105,4 @@ const StatisticsPage = () => {
   );
 };
 
-export default StatisticsPage;
+export default AnalyticsPage;

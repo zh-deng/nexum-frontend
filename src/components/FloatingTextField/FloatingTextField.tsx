@@ -2,12 +2,15 @@ import { TextField } from "@radix-ui/themes";
 import { useState, useEffect, type ComponentPropsWithoutRef } from "react";
 import "./FloatingTextField.scss";
 
-type FloatingTextFieldProps = ComponentPropsWithoutRef<typeof TextField.Root>;
+type FloatingTextFieldProps = ComponentPropsWithoutRef<
+  typeof TextField.Root
+> & { isFloating?: boolean };
 
 export default function FloatingTextField({
   placeholder,
   value,
   defaultValue,
+  isFloating = true,
   onChange,
   ...props
 }: FloatingTextFieldProps) {
@@ -34,7 +37,7 @@ export default function FloatingTextField({
         defaultValue={defaultValue}
         onChange={handleChange}
       />
-      {hasValue && placeholder && (
+      {hasValue && placeholder && isFloating && (
         <label className="floating-label">{placeholder}</label>
       )}
     </div>

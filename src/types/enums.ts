@@ -39,3 +39,19 @@ export enum TimeFrameType {
   THIS_YEAR = "This Year",
   ALL_TIME = "All Time",
 }
+
+export enum InterviewStatus {
+  UPCOMING = "UPCOMING",
+  DONE = "DONE",
+}
+
+export enum InterviewSortType {
+  NEWEST = "NEWEST",
+  OLDEST = "OLDEST",
+}
+
+export enum InterviewStatusFilter {
+  UPCOMING = "UPCOMING",
+  DONE = "DONE",
+  ALL = "ALL",
+}
