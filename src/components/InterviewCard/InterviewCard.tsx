@@ -16,9 +16,10 @@ import { ClockIcon, Pencil2Icon, TrashIcon } from "@radix-ui/react-icons";
 import ConfirmationModal from "../ConfirmationModal/ConfirmationModal";
 import { useState } from "react";
 import FloatingTextField from "../FloatingTextField/FloatingTextField";
-import Dropdown from "../Dropdown/Dropdown";
 import FloatingTextArea from "../FloatingTextArea/FloatingTextArea";
 import { InterviewStatus } from "../../types/enums";
+import { useUpdateInterview } from "../../hooks/interview/useUpdateInterview";
+import { useDeleteInterview } from "../../hooks/interview/useDeleteInterview";
 
 type InterviewFormContainerProps = {
   form: InterviewForm;
@@ -29,9 +30,58 @@ const InterviewFormContainer = ({
   form,
   setForm,
 }: InterviewFormContainerProps) => {
-  const interviewStatusOptions = Object.values(InterviewStatus).filter(
-    (option) => option !== form.status,
-  );
+  const [initialSnapshot] = useState<InterviewForm>(form);
+  const fullDate = new Date(form.date).toISOString();
+  const updateInterview = useUpdateInterview();
+
+  function handleChange(
+    input:
+      | React.ChangeEvent<HTMLInputElement>
+      | { name: string; value: string },
+  ) {
+    if ("target" in input) {
+      const { name, value } = input.target;
+      setForm((prev) => ({ ...prev, [name]: value }));
+    } else {
+      const { name, value } = input;
+      setForm((prev) => ({ ...prev, [name]: value }));
+    }
+  }
+
+  async function handleUpdateInterview() {
+    const hasChanged =
+      form.date.slice(0, 10) !== initialSnapshot.date.slice(0, 10) ||
+      form.notes.trim() !== initialSnapshot.notes.trim();
+
+    if (!hasChanged) return;
+
+    try {
+      const { id, date, ...rest } = form;
+
+      if (typeof id !== "string") return;
+
+      const transferDate =
+        fullDate.split("T")[0] === new Date(date).toISOString().split("T")[0]
+          ? fullDate
+          : new Date(date).toISOString();
+
+      await updateInterview.mutateAsync({
+        id,
+        data: {
+          date: transferDate,
+          ...rest,
+        },
+      });
+    } catch (error: unknown) {
+      console.error("Create or update log item error:", error);
+    }
+
+    handleClose();
+  }
+
+  function handleClose() {
+    setForm(initialSnapshot);
+  }
 
   return (
     <Dialog.Root>
@@ -54,18 +104,9 @@ const InterviewFormContainer = ({
               type="date"
               isFloating={false}
               value={form.date ? form.date.slice(0, 10) : ""}
-            />
-          </Box>
-          <Box>
-            <Text as="div" size="2" mb="1" weight="bold">
-              Status
-            </Text>
-            <Dropdown
-              name={form.status ?? "Status"}
-              options={interviewStatusOptions}
-              onChange={function (value: string): void {
-                throw new Error("Function not implemented.");
-              }}
+              onChange={(value) =>
+                handleChange({ name: "date", value: value.target.value })
+              }
             />
           </Box>
           <Box>
@@ -76,18 +117,21 @@ const InterviewFormContainer = ({
               placeholder="Notes"
               value={form.notes}
               isFloating={false}
+              onChange={(value) =>
+                handleChange({ name: "notes", value: value.target.value })
+              }
             />
           </Box>
         </Flex>
 
         <Flex gap="3" mt="4" justify="end">
           <Dialog.Close>
-            <Button variant="soft" color="gray">
+            <Button variant="soft" color="gray" onClick={handleClose}>
               Cancel
             </Button>
           </Dialog.Close>
           <Dialog.Close>
-            <Button>Save</Button>
+            <Button onClick={handleUpdateInterview}>Save</Button>
           </Dialog.Close>
         </Flex>
       </Dialog.Content>
@@ -101,7 +145,6 @@ type InterviewCardProps = {
 
 type InterviewForm = {
   id: string | number | null;
-  status: string;
   date: string;
   notes: string;
 };
@@ -109,7 +152,6 @@ type InterviewForm = {
 const InterviewCard = ({ data }: InterviewCardProps) => {
   const initialForm = {
     id: data.id ?? -1,
-    status: data.status ?? undefined,
     date: data.date ?? getTodayLocalDate(),
     notes: data.notes ?? "",
   };
@@ -117,9 +159,11 @@ const InterviewCard = ({ data }: InterviewCardProps) => {
   const [showConfirmationModal, setShowConfirmationModal] =
     useState<boolean>(false);
   const [form, setForm] = useState<InterviewForm>(initialForm);
+  const deleteInterview = useDeleteInterview();
 
   async function handleDeleteApplication() {
     try {
+      deleteInterview.mutateAsync(data.id);
     } catch (error: unknown) {
       console.error("Delete application error:", error);
     }
