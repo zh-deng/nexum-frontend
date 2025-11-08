@@ -31,12 +31,23 @@ export function removeEmptyStrings(obj: any): any {
   return cleaned;
 }
 
-export function formatDateUs(date: Date) {
-  return date.toLocaleString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
+export function formatDateUs(date: Date, includeTime: boolean = false) {
+  return date.toLocaleString(
+    "en-US",
+    includeTime
+      ? {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        }
+      : {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        },
+  );
 }
 
 export const PriorityLabel: Record<Priority, string> = {
@@ -68,15 +79,10 @@ export function calculateDays(logItems: LogItemDto[]) {
     ApplicationStatus.WITHDRAWN,
   ]);
 
-  // const logItemOptions = new Set<ApplicationStatus>(
-  // 	logItems.map((item) => item.status)
-  // );
-
   const appliedItem = logItems.find(
     (item) => item.status === ApplicationStatus.APPLIED,
   );
 
-  // const finishedItem = [...finishedStatus].find((s) => logItemOptions.has(s));
   const finishedItem = logItems.find((item) => finishedStatus.has(item.status));
 
   if (finishedItem && appliedItem) {
@@ -99,7 +105,7 @@ export function calculateDays(logItems: LogItemDto[]) {
         )[0]
       : null;
 
-  if (!recentItem) return "nope";
+  if (!recentItem) return "";
 
   if (recentItem.status === ApplicationStatus.APPLIED) {
     return `${totalDays} D`;
@@ -151,7 +157,9 @@ export function getStatusOptions(logItems: LogItemDto[]) {
     : statusOptions;
 
   // remove status which already have logs
-  const result = filteredStatusOptions.filter((s) => !logItemOptions.has(s));
+  const result = filteredStatusOptions.filter((s) =>
+    s === ApplicationStatus.INTERVIEW ? true : !logItemOptions.has(s),
+  );
 
   return result;
 }
@@ -179,3 +187,12 @@ export const combineDateWithTime = (dateString: string): string => {
     isToday ? now.getMilliseconds() : 0,
   ).toISOString();
 };
+
+export function getEnumKeyByValue<T extends Record<string, string | number>>(
+  enumObj: T,
+  value: T[keyof T],
+): keyof T | undefined {
+  return Object.keys(enumObj).find(
+    (key) => enumObj[key as keyof T] === value,
+  ) as keyof T | undefined;
+}

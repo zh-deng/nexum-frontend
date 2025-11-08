@@ -3,11 +3,14 @@ import { useState, useEffect } from "react";
 import type { ComponentPropsWithoutRef } from "react";
 import "./FloatingTextArea.scss";
 
-type FloatingTextAreaProps = ComponentPropsWithoutRef<typeof TextArea>;
+type FloatingTextAreaProps = ComponentPropsWithoutRef<typeof TextArea> & {
+  isFloating?: boolean;
+};
 
 function FloatingTextArea({
   placeholder,
   value,
+  isFloating = true,
   ...props
 }: FloatingTextAreaProps) {
   const [hasValue, setHasValue] = useState<boolean>(false);
@@ -33,7 +36,7 @@ function FloatingTextArea({
             placeholder={placeholder}
             onChange={handleChange}
           />
-          {hasValue && placeholder && (
+          {hasValue && placeholder && isFloating && (
             <label className="floating-label">{placeholder}</label>
           )}
         </div>

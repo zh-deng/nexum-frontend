@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import "./BottomMenu.scss";
 import { SegmentedControl, Separator } from "@radix-ui/themes";
 import { useState } from "react";
@@ -13,6 +13,7 @@ type MenuItem = {
 
 const BottomMenu = () => {
   const router = useRouter();
+  const pathname = usePathname();
   const menuItems: MenuItem[] = [
     {
       name: "Jobs",
@@ -27,11 +28,12 @@ const BottomMenu = () => {
       route: "reminders",
     },
     {
-      name: "Statistics",
-      route: "statistics",
+      name: "Analytics",
+      route: "analytics",
     },
   ];
-  const [activeItem, setActiveItem] = useState<string>("jobs");
+  const currentRoute = pathname.split("/").pop() || "jobs";
+  const [activeItem, setActiveItem] = useState<string>(currentRoute);
   const { isSm } = useBreakpoint();
 
   function navigateTo(route: string) {

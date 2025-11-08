@@ -1,14 +1,14 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteLogItem } from "../../lib/api/log-items";
+import { deleteInterview } from "../../lib/api/interview";
 
-export const useDeleteLogItem = () => {
+export const useDeleteInterview = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: deleteLogItem,
+    mutationFn: deleteInterview,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["applications"] });
       queryClient.invalidateQueries({ queryKey: ["interviews"] });
+      queryClient.invalidateQueries({ queryKey: ["applications"] });
     },
   });
 };

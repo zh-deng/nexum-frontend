@@ -6,27 +6,27 @@ This repository contains the **frontend** for Nexum, built with **Next.js**, **T
 
 ## 🚀 Features
 
-- 📋 Track and manage job applications efficiently  
-- 🔍 Search and sort applications by various criteria  
-- 📊 (Upcoming) Charts and statistics for:
+- 📋 Track and manage job applications efficiently
+- 🔍 Search and sort applications by various criteria
+- 📊 (Upcoming) Charts and analytics for:
   - Applications sent
   - Rejections
-  - Scheduled interviews  
-- 🔔 (Upcoming) Notification and reminder system for interviews  
-- 🧩 Modern, responsive UI built with Radix UI and TypeScript  
+  - Scheduled interviews
+- 🔔 (Upcoming) Notification and reminder system for interviews
+- 🧩 Modern, responsive UI built with Radix UI and TypeScript
 
 ## 🛠️ Tech Stack
 
-- **Framework:** [Next.js](https://nextjs.org/)  
-- **Language:** [TypeScript](https://www.typescriptlang.org/)  
-- **UI Library:** [Radix UI](https://www.radix-ui.com/)  
-- **Package Manager:** [pnpm](https://pnpm.io/)  
+- **Framework:** [Next.js](https://nextjs.org/)
+- **Language:** [TypeScript](https://www.typescriptlang.org/)
+- **UI Library:** [Radix UI](https://www.radix-ui.com/)
+- **Package Manager:** [pnpm](https://pnpm.io/)
 
 ## ⚙️ Prerequisites
 
 Before you begin, make sure you have installed:
 
-- **Node.js** (v18 or later)  
+- **Node.js** (v18 or later)
 - **pnpm** (v8 or later)
 
 You’ll also need the **Nexum backend** running locally to provide API data.

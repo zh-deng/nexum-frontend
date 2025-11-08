@@ -8,6 +8,7 @@ export const useCreateApplication = () => {
     mutationFn: createApplication,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["applications"] });
+      queryClient.invalidateQueries({ queryKey: ["interviews"] });
     },
   });
 };

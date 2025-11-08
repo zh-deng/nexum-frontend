@@ -10,6 +10,7 @@ export const useUpdateLogItem = () => {
       updateLogItem(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["applications"] });
+      queryClient.invalidateQueries({ queryKey: ["interviews"] });
     },
   });
 };
