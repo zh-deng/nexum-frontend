@@ -5,11 +5,7 @@ import Dropdown from "../../Dropdown/Dropdown";
 import { useEffect, useState } from "react";
 import CompanyForm from "../CompanyForm/CompanyForm";
 import { CreateCompanyDto } from "../../../types/dtos/company/create-company.dto";
-import {
-  ApplicationStatus,
-  Priority,
-  WorkLocation,
-} from "../../../types/enums";
+import { ApplicationStatus, WorkLocation } from "../../../types/enums";
 import {
   combineDateWithTime,
   getPriorityLabel,
@@ -142,8 +138,16 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
         const { reminders, interviews, logItems, ...rest } = cleanedData;
         await updateApplication.mutateAsync({ id: data.id, data: rest });
       } else {
+        console.log(cleanedData);
         const {
-          company: { applications, ...cleanCompany },
+          company: {
+            applications,
+            userId,
+            id,
+            updatedAt,
+            createdAt,
+            ...cleanCompany
+          },
           logItemDate,
           ...rest
         } = cleanedData;
