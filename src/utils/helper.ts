@@ -105,7 +105,7 @@ export function calculateDays(logItems: LogItemDto[]) {
         )[0]
       : null;
 
-  if (!recentItem) return "nope";
+  if (!recentItem) return "";
 
   if (recentItem.status === ApplicationStatus.APPLIED) {
     return `${totalDays} D`;

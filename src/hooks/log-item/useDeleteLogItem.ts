@@ -8,6 +8,7 @@ export const useDeleteLogItem = () => {
     mutationFn: deleteLogItem,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["applications"] });
+      queryClient.invalidateQueries({ queryKey: ["interviews"] });
     },
   });
 };

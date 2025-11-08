@@ -8,6 +8,7 @@ export const useCreateLogItem = () => {
     mutationFn: createLogItem,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["applications"] });
+      queryClient.invalidateQueries({ queryKey: ["interviews"] });
     },
   });
 };
