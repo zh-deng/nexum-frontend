@@ -2,33 +2,74 @@
 
 import { Box, Flex, RadioCards, Text } from "@radix-ui/themes";
 import InterviewCard from "../../../components/InterviewCard/InterviewCard";
-import { useInterviews } from "../../../hooks/interview/useInterview";
+import { useInterviews } from "../../../hooks/interview/useInterviews";
 import "./interviews.scss";
+import { useState } from "react";
+import { InterviewSortType, InterviewStatusFilter } from "../../../types/enums";
 
 const InterviewsPage = () => {
-  const { data } = useInterviews();
+  const [sortBy, setSortBy] = useState<InterviewSortType>(
+    InterviewSortType.NEWEST,
+  );
+  const [statusFilter, setStatusFilter] = useState<InterviewStatusFilter>(
+    InterviewStatusFilter.ALL,
+  );
+
+  const { data } = useInterviews({
+    sortBy,
+    statusFilter,
+  });
 
   return (
     <div className="interviews-page">
-      <Flex align={"center"} justify={"between"} my={"4"}>
-        <div>Sort by old/new, include exclude done</div>
-        <Box maxWidth="300px">
+      <Flex
+        align={"center"}
+        justify={"between"}
+        my={"4"}
+        wrap={"wrap"}
+        gap={"4"}
+      >
+        <Box maxWidth="200px">
           <RadioCards.Root
-            defaultValue="all"
-            columns={{ initial: "1", sm: "3" }}
+            defaultValue={InterviewSortType.NEWEST}
+            columns={{ initial: "1", xs: "2" }}
             size={"1"}
+            gap={"2"}
+            onValueChange={(value) => setSortBy(value as InterviewSortType)}
           >
-            <RadioCards.Item value="upcoming">
+            <RadioCards.Item value={InterviewSortType.NEWEST}>
+              <Flex direction="column">
+                <Text weight="bold">Newest</Text>
+              </Flex>
+            </RadioCards.Item>
+            <RadioCards.Item value={InterviewSortType.OLDEST}>
+              <Flex direction="column">
+                <Text weight="bold">Oldest</Text>
+              </Flex>
+            </RadioCards.Item>
+          </RadioCards.Root>
+        </Box>
+        <Box maxWidth="310px">
+          <RadioCards.Root
+            defaultValue={InterviewStatusFilter.ALL}
+            columns={{ initial: "1", xs: "3" }}
+            size={"1"}
+            gap={"2"}
+            onValueChange={(value) =>
+              setStatusFilter(value as InterviewStatusFilter)
+            }
+          >
+            <RadioCards.Item value={InterviewStatusFilter.UPCOMING}>
               <Flex direction="column">
                 <Text weight="bold">Upcoming</Text>
               </Flex>
             </RadioCards.Item>
-            <RadioCards.Item value="done">
+            <RadioCards.Item value={InterviewStatusFilter.DONE}>
               <Flex direction="column">
                 <Text weight="bold">Done</Text>
               </Flex>
             </RadioCards.Item>
-            <RadioCards.Item value="all">
+            <RadioCards.Item value={InterviewStatusFilter.ALL}>
               <Flex direction="column">
                 <Text weight="bold">All</Text>
               </Flex>
