@@ -1,4 +1,8 @@
-import { InterviewStatus } from "../../enums";
+import {
+  InterviewSortType,
+  InterviewStatus,
+  InterviewStatusFilter,
+} from "../../enums";
 
 export type InterviewDto = {
   id: string;
@@ -14,4 +18,9 @@ export type InterviewDto = {
   };
   createdAt: string;
   updatedAt: string;
+};
+
+export type GetInterviewParams = {
+  sortBy?: InterviewSortType;
+  statusFilter?: InterviewStatusFilter;
 };
