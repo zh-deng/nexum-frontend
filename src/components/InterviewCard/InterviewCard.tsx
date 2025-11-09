@@ -11,13 +11,18 @@ import {
 } from "@radix-ui/themes";
 import { InterviewDto } from "../../types/dtos/interview/interview.dto";
 import "./InterviewCard.scss";
-import { formatDateUs, getTodayLocalDate } from "../../utils/helper";
+import {
+  convertUtcToLocalParts,
+  formatDateUs,
+  getTodayLocalDate,
+  localDateToUtc,
+  localTimeToUtc,
+} from "../../utils/helper";
 import { ClockIcon, Pencil2Icon, TrashIcon } from "@radix-ui/react-icons";
 import ConfirmationModal from "../ConfirmationModal/ConfirmationModal";
 import { useState } from "react";
 import FloatingTextField from "../FloatingTextField/FloatingTextField";
 import FloatingTextArea from "../FloatingTextArea/FloatingTextArea";
-import { InterviewStatus } from "../../types/enums";
 import { useUpdateInterview } from "../../hooks/interview/useUpdateInterview";
 import { useDeleteInterview } from "../../hooks/interview/useDeleteInterview";
 
@@ -31,8 +36,10 @@ const InterviewFormContainer = ({
   setForm,
 }: InterviewFormContainerProps) => {
   const [initialSnapshot] = useState<InterviewForm>(form);
-  const fullDate = new Date(form.date).toISOString();
+
   const updateInterview = useUpdateInterview();
+
+  const { localDate, localTime } = convertUtcToLocalParts(form.date);
 
   function handleChange(
     input:
@@ -48,9 +55,29 @@ const InterviewFormContainer = ({
     }
   }
 
+  function handleDateChange(newDate: string) {
+    setForm((prev) => {
+      const [hours, minutes] = localTimeToUtc(prev.date).split(":").map(Number);
+      const localDate = new Date(newDate);
+      localDate.setHours(hours, minutes, 0, 0);
+      return { ...prev, date: localDate.toISOString() };
+    });
+  }
+
+  function handleTimeChange(newTime: string) {
+    setForm((prev) => {
+      const [year, month, day] = localDateToUtc(prev.date)
+        .split("-")
+        .map(Number);
+      const [hours, minutes] = newTime.split(":").map(Number);
+      const localDate = new Date(year, month - 1, day, hours, minutes);
+      return { ...prev, date: localDate.toISOString() };
+    });
+  }
+
   async function handleUpdateInterview() {
     const hasChanged =
-      form.date.slice(0, 10) !== initialSnapshot.date.slice(0, 10) ||
+      form.date !== initialSnapshot.date ||
       form.notes.trim() !== initialSnapshot.notes.trim();
 
     if (!hasChanged) return;
@@ -60,15 +87,10 @@ const InterviewFormContainer = ({
 
       if (typeof id !== "string") return;
 
-      const transferDate =
-        fullDate.split("T")[0] === new Date(date).toISOString().split("T")[0]
-          ? fullDate
-          : new Date(date).toISOString();
-
       await updateInterview.mutateAsync({
         id,
         data: {
-          date: transferDate,
+          date,
           ...rest,
         },
       });
@@ -93,22 +115,30 @@ const InterviewFormContainer = ({
 
       <Dialog.Content maxWidth="300px">
         <Dialog.Title>Edit interview</Dialog.Title>
-
+        {form.date}
         <Flex direction="column" gap="3">
-          <Box width={"150px"}>
+          <Box>
             <Text as="div" size="2" mb="1" weight="bold">
               Date
             </Text>
-            <FloatingTextField
-              placeholder="Date"
-              type="date"
-              isFloating={false}
-              value={form.date ? form.date.slice(0, 10) : ""}
-              onChange={(value) =>
-                handleChange({ name: "date", value: value.target.value })
-              }
-            />
+            <Flex align={"center"} justify={"between"}>
+              <FloatingTextField
+                placeholder="Date"
+                type="date"
+                isFloating={false}
+                value={localDate}
+                onChange={(e) => handleDateChange(e.target.value)}
+              />
+              <FloatingTextField
+                placeholder="Time"
+                type="time"
+                isFloating={false}
+                value={localTime}
+                onChange={(e) => handleTimeChange(e.target.value)}
+              />
+            </Flex>
           </Box>
+
           <Box>
             <Text as="div" size="2" mb="1" weight="bold">
               Notes
@@ -117,6 +147,7 @@ const InterviewFormContainer = ({
               placeholder="Notes"
               value={form.notes}
               isFloating={false}
+              size={"3"}
               onChange={(value) =>
                 handleChange({ name: "notes", value: value.target.value })
               }

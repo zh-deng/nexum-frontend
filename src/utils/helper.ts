@@ -196,3 +196,41 @@ export function getEnumKeyByValue<T extends Record<string, string | number>>(
     (key) => enumObj[key as keyof T] === value,
   ) as keyof T | undefined;
 }
+
+export function localTimeToUtc(isoString: string) {
+  const date = new Date(isoString);
+  return date.toLocaleTimeString("de-DE", {
+    hour12: false,
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+export function localDateToUtc(isoString: string) {
+  const date = new Date(isoString);
+  return date.toISOString().slice(0, 10);
+}
+
+export function convertUtcToLocalParts(isoUtc: string) {
+  const d = new Date(isoUtc); // JS Date = same instant, interpreted in your local TZ
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  const hours = String(d.getHours()).padStart(2, "0");
+  const minutes = String(d.getMinutes()).padStart(2, "0");
+
+  return {
+    localDate: `${year}-${month}-${day}`, // fits <input type="date">
+    localTime: `${hours}:${minutes}`, // fits <input type="time">
+  };
+}
+
+export function getLocalDatetimeValue(isoString?: string) {
+  const now = isoString ? new Date(isoString) : new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  const hours = String(now.getHours()).padStart(2, "0");
+  const minutes = String(now.getMinutes()).padStart(2, "0");
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+}

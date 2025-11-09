@@ -7,10 +7,9 @@ import CompanyForm from "../CompanyForm/CompanyForm";
 import { CreateCompanyDto } from "../../../types/dtos/company/create-company.dto";
 import { ApplicationStatus, WorkLocation } from "../../../types/enums";
 import {
-  combineDateWithTime,
+  getLocalDatetimeValue,
   getPriorityLabel,
   getPriorityValue,
-  getTodayLocalDate,
   removeEmptyStrings,
 } from "../../../utils/helper";
 import { useForm } from "react-hook-form";
@@ -60,7 +59,7 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
       priority: undefined,
       notes: "",
       status: undefined,
-      logItemDate: getTodayLocalDate(),
+      logItemDate: getLocalDatetimeValue(),
       fileUrls: [],
     },
   });
@@ -138,7 +137,6 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
         const { reminders, interviews, logItems, ...rest } = cleanedData;
         await updateApplication.mutateAsync({ id: data.id, data: rest });
       } else {
-        console.log(cleanedData);
         const {
           company: {
             applications,
@@ -152,13 +150,9 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
           ...rest
         } = cleanedData;
 
-        const fullTimestamp = logItemDate
-          ? combineDateWithTime(logItemDate)
-          : new Date().toISOString();
-
         await createApplication.mutateAsync({
           company: cleanCompany,
-          logItemDate: fullTimestamp,
+          logItemDate: new Date(logItemDate).toISOString(),
           ...rest,
         });
       }
@@ -252,7 +246,7 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
                 <FloatingTextField
                   className="radix-textfield"
                   placeholder="Status Date"
-                  type={"date"}
+                  type={"datetime-local"}
                   {...register("logItemDate")}
                   value={watch("logItemDate") ?? ""}
                 />

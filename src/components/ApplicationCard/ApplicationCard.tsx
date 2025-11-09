@@ -342,21 +342,20 @@ const ApplicationCard = ({
               </Card>
               <Flex direction={"column"} gap={"2"}>
                 <Text weight={"medium"}>History:</Text>
-                {logItems
-                  .slice()
-                  .reverse()
-                  .map((logItem: LogItemDto) => {
-                    return (
-                      <Card key={logItem.id}>
-                        <Flex gap={"3"} align={"center"} justify={"between"}>
-                          <Text>{formatDateUs(new Date(logItem.date!))}</Text>
-                          <Badge size={"3"}>
-                            <Text>{logItem.status}</Text>
-                          </Badge>
-                        </Flex>
-                      </Card>
-                    );
-                  })}
+                {logItems.slice().map((logItem: LogItemDto) => {
+                  return (
+                    <Card key={logItem.id}>
+                      <Flex gap={"3"} align={"center"} justify={"between"}>
+                        <Text>
+                          {formatDateUs(new Date(logItem.date!), true)}
+                        </Text>
+                        <Badge size={"3"}>
+                          <Text>{logItem.status}</Text>
+                        </Badge>
+                      </Flex>
+                    </Card>
+                  );
+                })}
               </Flex>
             </Flex>
           </Card>
