@@ -26,7 +26,7 @@ const LoginForm = ({ onSubmit, defaultValues }: LoginFormProps) => {
     defaultValues,
   });
 
-  const [isDemo, setIsDemo] = useState<boolean>(false);
+  const [isDemo, setIsDemo] = useState<boolean>(true);
 
   useEffect(() => {
     if (isDemo) {
