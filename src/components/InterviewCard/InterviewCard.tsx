@@ -11,13 +11,7 @@ import {
 } from "@radix-ui/themes";
 import { InterviewDto } from "../../types/dtos/interview/interview.dto";
 import "./InterviewCard.scss";
-import {
-  convertUtcToLocalParts,
-  formatDateUs,
-  getTodayLocalDate,
-  localDateToUtc,
-  localTimeToUtc,
-} from "../../utils/helper";
+import { formatDateUs, getLocalDatetimeValue } from "../../utils/helper";
 import { ClockIcon, Pencil2Icon, TrashIcon } from "@radix-ui/react-icons";
 import ConfirmationModal from "../ConfirmationModal/ConfirmationModal";
 import { useState } from "react";
@@ -25,7 +19,9 @@ import FloatingTextField from "../FloatingTextField/FloatingTextField";
 import FloatingTextArea from "../FloatingTextArea/FloatingTextArea";
 import { useUpdateInterview } from "../../hooks/interview/useUpdateInterview";
 import { useDeleteInterview } from "../../hooks/interview/useDeleteInterview";
+import { useCreateReminder } from "../../hooks/reminder/useCreateReminder";
 
+// Interview form for updating and deleting
 type InterviewFormContainerProps = {
   form: InterviewForm;
   setForm: React.Dispatch<React.SetStateAction<InterviewForm>>;
@@ -36,10 +32,7 @@ const InterviewFormContainer = ({
   setForm,
 }: InterviewFormContainerProps) => {
   const [initialSnapshot] = useState<InterviewForm>(form);
-
   const updateInterview = useUpdateInterview();
-
-  const { localDate, localTime } = convertUtcToLocalParts(form.date);
 
   function handleChange(
     input:
@@ -53,26 +46,6 @@ const InterviewFormContainer = ({
       const { name, value } = input;
       setForm((prev) => ({ ...prev, [name]: value }));
     }
-  }
-
-  function handleDateChange(newDate: string) {
-    setForm((prev) => {
-      const [hours, minutes] = localTimeToUtc(prev.date).split(":").map(Number);
-      const localDate = new Date(newDate);
-      localDate.setHours(hours, minutes, 0, 0);
-      return { ...prev, date: localDate.toISOString() };
-    });
-  }
-
-  function handleTimeChange(newTime: string) {
-    setForm((prev) => {
-      const [year, month, day] = localDateToUtc(prev.date)
-        .split("-")
-        .map(Number);
-      const [hours, minutes] = newTime.split(":").map(Number);
-      const localDate = new Date(year, month - 1, day, hours, minutes);
-      return { ...prev, date: localDate.toISOString() };
-    });
   }
 
   async function handleUpdateInterview() {
@@ -90,15 +63,13 @@ const InterviewFormContainer = ({
       await updateInterview.mutateAsync({
         id,
         data: {
-          date,
+          date: new Date(date).toISOString(),
           ...rest,
         },
       });
     } catch (error: unknown) {
-      console.error("Create or update log item error:", error);
+      console.error("Update interview error:", error);
     }
-
-    handleClose();
   }
 
   function handleClose() {
@@ -108,35 +79,27 @@ const InterviewFormContainer = ({
   return (
     <Dialog.Root>
       <Dialog.Trigger>
-        <IconButton size={"3"}>
+        <IconButton size={"3"} radius={"small"} style={{ cursor: "pointer" }}>
           <Pencil2Icon width={24} height={24} />
         </IconButton>
       </Dialog.Trigger>
 
       <Dialog.Content maxWidth="300px">
         <Dialog.Title>Edit interview</Dialog.Title>
-        {form.date}
         <Flex direction="column" gap="3">
-          <Box>
+          <Box width={"180px"}>
             <Text as="div" size="2" mb="1" weight="bold">
               Date
             </Text>
-            <Flex align={"center"} justify={"between"}>
-              <FloatingTextField
-                placeholder="Date"
-                type="date"
-                isFloating={false}
-                value={localDate}
-                onChange={(e) => handleDateChange(e.target.value)}
-              />
-              <FloatingTextField
-                placeholder="Time"
-                type="time"
-                isFloating={false}
-                value={localTime}
-                onChange={(e) => handleTimeChange(e.target.value)}
-              />
-            </Flex>
+            <FloatingTextField
+              placeholder="Date"
+              type="datetime-local"
+              isFloating={false}
+              value={getLocalDatetimeValue(form.date)}
+              onChange={(value) =>
+                handleChange({ name: "date", value: value.target.value })
+              }
+            />
           </Box>
 
           <Box>
@@ -170,6 +133,119 @@ const InterviewFormContainer = ({
   );
 };
 
+type ReminderFormContainerProps = {
+  applicationId: string;
+};
+
+// Reminder form for creating
+type ReminderForm = {
+  alarmDate: string;
+  message: string;
+};
+
+const ReminderFormContainer = ({
+  applicationId,
+}: ReminderFormContainerProps) => {
+  const intialValues = {
+    alarmDate: getLocalDatetimeValue(),
+    message: "",
+  };
+  const [form, setForm] = useState<ReminderForm>(intialValues);
+  const createReminder = useCreateReminder();
+
+  function handleChange(
+    input:
+      | React.ChangeEvent<HTMLInputElement>
+      | { name: string; value: string },
+  ) {
+    if ("target" in input) {
+      const { name, value } = input.target;
+      setForm((prev) => ({ ...prev, [name]: value }));
+    } else {
+      const { name, value } = input;
+      setForm((prev) => ({ ...prev, [name]: value }));
+    }
+  }
+
+  async function handleCreateReminder() {
+    try {
+      const { alarmDate, ...rest } = form;
+
+      await createReminder.mutateAsync({
+        applicationId,
+        alarmDate: new Date(alarmDate).toISOString(),
+        ...rest,
+      });
+    } catch (error: unknown) {
+      console.error("Create reminder error:", error);
+    }
+
+    handleClose();
+  }
+
+  function handleClose() {
+    setForm(intialValues);
+  }
+
+  return (
+    <Dialog.Root>
+      <Dialog.Trigger>
+        <IconButton size={"3"} radius={"small"} style={{ cursor: "pointer" }}>
+          <ClockIcon width={24} height={24} />
+        </IconButton>
+      </Dialog.Trigger>
+
+      <Dialog.Content maxWidth="300px">
+        <Dialog.Title>Create Reminder</Dialog.Title>
+
+        <Flex direction="column" gap="3">
+          <Box width={"180px"}>
+            <Text as="div" size="2" mb="1" weight="bold">
+              Alarm Date
+            </Text>
+            <FloatingTextField
+              placeholder="Date"
+              type="datetime-local"
+              isFloating={false}
+              value={getLocalDatetimeValue(form.alarmDate)}
+              onChange={(value) =>
+                handleChange({ name: "date", value: value.target.value })
+              }
+            />
+          </Box>
+
+          <Box>
+            <Text as="div" size="2" mb="1" weight="bold">
+              Message
+            </Text>
+            <FloatingTextArea
+              placeholder="Message"
+              value={form.message}
+              isFloating={false}
+              size={"3"}
+              onChange={(value) =>
+                handleChange({ name: "message", value: value.target.value })
+              }
+            />
+          </Box>
+        </Flex>
+
+        <Flex gap="3" mt="4" justify="end">
+          <Dialog.Close>
+            <Button variant="soft" color="gray" onClick={handleClose}>
+              Cancel
+            </Button>
+          </Dialog.Close>
+          <Dialog.Close>
+            <Button onClick={handleCreateReminder}>Save</Button>
+          </Dialog.Close>
+        </Flex>
+      </Dialog.Content>
+    </Dialog.Root>
+  );
+};
+
+// Actual interview card
 type InterviewCardProps = {
   data: InterviewDto;
 };
@@ -183,7 +259,7 @@ type InterviewForm = {
 const InterviewCard = ({ data }: InterviewCardProps) => {
   const initialForm = {
     id: data.id ?? -1,
-    date: data.date ?? getTodayLocalDate(),
+    date: data.date ?? getLocalDatetimeValue(),
     notes: data.notes ?? "",
   };
 
@@ -192,11 +268,11 @@ const InterviewCard = ({ data }: InterviewCardProps) => {
   const [form, setForm] = useState<InterviewForm>(initialForm);
   const deleteInterview = useDeleteInterview();
 
-  async function handleDeleteApplication() {
+  async function handleDeleteInterview() {
     try {
       deleteInterview.mutateAsync(data.id);
     } catch (error: unknown) {
-      console.error("Delete application error:", error);
+      console.error("Delete interview error:", error);
     }
   }
 
@@ -215,9 +291,7 @@ const InterviewCard = ({ data }: InterviewCardProps) => {
           </Flex>
           <Flex gap={"2"}>
             <InterviewFormContainer form={form} setForm={setForm} />
-            <IconButton size={"3"}>
-              <ClockIcon width={24} height={24} />
-            </IconButton>
+            <ReminderFormContainer applicationId={data.applicationId} />
             <IconButton
               style={{ cursor: "pointer" }}
               onClick={() => setShowConfirmationModal(true)}
@@ -245,7 +319,7 @@ const InterviewCard = ({ data }: InterviewCardProps) => {
       </Card>
       <ConfirmationModal
         isOpen={showConfirmationModal}
-        onConfirmation={handleDeleteApplication}
+        onConfirmation={handleDeleteInterview}
         onAbortion={() => setShowConfirmationModal(false)}
       />
     </div>
