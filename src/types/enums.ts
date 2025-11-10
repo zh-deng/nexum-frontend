@@ -55,3 +55,21 @@ export enum InterviewStatusFilter {
   DONE = "DONE",
   ALL = "ALL",
 }
+
+export enum ReminderStatus {
+  ACTIVE = "ACTIVE",
+  STOPPED = "STOPPED",
+  DONE = "DONE",
+}
+
+export enum ReminderSortType {
+  NEWEST = "NEWEST",
+  OLDEST = "OLDEST",
+}
+
+export enum ReminderStatusFilter {
+  ACTIVE = "ACTIVE",
+  STOPPED = "STOPPED",
+  DONE = "DONE",
+  ALL = "ALL",
+}
