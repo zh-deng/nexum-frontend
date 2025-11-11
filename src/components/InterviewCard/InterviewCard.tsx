@@ -204,12 +204,12 @@ const ReminderFormContainer = ({
               Alarm Date
             </Text>
             <FloatingTextField
-              placeholder="Date"
+              placeholder="Alarm Date"
               type="datetime-local"
               isFloating={false}
               value={getLocalDatetimeValue(form.alarmDate)}
               onChange={(value) =>
-                handleChange({ name: "date", value: value.target.value })
+                handleChange({ name: "alarmDate", value: value.target.value })
               }
             />
           </Box>
