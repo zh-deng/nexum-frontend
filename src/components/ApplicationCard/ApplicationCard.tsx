@@ -30,6 +30,7 @@ import StatusModal from "../StatusModal/StatusModal";
 import { ApplicationDto } from "../../types/dtos/application/application.dto";
 import { LogItemDto } from "../../types/dtos/log-item/log-item.dto";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
+import NewBadge from "../NewBadge/NewBadge";
 
 type ApplicationCardProps = {
   data: ApplicationDto;
@@ -137,6 +138,7 @@ const ApplicationCard = ({
           backgroundColor: `${isActive ? "yellow" : "unset"}`,
         }}
       >
+        <NewBadge date={data.createdAt} />
         <Flex align={"center"} justify={"between"} gap={"2"}>
           <Box style={{ minWidth: 0, flex: 1 }}>
             <Flex align={"center"} gap={"3"}>

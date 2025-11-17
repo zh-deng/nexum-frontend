@@ -22,6 +22,8 @@ import Dropdown from "../Dropdown/Dropdown";
 import { ReminderStatus } from "../../types/enums";
 import { useCreateReminder } from "../../hooks/reminder/useCreateReminder";
 import { useUpdateReminder } from "../../hooks/reminder/useUpdateReminder";
+import NewBadge from "../NewBadge/NewBadge";
+import { useBreakpoint } from "../../hooks/useBreakpoint";
 
 type ReminderFormContainerProps = {
   type?: "Create" | "Update";
@@ -214,6 +216,7 @@ type ReminderCardProps = {
 const ReminderCard = ({ data }: ReminderCardProps) => {
   const [showConfirmationModal, setShowConfirmationModal] =
     useState<boolean>(false);
+  const { isSm } = useBreakpoint();
   const deleteReminder = useDeleteReminder();
 
   async function handleDeleteReminder() {
@@ -227,13 +230,19 @@ const ReminderCard = ({ data }: ReminderCardProps) => {
   return (
     <div>
       <Card>
+        <NewBadge date={data.createdAt} />
         <Flex direction={"column"}>
-          <Flex align={"center"} justify={"between"}>
+          <Flex
+            align={"center"}
+            gap={"4"}
+            justify={"between"}
+            wrap={"wrap-reverse"}
+          >
             <Flex align={"center"} gap={"4"}>
               <Text>{formatDateUs(new Date(data.alarmDate), true)}</Text>
               <Badge size={"3"}>{data.status}</Badge>
             </Flex>
-            <Flex gap={"2"}>
+            <Flex gap={"2"} justify={"end"} width={!isSm ? "100%" : ""}>
               <ReminderFormContainer
                 applicationId={data.applicationId}
                 data={{

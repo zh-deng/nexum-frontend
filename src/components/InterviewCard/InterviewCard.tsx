@@ -20,6 +20,8 @@ import FloatingTextArea from "../FloatingTextArea/FloatingTextArea";
 import { useUpdateInterview } from "../../hooks/interview/useUpdateInterview";
 import { useDeleteInterview } from "../../hooks/interview/useDeleteInterview";
 import { useCreateReminder } from "../../hooks/reminder/useCreateReminder";
+import NewBadge from "../NewBadge/NewBadge";
+import { useBreakpoint } from "../../hooks/useBreakpoint";
 
 // Interview form for updating and deleting
 type InterviewFormContainerProps = {
@@ -267,6 +269,7 @@ const InterviewCard = ({ data }: InterviewCardProps) => {
     useState<boolean>(false);
   const [form, setForm] = useState<InterviewForm>(initialForm);
   const deleteInterview = useDeleteInterview();
+  const { isSm } = useBreakpoint();
 
   async function handleDeleteInterview() {
     try {
@@ -279,6 +282,7 @@ const InterviewCard = ({ data }: InterviewCardProps) => {
   return (
     <div>
       <Card>
+        <NewBadge date={data.createdAt} />
         <Flex
           align={"center"}
           justify={"between"}
@@ -289,7 +293,7 @@ const InterviewCard = ({ data }: InterviewCardProps) => {
             <Text>{formatDateUs(new Date(data.date), true)}</Text>
             <Badge size={"3"}>{data.status}</Badge>
           </Flex>
-          <Flex gap={"2"}>
+          <Flex gap={"2"} justify={"end"} width={!isSm ? "100%" : ""}>
             <InterviewFormContainer form={form} setForm={setForm} />
             <ReminderFormContainer applicationId={data.applicationId} />
             <IconButton

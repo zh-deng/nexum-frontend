@@ -20,6 +20,7 @@ import { useCompanies } from "../../../hooks/company/useCompanies";
 import { useUpdateApplication } from "../../../hooks/application/useUpdateApplication";
 import { CreateApplicationDto } from "../../../types/dtos/application/create-application.dto";
 import { UpdateApplicationDto } from "../../../types/dtos/application/update-application.dto";
+import QueryState from "../../QueryState/QueryState";
 
 type ApplicationFormProps = {
   data?: UpdateApplicationDto;
@@ -64,7 +65,7 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
     },
   });
 
-  const { data: companiesData } = useCompanies();
+  const { data: companiesData, isLoading, error } = useCompanies();
   const createApplication = useCreateApplication();
   const updateApplication = useUpdateApplication();
   const [company, setCompany] = useState<string>("Company*");
@@ -105,7 +106,7 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
     if (selected === "Add new company") {
       resetField("company");
     } else {
-      const companyData = companiesData.find(
+      const companyData = companiesData!.find(
         (element) => element.name === selected,
       );
 
@@ -116,7 +117,7 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
   function getCompanyNames(): string[] {
     return [
       "Add new company",
-      ...companiesData
+      ...companiesData!
         .map((company) => company.name)
         .filter((name) => name !== company),
     ];
@@ -163,137 +164,139 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
   }
 
   return (
-    <div className="app-form">
-      <p className="form-header">Create new application</p>
-      <p className="required-tooltip">required*</p>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div>
-          <FloatingTextField
-            className="radix-textfield"
-            placeholder="Job Title*"
-            {...register("jobTitle", {
-              required: "Job title is required",
-              validate: (value) =>
-                value.trim() !== "" || "Job title cannot be empty",
-            })}
-            value={watch("jobTitle") ?? ""}
-          />
-          {errors.jobTitle && (
-            <span className="error">{errors.jobTitle.message}</span>
-          )}
-        </div>
-        <div>
-          <FloatingTextField
-            className="radix-textfield"
-            placeholder="Job Description"
-            {...register("jobDescription")}
-            value={watch("jobDescription") ?? ""}
-          />
-        </div>
-        <div>
-          <FloatingTextField
-            className="radix-textfield"
-            placeholder="Job Link"
-            {...register("jobLink")}
-            value={watch("jobLink") ?? ""}
-          />
-        </div>
-        <div>
-          <Dropdown
-            name={company}
-            options={getCompanyNames()}
-            onChange={handleCompanyChange}
-          />
-          {showCompanyError && company === "Company*" && (
-            <span className="error">Please select a company</span>
-          )}
-        </div>
-        {company !== "Company*" && (
+    <QueryState isLoading={isLoading} error={error}>
+      <div className="app-form">
+        <p className="form-header">Create new application</p>
+        <p className="required-tooltip">required*</p>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div>
-            <CompanyForm register={register} watch={watch} errors={errors} />
+            <FloatingTextField
+              className="radix-textfield"
+              placeholder="Job Title*"
+              {...register("jobTitle", {
+                required: "Job title is required",
+                validate: (value) =>
+                  value.trim() !== "" || "Job title cannot be empty",
+              })}
+              value={watch("jobTitle") ?? ""}
+            />
+            {errors.jobTitle && (
+              <span className="error">{errors.jobTitle.message}</span>
+            )}
           </div>
-        )}
-        <div>
-          <Dropdown
-            name={watch("workLocation") || "Work Location"}
-            options={workLocationOptions}
-            onChange={(selected) =>
-              setValue("workLocation", selected as WorkLocation)
-            }
-          />
-        </div>
-        <div>
-          <Dropdown
-            name={currentPriorityLabel}
-            options={priorityOptions}
-            onChange={(selected) =>
-              setValue("priority", getPriorityValue(selected))
-            }
-          />
-        </div>
-        {!data && (
-          <Card>
-            <Flex direction={"column"} gap={"3"} align={"center"}>
-              <Dropdown
-                name={watch("status") || "Status"}
-                options={statusOptions}
-                onChange={(selected) =>
-                  setValue("status", selected as ApplicationStatus)
-                }
-              />
-              <Flex align={"center"} gap={"4"}>
-                <Text weight={"bold"}>SINCE</Text>
-                <FloatingTextField
-                  className="radix-textfield"
-                  placeholder="Status Date"
-                  type={"datetime-local"}
-                  {...register("logItemDate")}
-                  value={watch("logItemDate") ?? ""}
+          <div>
+            <FloatingTextField
+              className="radix-textfield"
+              placeholder="Job Description"
+              {...register("jobDescription")}
+              value={watch("jobDescription") ?? ""}
+            />
+          </div>
+          <div>
+            <FloatingTextField
+              className="radix-textfield"
+              placeholder="Job Link"
+              {...register("jobLink")}
+              value={watch("jobLink") ?? ""}
+            />
+          </div>
+          <div>
+            <Dropdown
+              name={company}
+              options={getCompanyNames()}
+              onChange={handleCompanyChange}
+            />
+            {showCompanyError && company === "Company*" && (
+              <span className="error">Please select a company</span>
+            )}
+          </div>
+          {company !== "Company*" && (
+            <div>
+              <CompanyForm register={register} watch={watch} errors={errors} />
+            </div>
+          )}
+          <div>
+            <Dropdown
+              name={watch("workLocation") || "Work Location"}
+              options={workLocationOptions}
+              onChange={(selected) =>
+                setValue("workLocation", selected as WorkLocation)
+              }
+            />
+          </div>
+          <div>
+            <Dropdown
+              name={currentPriorityLabel}
+              options={priorityOptions}
+              onChange={(selected) =>
+                setValue("priority", getPriorityValue(selected))
+              }
+            />
+          </div>
+          {!data && (
+            <Card>
+              <Flex direction={"column"} gap={"3"} align={"center"}>
+                <Dropdown
+                  name={watch("status") || "Status"}
+                  options={statusOptions}
+                  onChange={(selected) =>
+                    setValue("status", selected as ApplicationStatus)
+                  }
                 />
+                <Flex align={"center"} gap={"4"}>
+                  <Text weight={"bold"}>SINCE</Text>
+                  <FloatingTextField
+                    className="radix-textfield"
+                    placeholder="Status Date"
+                    type={"datetime-local"}
+                    {...register("logItemDate")}
+                    value={watch("logItemDate") ?? ""}
+                  />
+                </Flex>
               </Flex>
-            </Flex>
-          </Card>
-        )}
-        {/* TODO replace dummy file upload */}
-        <div>
-          <label htmlFor="file-upload">
-            <Button style={{ cursor: "pointer" }}>Upload files</Button>
-          </label>
-          <input
-            id="file-upload"
-            type="file"
-            multiple
-            style={{ display: "none" }}
-            onChange={handleFileChange}
-          />
-        </div>
-        <div>
-          <FloatingTextArea
-            placeholder="Job Notes"
-            size={"3"}
-            {...register("notes")}
-            value={watch("notes") ?? ""}
-          />
-        </div>
-        <Button
-          type="submit"
+            </Card>
+          )}
+          {/* TODO replace dummy file upload */}
+          <div>
+            <label htmlFor="file-upload">
+              <Button style={{ cursor: "pointer" }}>Upload files</Button>
+            </label>
+            <input
+              id="file-upload"
+              type="file"
+              multiple
+              style={{ display: "none" }}
+              onChange={handleFileChange}
+            />
+          </div>
+          <div>
+            <FloatingTextArea
+              placeholder="Job Notes"
+              size={"3"}
+              {...register("notes")}
+              value={watch("notes") ?? ""}
+            />
+          </div>
+          <Button
+            type="submit"
+            style={{ cursor: "pointer" }}
+            mt={"4"}
+            disabled={isSubmitting}
+          >
+            Create
+          </Button>
+        </form>
+        <IconButton
+          className="cancel-button"
           style={{ cursor: "pointer" }}
-          mt={"4"}
-          disabled={isSubmitting}
+          onClick={onClose}
+          size={"4"}
+          radius={"small"}
         >
-          Create
-        </Button>
-      </form>
-      <IconButton
-        className="cancel-button"
-        style={{ cursor: "pointer" }}
-        onClick={onClose}
-        size={"4"}
-        radius={"small"}
-      >
-        <Cross1Icon width="32" height="32" />
-      </IconButton>
-    </div>
+          <Cross1Icon width="32" height="32" />
+        </IconButton>
+      </div>
+    </QueryState>
   );
 };
 
