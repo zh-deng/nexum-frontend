@@ -7,8 +7,9 @@ import { useAuth } from "../../context/AuthContext";
 import { logoutUser } from "../../lib/api/auth";
 import { useRouter } from "next/navigation";
 import { EnterIcon, ExitIcon, HamburgerMenuIcon } from "@radix-ui/react-icons";
-import { Avatar } from "@radix-ui/themes";
+import { Avatar, IconButton } from "@radix-ui/themes";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
+import { useToast } from "../ToastProvider/ToastProvider";
 
 const Navbar = () => {
   const { user, setUser } = useAuth();
@@ -19,6 +20,7 @@ const Navbar = () => {
   const router = useRouter();
   const userInitials = user?.username?.slice(0, 2).toUpperCase();
   const { isSm, isMd } = useBreakpoint();
+  const toast = useToast();
 
   useEffect(() => {
     function handleOutsideClick(event: MouseEvent) {
@@ -61,8 +63,10 @@ const Navbar = () => {
       await logoutUser();
       setUser(null);
       router.push("/login");
+      toast.success("Logout successful");
     } catch (error: unknown) {
       console.error("Logout failed:", error);
+      toast.error("Logout failed");
     }
   }
 
@@ -121,15 +125,15 @@ const Navbar = () => {
           ) : (
             <>
               {isSm ? (
-                <button className="login-logout-button">
+                <IconButton>
                   {user ? (
                     <ExitIcon width={26} height={20} onClick={handleLogout} />
                   ) : (
-                    <Link href="/login">
+                    <Link href="/login" className="login-link">
                       <EnterIcon width={26} height={20} />
                     </Link>
                   )}
-                </button>
+                </IconButton>
               ) : (
                 <button
                   className="hamburger-button"

@@ -3,7 +3,7 @@
 import { usePathname, useRouter } from "next/navigation";
 import "./BottomMenu.scss";
 import { SegmentedControl, Separator } from "@radix-ui/themes";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 
 type MenuItem = {
@@ -36,6 +36,10 @@ const BottomMenu = () => {
   const [activeItem, setActiveItem] = useState<string>(currentRoute);
   const { isSm } = useBreakpoint();
 
+  useEffect(() => {
+    setActiveItem(currentRoute);
+  }, [currentRoute]);
+
   function navigateTo(route: string) {
     router.push(`/dashboard/${route}`);
     setActiveItem(route);
@@ -44,11 +48,7 @@ const BottomMenu = () => {
   return (
     <div className="button-menu">
       {isSm ? (
-        <SegmentedControl.Root
-          defaultValue={activeItem}
-          radius="medium"
-          size={"3"}
-        >
+        <SegmentedControl.Root value={activeItem} radius="medium" size={"3"}>
           {menuItems.map((item) => {
             return (
               <SegmentedControl.Item
