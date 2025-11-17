@@ -1,6 +1,5 @@
 import { Button, Flex, Text } from "@radix-ui/themes";
 import "./ConfirmationModal.scss";
-import { useEffect } from "react";
 
 type ConfirmationModalProps = {
   questionString?: string;
