@@ -9,11 +9,9 @@ import {
 } from "@radix-ui/themes";
 import "./StatusModal.scss";
 import {
-  combineDateWithTime,
   formatDateUs,
   getLocalDatetimeValue,
   getStatusOptions,
-  getTodayLocalDate,
 } from "../../utils/helper";
 import {
   CheckIcon,
@@ -32,6 +30,7 @@ import { LogItemDto } from "../../types/dtos/log-item/log-item.dto";
 import { useDeleteLogItem } from "../../hooks/log-item/useDeleteLogItem";
 import ConfirmationModal from "../ConfirmationModal/ConfirmationModal";
 import { ApplicationStatus } from "../../types/enums";
+import { useToast } from "../ToastProvider/ToastProvider";
 
 type StatusInputContainerProps = {
   applicationId: string;
@@ -51,6 +50,7 @@ const StatusInputContainer = ({
   const [showConfirmationModal, setShowConfirmationModal] =
     useState<boolean>(false);
   const [statusError, setStatusError] = useState<string>("");
+  const toast = useToast();
 
   const createLogItem = useCreateLogItem();
   const updateLogItem = useUpdateLogItem();
@@ -95,6 +95,8 @@ const StatusInputContainer = ({
           date: new Date(date).toISOString(),
           ...rest,
         });
+
+        toast.success("Successfully created status");
       } else {
         if (typeof id !== "string") return;
 
@@ -105,9 +107,12 @@ const StatusInputContainer = ({
             ...rest,
           },
         });
+
+        toast.success("Successfully updated status");
       }
     } catch (error: unknown) {
       console.error("Create or update log item error:", error);
+      toast.error("Failed to create or update status");
     }
 
     resetId();
@@ -118,8 +123,11 @@ const StatusInputContainer = ({
       if (typeof form.id !== "string") return;
 
       await deleteLogItem.mutateAsync(form.id);
+
+      toast.success("Successfully deleted status");
     } catch (error: unknown) {
       console.error("Delete log item error:", error);
+      toast.error("Failed to delete");
     }
   }
 
@@ -272,7 +280,7 @@ const StatusModal = ({
           </Flex>
         </Button>
         <Box overflowY={"auto"}>
-          <Flex direction={"column"} gap={"2"}>
+          <Flex direction={"column"} gap={"2"} pb={"2"}>
             {form.id === -1 && (
               <StatusInputContainer
                 applicationId={applicationId}

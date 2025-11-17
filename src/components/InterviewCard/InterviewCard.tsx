@@ -22,6 +22,8 @@ import { useDeleteInterview } from "../../hooks/interview/useDeleteInterview";
 import { useCreateReminder } from "../../hooks/reminder/useCreateReminder";
 import NewBadge from "../NewBadge/NewBadge";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
+import { useRouter } from "next/navigation";
+import { useToast } from "../ToastProvider/ToastProvider";
 
 // Interview form for updating and deleting
 type InterviewFormContainerProps = {
@@ -35,6 +37,7 @@ const InterviewFormContainer = ({
 }: InterviewFormContainerProps) => {
   const [initialSnapshot] = useState<InterviewForm>(form);
   const updateInterview = useUpdateInterview();
+  const toast = useToast();
 
   function handleChange(
     input:
@@ -69,8 +72,11 @@ const InterviewFormContainer = ({
           ...rest,
         },
       });
+
+      toast.success("Successfully updated interview");
     } catch (error: unknown) {
       console.error("Update interview error:", error);
+      toast.error("Failed to update interview");
     }
   }
 
@@ -152,8 +158,10 @@ const ReminderFormContainer = ({
     alarmDate: getLocalDatetimeValue(),
     message: "",
   };
+  const router = useRouter();
   const [form, setForm] = useState<ReminderForm>(intialValues);
   const createReminder = useCreateReminder();
+  const toast = useToast();
 
   function handleChange(
     input:
@@ -178,8 +186,12 @@ const ReminderFormContainer = ({
         alarmDate: new Date(alarmDate).toISOString(),
         ...rest,
       });
+
+      router.push("/dashboard/reminders");
+      toast.success("Successfully created reminder");
     } catch (error: unknown) {
       console.error("Create reminder error:", error);
+      toast.error("Failed to create reminder");
     }
 
     handleClose();
@@ -270,12 +282,16 @@ const InterviewCard = ({ data }: InterviewCardProps) => {
   const [form, setForm] = useState<InterviewForm>(initialForm);
   const deleteInterview = useDeleteInterview();
   const { isSm } = useBreakpoint();
+  const toast = useToast();
 
   async function handleDeleteInterview() {
     try {
       deleteInterview.mutateAsync(data.id);
+
+      toast.success("Successfully deleted interview");
     } catch (error: unknown) {
       console.error("Delete interview error:", error);
+      toast.error("Failed to delete interview");
     }
   }
 

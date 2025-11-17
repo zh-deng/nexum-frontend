@@ -21,6 +21,7 @@ import { useUpdateApplication } from "../../../hooks/application/useUpdateApplic
 import { CreateApplicationDto } from "../../../types/dtos/application/create-application.dto";
 import { UpdateApplicationDto } from "../../../types/dtos/application/update-application.dto";
 import QueryState from "../../QueryState/QueryState";
+import { useToast } from "../../ToastProvider/ToastProvider";
 
 type ApplicationFormProps = {
   data?: UpdateApplicationDto;
@@ -80,6 +81,7 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
   const priorityOptions = ["HIGH", "MEDIUM", "LOW"].filter(
     (elem) => elem !== currentPriorityLabel,
   );
+  const toast = useToast();
 
   const statusOptions = [
     "DRAFT",
@@ -115,9 +117,11 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
   };
 
   function getCompanyNames(): string[] {
+    if (!companiesData) return [];
+
     return [
       "Add new company",
-      ...companiesData!
+      ...companiesData
         .map((company) => company.name)
         .filter((name) => name !== company),
     ];
@@ -135,8 +139,31 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
       const cleanedData = removeEmptyStrings(data);
 
       if ("id" in data && data.id) {
-        const { reminders, interviews, logItems, ...rest } = cleanedData;
-        await updateApplication.mutateAsync({ id: data.id, data: rest });
+        console.log(cleanedData);
+        const {
+          createdAt,
+          updatedAt,
+          status,
+          userId,
+          reminders,
+          interviews,
+          logItems,
+          company,
+          ...rest
+        } = cleanedData;
+
+        const {
+          userId: companyUserId,
+          createdAt: companyCreatedAt,
+          updatedAt: companyUpdatedAt,
+          ...companyRest
+        } = company;
+        await updateApplication.mutateAsync({
+          id: data.id,
+          data: { company: companyRest, ...rest },
+        });
+
+        toast.success("Successfully updated application");
       } else {
         const {
           company: {
@@ -156,10 +183,13 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
           logItemDate: new Date(logItemDate).toISOString(),
           ...rest,
         });
+
+        toast.success("Successfully created application");
       }
       onClose();
     } catch (error: unknown) {
       console.error("Create or update application error:", error);
+      toast.error("Failed to create or update application");
     }
   }
 

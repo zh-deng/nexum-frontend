@@ -20,10 +20,10 @@ import FloatingTextArea from "../FloatingTextArea/FloatingTextArea";
 import FloatingTextField from "../FloatingTextField/FloatingTextField";
 import Dropdown from "../Dropdown/Dropdown";
 import { ReminderStatus } from "../../types/enums";
-import { useCreateReminder } from "../../hooks/reminder/useCreateReminder";
 import { useUpdateReminder } from "../../hooks/reminder/useUpdateReminder";
 import NewBadge from "../NewBadge/NewBadge";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
+import { useToast } from "../ToastProvider/ToastProvider";
 
 type ReminderFormContainerProps = {
   type?: "Create" | "Update";
@@ -40,7 +40,6 @@ type ReminderForm = {
 
 export const ReminderFormContainer = ({
   type = "Update",
-  applicationId,
   data,
 }: ReminderFormContainerProps) => {
   const intialValues = {
@@ -54,7 +53,7 @@ export const ReminderFormContainer = ({
   const statusOptions = Object.values(ReminderStatus).filter(
     (elem) => elem !== form.status,
   );
-
+  const toast = useToast();
   const updateReminder = useUpdateReminder();
 
   function handleChange(
@@ -107,9 +106,12 @@ export const ReminderFormContainer = ({
             ...rest,
           },
         });
+
+        toast.success("Successfully updated reminder");
       }
     } catch (error: unknown) {
       console.error("Create reminder error:", error);
+      toast.error("Failed to update reminder");
     }
 
     setIsOpen(false);
@@ -218,12 +220,16 @@ const ReminderCard = ({ data }: ReminderCardProps) => {
     useState<boolean>(false);
   const { isSm } = useBreakpoint();
   const deleteReminder = useDeleteReminder();
+  const toast = useToast();
 
   async function handleDeleteReminder() {
     try {
       deleteReminder.mutateAsync(data.id);
+
+      toast.success("Successfully deleted reminder");
     } catch (error: unknown) {
       console.error("Delete reminder error:", error);
+      toast.error("Failed to delete reminder");
     }
   }
 

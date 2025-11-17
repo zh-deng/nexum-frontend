@@ -31,6 +31,7 @@ import { ApplicationDto } from "../../types/dtos/application/application.dto";
 import { LogItemDto } from "../../types/dtos/log-item/log-item.dto";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 import NewBadge from "../NewBadge/NewBadge";
+import { useToast } from "../ToastProvider/ToastProvider";
 
 type ApplicationCardProps = {
   data: ApplicationDto;
@@ -86,6 +87,7 @@ const ApplicationCard = ({
   const priorityBadgeColor =
     priority === 3 ? "yellow" : priority === 2 ? "orange" : "crimson";
   const { isSm, isLg } = useBreakpoint();
+  const toast = useToast();
 
   const dayInfo = useMemo(() => {
     return calculateDays(logItems);
@@ -112,16 +114,22 @@ const ApplicationCard = ({
   async function handleDeleteApplication() {
     try {
       await deleteApplication.mutateAsync(id);
+
+      toast.success("Successfully deleted application");
     } catch (error: unknown) {
       console.error("Delete application error:", error);
+      toast.error("Failed to delete application");
     }
   }
 
   async function handleToggleFavorite() {
     try {
       await toggleFavorite.mutateAsync(data.id);
+
+      toast.success("Changed favorite");
     } catch (error: unknown) {
       console.error("Toggle favorite error:", error);
+      toast.error("Failed to change favorite");
     }
   }
 
