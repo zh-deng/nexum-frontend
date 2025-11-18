@@ -9,7 +9,7 @@ import {
 } from "@radix-ui/themes";
 import "./jobs.scss";
 import { ChevronUpIcon, PlusIcon } from "@radix-ui/react-icons";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import ApplicationForm from "../../../components/forms/ApplicationForm/ApplicationForm";
 import { useApplications } from "../../../hooks/application/useApplications";
 import ApplicationCard from "../../../components/ApplicationCard/ApplicationCard";
@@ -191,7 +191,7 @@ const JobsPage = () => {
             setCurrentPage={setCurrentPage}
           />
         )}
-        <div className="jobs-content">
+        <div className="job-container">
           {applications.length === 0 ? (
             <Card className="empty-state">
               <Flex height={"6rem"} justify={"center"} align={"center"}>

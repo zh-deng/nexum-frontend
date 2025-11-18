@@ -8,5 +8,22 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+
+    @include respond-to(sm) {
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+
+    .interview-card-wrapper {
+      width: 100%;
+
+      @include respond-to(md) {
+        width: calc(50% - 0.25rem);
+      }
+
+      @include respond-to(lg) {
+        width: calc(33.33% - 0.333rem);
+      }
+    }
   }
 }

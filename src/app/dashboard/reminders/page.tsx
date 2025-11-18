@@ -26,7 +26,7 @@ const RemindersPage = () => {
       {data && (
         <div className="reminders-page">
           <Flex
-            align={"center"}
+            align={"end"}
             justify={"between"}
             my={"4"}
             wrap={"wrap"}
@@ -35,7 +35,7 @@ const RemindersPage = () => {
             <Box maxWidth="200px">
               <RadioCards.Root
                 defaultValue={ReminderSortType.NEWEST}
-                columns={{ initial: "1", xs: "2" }}
+                columns={{ initial: "2" }}
                 size={"1"}
                 gap={"2"}
                 onValueChange={(value) => setSortBy(value as ReminderSortType)}
@@ -55,7 +55,7 @@ const RemindersPage = () => {
             <Box maxWidth="310px">
               <RadioCards.Root
                 defaultValue={ReminderStatusFilter.ALL}
-                columns={{ initial: "1", xs: "4" }}
+                columns={{ initial: "4" }}
                 size={"1"}
                 gap={"2"}
                 onValueChange={(value) =>
@@ -87,7 +87,9 @@ const RemindersPage = () => {
           </Flex>
           <div className="reminder-container">
             {data.map((item) => (
-              <ReminderCard data={item} key={item.id} />
+              <div className="reminder-card-wrapper" key={item.id}>
+                <ReminderCard data={item} />
+              </div>
             ))}
           </div>
         </div>

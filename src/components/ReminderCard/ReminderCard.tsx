@@ -218,7 +218,6 @@ type ReminderCardProps = {
 const ReminderCard = ({ data }: ReminderCardProps) => {
   const [showConfirmationModal, setShowConfirmationModal] =
     useState<boolean>(false);
-  const { isSm } = useBreakpoint();
   const deleteReminder = useDeleteReminder();
   const toast = useToast();
 
@@ -248,7 +247,7 @@ const ReminderCard = ({ data }: ReminderCardProps) => {
               <Text>{formatDateUs(new Date(data.alarmDate), true)}</Text>
               <Badge size={"3"}>{data.status}</Badge>
             </Flex>
-            <Flex gap={"2"} justify={"end"} width={!isSm ? "100%" : ""}>
+            <Flex gap={"2"} justify={"end"} width={"100%"}>
               <ReminderFormContainer
                 applicationId={data.applicationId}
                 data={{

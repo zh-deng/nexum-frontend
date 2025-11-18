@@ -281,7 +281,6 @@ const InterviewCard = ({ data }: InterviewCardProps) => {
     useState<boolean>(false);
   const [form, setForm] = useState<InterviewForm>(initialForm);
   const deleteInterview = useDeleteInterview();
-  const { isSm } = useBreakpoint();
   const toast = useToast();
 
   async function handleDeleteInterview() {
@@ -307,9 +306,11 @@ const InterviewCard = ({ data }: InterviewCardProps) => {
         >
           <Flex align={"center"} gap={"4"}>
             <Text>{formatDateUs(new Date(data.date), true)}</Text>
-            <Badge size={"3"}>{data.status}</Badge>
+            <Box width={"100px"}>
+              <Badge size={"3"}>{data.status}</Badge>
+            </Box>
           </Flex>
-          <Flex gap={"2"} justify={"end"} width={!isSm ? "100%" : ""}>
+          <Flex gap={"2"} justify={"end"} width={"100%"}>
             <InterviewFormContainer form={form} setForm={setForm} />
             <ReminderFormContainer applicationId={data.applicationId} />
             <IconButton

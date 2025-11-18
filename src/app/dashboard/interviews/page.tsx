@@ -82,7 +82,11 @@ const InterviewsPage = () => {
           </Flex>
           <div className="interview-container">
             {data.map((item) => {
-              return <InterviewCard key={item.id} data={item} />;
+              return (
+                <div className="interview-card-wrapper" key={item.id}>
+                  <InterviewCard data={item} />
+                </div>
+              );
             })}
           </div>
         </div>
