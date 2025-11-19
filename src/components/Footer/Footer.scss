@@ -1,0 +1,54 @@
+.site-footer {
+  background: linear-gradient(180deg, #ffffff, #fbfdff);
+  border-top: 1px solid rgba(34, 34, 34, 0.06);
+  padding: 2.5rem 1rem;
+  color: #223;
+
+  .footer-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    align-items: start;
+
+    .brand {
+      .logo {
+        font-weight: 700;
+        font-size: 1.25rem;
+      }
+      .tag {
+        color: #556;
+        margin-top: 0.25rem;
+        font-size: 0.95rem;
+      }
+    }
+
+    .links {
+      display: flex;
+      gap: 2rem;
+
+      .col {
+        h4 {
+          margin-bottom: 0.5rem;
+          font-size: 0.95rem;
+        }
+
+        a {
+          display: block;
+          color: #334;
+          margin-bottom: 0.35rem;
+          text-decoration: none;
+          opacity: 0.9;
+        }
+      }
+    }
+  }
+
+  .copyright {
+    max-width: 1100px;
+    margin: 1.25rem auto 0 auto;
+    color: #667;
+    font-size: 0.9rem;
+  }
+}

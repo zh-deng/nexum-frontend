@@ -8,9 +8,11 @@ import LoginForm, {
 import { getCurrentUser, loginUser } from "../../lib/api/auth";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../context/AuthContext";
+import { useToast } from "../../components/ToastProvider/ToastProvider";
 
 export default function LoginPage() {
   const router = useRouter();
+  const toast = useToast();
   const { setUser } = useAuth();
 
   async function handleLogin(data: LoginFormData) {
@@ -19,8 +21,10 @@ export default function LoginPage() {
       const user = await getCurrentUser();
       setUser(user);
       router.push("/dashboard");
+      toast.success("Login successful");
     } catch (error: unknown) {
       console.error("Signup error:", error);
+      toast.error("Login failed");
     }
   }
 

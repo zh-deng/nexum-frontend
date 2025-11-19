@@ -33,7 +33,7 @@ const SankeyChart = ({ sankeyChartData }: SankeyChartProps) => {
     const data = sankeyChartData;
 
     const width = 928;
-    const height = 600;
+    const height = 500;
     const format = d3.format(",.0f");
 
     // Clear previous render

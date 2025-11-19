@@ -15,21 +15,41 @@
     height: 5rem;
   }
 
-  .item-container {
-    flex: 1;
-    cursor: pointer;
+  .mobile-only {
     display: flex;
-    background-color: lightgray;
+    width: 100%;
 
-    .menu-item {
-      @include flex-center;
+    @include respond-to(sm) {
+      display: none;
+    }
 
-      height: 100%;
-      width: 100%;
+    .item-container {
+      flex: 1;
+      cursor: pointer;
+      display: flex;
+      background-color: lightgray;
+
+      .menu-item {
+        @include flex-center;
+
+        height: 100%;
+        width: 100%;
+      }
+    }
+
+    .active-item {
+      background-color: white;
     }
   }
+}
 
-  .active-item {
-    background-color: white;
+/* Visibility utilities to keep DOM identical between SSR and client */
+.desktop-only {
+  display: none;
+}
+
+@include respond-to(sm) {
+  .desktop-only {
+    display: flex;
   }
 }

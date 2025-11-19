@@ -80,15 +80,16 @@
     }
 
     @include respond-to(xl) {
-      position: absolute;
-      bottom: -50px;
+      position: fixed;
+      bottom: 100px;
+      right: 15%;
     }
   }
 
-  .jobs-content {
+  .job-container {
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: 0.5rem;
     width: 100%;
 
     @include respond-to(sm) {

@@ -17,8 +17,12 @@ function FloatingTextArea({
   const [hasNote, setHasNote] = useState<boolean>(false);
 
   useEffect(() => {
-    setHasValue(!!value);
-    setHasNote(!!value);
+    if (value) {
+      setHasValue(true);
+      setHasNote(true);
+    } else {
+      setHasValue(false);
+    }
   }, [value]);
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
