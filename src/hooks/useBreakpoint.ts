@@ -3,7 +3,17 @@ import { useEffect, useState } from "react";
 export type Breakpoint = "xs" | "sm" | "md" | "lg" | "xl";
 
 export function useBreakpoint() {
-  const [breakpoint, setBreakpoint] = useState<Breakpoint>("xs");
+  const getInitial = (): Breakpoint => {
+    if (typeof window === "undefined") return "md"; // sensible default for SSR
+    const width = window.innerWidth;
+    if (width >= 1280) return "xl";
+    if (width >= 1024) return "lg";
+    if (width >= 768) return "md";
+    if (width >= 480) return "sm";
+    return "xs";
+  };
+
+  const [breakpoint, setBreakpoint] = useState<Breakpoint>(getInitial);
 
   const isXl = breakpoint === "xl";
   const isLg = breakpoint === "lg" || isXl;

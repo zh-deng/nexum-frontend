@@ -196,7 +196,7 @@ const PieChart = ({
 
         // Label for main category (outer label)
         const midAngle = (startAngle + endAngle) / 2;
-        const labelRadius = radius + 5;
+        const labelRadius = radius + 15;
         const lx = Math.cos(midAngle - Math.PI / 2) * labelRadius;
         const ly = Math.sin(midAngle - Math.PI / 2) * labelRadius;
         svg
