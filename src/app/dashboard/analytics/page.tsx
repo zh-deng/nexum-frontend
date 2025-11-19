@@ -45,42 +45,58 @@ const AnalyticsPage = () => {
 
   switch (chartStyle) {
     case "pie-chart": {
-      if (!pieChartData) chart = <Text weight={"bold"}>No Data Yet</Text>;
+      if (
+        !pieChartData ||
+        Object.values(pieChartData).reduce((sum, n) => sum + n, 0) === 0
+      ) {
+        chart = <Text weight={"bold"}>No Data Yet</Text>;
+      } else {
+        isLoading = pieLoading;
+        error = pieError;
 
-      isLoading = pieLoading;
-      error = pieError;
+        chart = (
+          <PieChart
+            pieChartData={pieChartData!}
+            width={isLg ? 600 : isSm ? 500 : 300}
+            height={isLg ? 500 : isSm ? 400 : 250}
+          />
+        );
+      }
 
-      chart = (
-        <PieChart
-          pieChartData={pieChartData!}
-          width={isLg ? 600 : isSm ? 500 : 300}
-          height={isLg ? 500 : isSm ? 400 : 250}
-        />
-      );
       break;
     }
     case "bar-chart": {
-      if (!barChartData) chart = <Text weight={"bold"}>No Data Yet</Text>;
+      if (!barChartData || barChartData[0].total === 0) {
+        chart = <Text weight={"bold"}>No Data Yet</Text>;
+      } else {
+        isLoading = barLoading;
+        error = barError;
 
-      isLoading = barLoading;
-      error = barError;
+        chart = (
+          <BarChart
+            barChartData={barChartData!}
+            width={isLg ? 800 : isMd ? 650 : isSm ? 450 : 300}
+            height={isLg ? 500 : isSm ? 400 : 250}
+          />
+        );
+      }
 
-      chart = (
-        <BarChart
-          barChartData={barChartData!}
-          width={isLg ? 800 : isMd ? 650 : isSm ? 450 : 300}
-          height={isLg ? 500 : isSm ? 400 : 250}
-        />
-      );
       break;
     }
     case "sankey-chart": {
-      if (!sankeyChartData) chart = <Text weight={"bold"}>No Data Yet</Text>;
+      if (
+        !sankeyChartData ||
+        (sankeyChartData.nodes.length === 0 &&
+          sankeyChartData.links.length === 0)
+      ) {
+        chart = <Text weight={"bold"}>No Data Yet</Text>;
+      } else {
+        isLoading = sankeyLoading;
+        error = sankeyError;
 
-      isLoading = sankeyLoading;
-      error = sankeyError;
+        chart = <SankeyChart sankeyChartData={sankeyChartData!} />;
+      }
 
-      chart = <SankeyChart sankeyChartData={sankeyChartData!} />;
       break;
     }
   }

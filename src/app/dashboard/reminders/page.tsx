@@ -5,7 +5,7 @@ import ReminderCard from "../../../components/ReminderCard/ReminderCard";
 import { useReminders } from "../../../hooks/reminder/useReminders";
 import { ReminderSortType, ReminderStatusFilter } from "../../../types/enums";
 import "./reminders.scss";
-import { Box, Flex, RadioCards, Text } from "@radix-ui/themes";
+import { Box, Card, Flex, RadioCards, Text } from "@radix-ui/themes";
 import QueryState from "../../../components/QueryState/QueryState";
 
 const RemindersPage = () => {
@@ -86,11 +86,21 @@ const RemindersPage = () => {
             </Box>
           </Flex>
           <div className="reminder-container">
-            {data.map((item) => (
-              <div className="reminder-card-wrapper" key={item.id}>
-                <ReminderCard data={item} />
-              </div>
-            ))}
+            {data.length === 0 ? (
+              <Card className="empty-state">
+                <Flex height={"6rem"} justify={"center"} align={"center"}>
+                  <Text size={"4"} weight={"medium"}>
+                    No reminders found
+                  </Text>
+                </Flex>
+              </Card>
+            ) : (
+              data.map((item) => (
+                <div className="reminder-card-wrapper" key={item.id}>
+                  <ReminderCard data={item} />
+                </div>
+              ))
+            )}
           </div>
         </div>
       )}

@@ -2,6 +2,7 @@ export type SignUpDto = {
   username: string;
   email: string;
   password: string;
+  signupAccessCode: string;
 };
 
 export type LoginDto = {
