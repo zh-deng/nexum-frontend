@@ -80,8 +80,9 @@
     }
 
     @include respond-to(xl) {
-      position: absolute;
-      bottom: -50px;
+      position: fixed;
+      bottom: 100px;
+      right: 15%;
     }
   }
 
