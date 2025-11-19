@@ -7,9 +7,11 @@ import SignupForm, {
 } from "../../components/auth/SingupForm/SignupForm";
 import { signupUser } from "../../lib/api/auth";
 import { useRouter } from "next/navigation";
+import { useToast } from "../../components/ToastProvider/ToastProvider";
 
 const SignupPage = () => {
   const router = useRouter();
+  const toast = useToast();
 
   async function handleSignup(data: SignUpFormData) {
     const { repeatPassword, ...payload } = data;
@@ -17,8 +19,10 @@ const SignupPage = () => {
     try {
       await signupUser(payload);
       router.push("/login");
+      toast.success("Signup successful! Please log in");
     } catch (error: unknown) {
       console.error("Signup error:", error);
+      toast.error("Signup failed. Wrong signup access code");
     }
   }
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@radix-ui/themes";
+import { Button, Text } from "@radix-ui/themes";
 import "./SignupForm.scss";
 import { useForm } from "react-hook-form";
 import FloatingTextField from "../../FloatingTextField/FloatingTextField";
@@ -10,6 +10,7 @@ export type SignUpFormData = {
   email: string;
   password: string;
   repeatPassword: string;
+  signupAccessCode: string;
 };
 
 type SignupFormProps = {
@@ -75,6 +76,22 @@ const SignupForm = ({ onSubmit, defaultValues }: SignupFormProps) => {
         />
         {errors.repeatPassword && (
           <span className="error">{errors.repeatPassword.message}</span>
+        )}
+      </div>
+      <Text size={"2"}>
+        Currently in closed Beta. Signup access code required.
+      </Text>
+      <div>
+        <FloatingTextField
+          className="radix-textfield"
+          placeholder="Signup Access Code"
+          type="text"
+          {...register("signupAccessCode", {
+            required: "Invite code is required",
+          })}
+        />
+        {errors.signupAccessCode && (
+          <span className="error">{errors.signupAccessCode.message}</span>
         )}
       </div>
       <Button
