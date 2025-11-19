@@ -26,11 +26,11 @@ const LoginForm = ({ onSubmit, defaultValues }: LoginFormProps) => {
     defaultValues,
   });
 
-  const [isDemo, setIsDemo] = useState<boolean>(false);
+  const [isDemo, setIsDemo] = useState<boolean>(true);
 
   useEffect(() => {
     if (isDemo) {
-      setValue("email", "test@web.de");
+      setValue("email", "test@gmail.com");
       setValue("password", "password");
     } else {
       setValue("email", "");

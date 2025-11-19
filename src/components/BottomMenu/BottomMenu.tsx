@@ -3,7 +3,7 @@
 import { usePathname, useRouter } from "next/navigation";
 import "./BottomMenu.scss";
 import { SegmentedControl, Separator } from "@radix-ui/themes";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 
 type MenuItem = {
@@ -34,7 +34,10 @@ const BottomMenu = () => {
   ];
   const currentRoute = pathname.split("/").pop() || "jobs";
   const [activeItem, setActiveItem] = useState<string>(currentRoute);
-  const { isSm } = useBreakpoint();
+
+  useEffect(() => {
+    setActiveItem(currentRoute);
+  }, [currentRoute]);
 
   function navigateTo(route: string) {
     router.push(`/dashboard/${route}`);
@@ -43,11 +46,12 @@ const BottomMenu = () => {
 
   return (
     <div className="button-menu">
-      {isSm ? (
+      <div className="desktop-only">
         <SegmentedControl.Root
-          defaultValue={activeItem}
+          value={activeItem}
           radius="medium"
           size={"3"}
+          onValueChange={(v) => navigateTo(v)}
         >
           {menuItems.map((item) => {
             return (
@@ -55,30 +59,28 @@ const BottomMenu = () => {
                 style={{ cursor: "pointer" }}
                 value={item.route}
                 key={item.name}
-                onClick={() => navigateTo(item.route)}
               >
                 {item.name}
               </SegmentedControl.Item>
             );
           })}
         </SegmentedControl.Root>
-      ) : (
-        <>
-          {menuItems.map((item, index) => (
-            <div className="item-container" key={item.name}>
-              <div
-                className={`menu-item ${activeItem === item.route ? "active-item" : ""}`}
-                onClick={() => navigateTo(item.route)}
-              >
-                {item.name}
-              </div>
-              {index !== menuItems.length - 1 && (
-                <Separator orientation="vertical" size={"4"} />
-              )}
+      </div>
+      <div className="mobile-only">
+        {menuItems.map((item, index) => (
+          <div className="item-container" key={item.name}>
+            <div
+              className={`menu-item ${activeItem === item.route ? "active-item" : ""}`}
+              onClick={() => navigateTo(item.route)}
+            >
+              {item.name}
             </div>
-          ))}
-        </>
-      )}
+            {index !== menuItems.length - 1 && (
+              <Separator orientation="vertical" size={"4"} />
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

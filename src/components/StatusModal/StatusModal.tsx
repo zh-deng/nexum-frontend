@@ -9,10 +9,9 @@ import {
 } from "@radix-ui/themes";
 import "./StatusModal.scss";
 import {
-  combineDateWithTime,
   formatDateUs,
+  getLocalDatetimeValue,
   getStatusOptions,
-  getTodayLocalDate,
 } from "../../utils/helper";
 import {
   CheckIcon,
@@ -31,6 +30,7 @@ import { LogItemDto } from "../../types/dtos/log-item/log-item.dto";
 import { useDeleteLogItem } from "../../hooks/log-item/useDeleteLogItem";
 import ConfirmationModal from "../ConfirmationModal/ConfirmationModal";
 import { ApplicationStatus } from "../../types/enums";
+import { useToast } from "../ToastProvider/ToastProvider";
 
 type StatusInputContainerProps = {
   applicationId: string;
@@ -46,11 +46,11 @@ const StatusInputContainer = ({
   setForm,
 }: StatusInputContainerProps) => {
   const options = statusOptions.filter((elem) => elem !== form.status);
-  const fullDate = new Date(form.date).toISOString();
 
   const [showConfirmationModal, setShowConfirmationModal] =
     useState<boolean>(false);
   const [statusError, setStatusError] = useState<string>("");
+  const toast = useToast();
 
   const createLogItem = useCreateLogItem();
   const updateLogItem = useUpdateLogItem();
@@ -90,33 +90,29 @@ const StatusInputContainer = ({
       const { id, date, ...rest } = form;
 
       if (form.id === -1) {
-        const fullTimestamp = date
-          ? combineDateWithTime(date)
-          : new Date().toISOString();
-
         await createLogItem.mutateAsync({
           applicationId: applicationId,
-          date: fullTimestamp,
+          date: new Date(date).toISOString(),
           ...rest,
         });
+
+        toast.success("Successfully created status");
       } else {
         if (typeof id !== "string") return;
-
-        const transferDate =
-          fullDate.split("T")[0] === new Date(date).toISOString().split("T")[0]
-            ? fullDate
-            : new Date(date).toISOString();
 
         await updateLogItem.mutateAsync({
           id,
           data: {
-            date: transferDate,
+            date: new Date(date).toISOString(),
             ...rest,
           },
         });
+
+        toast.success("Successfully updated status");
       }
     } catch (error: unknown) {
       console.error("Create or update log item error:", error);
+      toast.error("Failed to create or update status");
     }
 
     resetId();
@@ -127,8 +123,11 @@ const StatusInputContainer = ({
       if (typeof form.id !== "string") return;
 
       await deleteLogItem.mutateAsync(form.id);
+
+      toast.success("Successfully deleted status");
     } catch (error: unknown) {
       console.error("Delete log item error:", error);
+      toast.error("Failed to delete");
     }
   }
 
@@ -136,21 +135,21 @@ const StatusInputContainer = ({
     <div className="status-input-container">
       <Card>
         <Flex direction={"column"} gap={"4"}>
-          <Flex justify={"between"}>
-            <FloatingTextField
-              type={"date"}
-              placeholder="Action Date"
-              value={form.date ? form.date.slice(0, 10) : ""}
-              onChange={(value) =>
-                handleChange({ name: "date", value: value.target.value })
-              }
-            />
+          <Flex justify={"between"} wrap={"wrap"} gap={"4"}>
             <Dropdown
               width="50%"
               name={form.status || "Status"}
               options={options}
               onChange={(value) =>
                 handleChange({ name: "status", value: value })
+              }
+            />
+            <FloatingTextField
+              type={"datetime-local"}
+              placeholder="Action Date"
+              value={getLocalDatetimeValue(form.date)}
+              onChange={(value) =>
+                handleChange({ name: "date", value: value.target.value })
               }
             />
           </Flex>
@@ -243,7 +242,7 @@ const StatusModal = ({
     setForm({
       id: logItem?.id ?? -1,
       status: logItem?.status ?? "",
-      date: logItem?.date ?? getTodayLocalDate(),
+      date: logItem?.date ?? new Date(Date.now()).toISOString(),
       notes: logItem?.notes ?? "",
     });
   }
@@ -281,7 +280,7 @@ const StatusModal = ({
           </Flex>
         </Button>
         <Box overflowY={"auto"}>
-          <Flex direction={"column"} gap={"2"}>
+          <Flex direction={"column"} gap={"2"} pb={"2"}>
             {form.id === -1 && (
               <StatusInputContainer
                 applicationId={applicationId}
@@ -290,43 +289,42 @@ const StatusModal = ({
                 setForm={setForm}
               />
             )}
-            {logItems
-              .slice()
-              .reverse()
-              .map((logItem: LogItemDto) => {
-                return (
-                  <div key={logItem.id}>
-                    {form.id === logItem.id ? (
-                      <StatusInputContainer
-                        applicationId={applicationId}
-                        statusOptions={statusOptions}
-                        form={form}
-                        setForm={setForm}
-                      />
-                    ) : (
-                      <Card>
-                        <Flex align={"center"} justify={"between"}>
-                          <Text>{formatDateUs(new Date(logItem.date!))}</Text>
-                          <Flex align={"center"} gap={"4"}>
-                            <Badge size={"3"}>
-                              <Text>{logItem.status}</Text>
-                            </Badge>
-                            <IconButton
-                              style={{ cursor: "pointer" }}
-                              size={"3"}
-                              radius={"small"}
-                              onClick={() => openStatusForm(logItem)}
-                            >
-                              <Pencil2Icon width={"24"} height={"24"} />
-                            </IconButton>
-                          </Flex>
+            {logItems.slice().map((logItem: LogItemDto) => {
+              return (
+                <div key={logItem.id}>
+                  {form.id === logItem.id ? (
+                    <StatusInputContainer
+                      applicationId={applicationId}
+                      statusOptions={statusOptions}
+                      form={form}
+                      setForm={setForm}
+                    />
+                  ) : (
+                    <Card>
+                      <Flex align={"center"} justify={"between"}>
+                        <Text>
+                          {formatDateUs(new Date(logItem.date!), true)}
+                        </Text>
+                        <Flex align={"center"} gap={"4"}>
+                          <Badge size={"3"}>
+                            <Text>{logItem.status}</Text>
+                          </Badge>
+                          <IconButton
+                            style={{ cursor: "pointer" }}
+                            size={"3"}
+                            radius={"small"}
+                            onClick={() => openStatusForm(logItem)}
+                          >
+                            <Pencil2Icon width={"24"} height={"24"} />
+                          </IconButton>
                         </Flex>
-                        <Text>{logItem.notes}</Text>
-                      </Card>
-                    )}
-                  </div>
-                );
-              })}
+                      </Flex>
+                      <Text>{logItem.notes}</Text>
+                    </Card>
+                  )}
+                </div>
+              );
+            })}
           </Flex>
         </Box>
       </Flex>

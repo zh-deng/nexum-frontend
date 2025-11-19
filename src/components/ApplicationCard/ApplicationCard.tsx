@@ -30,6 +30,8 @@ import StatusModal from "../StatusModal/StatusModal";
 import { ApplicationDto } from "../../types/dtos/application/application.dto";
 import { LogItemDto } from "../../types/dtos/log-item/log-item.dto";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
+import NewBadge from "../NewBadge/NewBadge";
+import { useToast } from "../ToastProvider/ToastProvider";
 
 type ApplicationCardProps = {
   data: ApplicationDto;
@@ -85,6 +87,7 @@ const ApplicationCard = ({
   const priorityBadgeColor =
     priority === 3 ? "yellow" : priority === 2 ? "orange" : "crimson";
   const { isSm, isLg } = useBreakpoint();
+  const toast = useToast();
 
   const dayInfo = useMemo(() => {
     return calculateDays(logItems);
@@ -111,16 +114,22 @@ const ApplicationCard = ({
   async function handleDeleteApplication() {
     try {
       await deleteApplication.mutateAsync(id);
+
+      toast.success("Successfully deleted application");
     } catch (error: unknown) {
       console.error("Delete application error:", error);
+      toast.error("Failed to delete application");
     }
   }
 
   async function handleToggleFavorite() {
     try {
       await toggleFavorite.mutateAsync(data.id);
+
+      toast.success("Changed favorite");
     } catch (error: unknown) {
       console.error("Toggle favorite error:", error);
+      toast.error("Failed to change favorite");
     }
   }
 
@@ -137,6 +146,7 @@ const ApplicationCard = ({
           backgroundColor: `${isActive ? "yellow" : "unset"}`,
         }}
       >
+        <NewBadge date={data.createdAt} />
         <Flex align={"center"} justify={"between"} gap={"2"}>
           <Box style={{ minWidth: 0, flex: 1 }}>
             <Flex align={"center"} gap={"3"}>
@@ -342,21 +352,20 @@ const ApplicationCard = ({
               </Card>
               <Flex direction={"column"} gap={"2"}>
                 <Text weight={"medium"}>History:</Text>
-                {logItems
-                  .slice()
-                  .reverse()
-                  .map((logItem: LogItemDto) => {
-                    return (
-                      <Card key={logItem.id}>
-                        <Flex gap={"3"} align={"center"} justify={"between"}>
-                          <Text>{formatDateUs(new Date(logItem.date!))}</Text>
-                          <Badge size={"3"}>
-                            <Text>{logItem.status}</Text>
-                          </Badge>
-                        </Flex>
-                      </Card>
-                    );
-                  })}
+                {logItems.slice().map((logItem: LogItemDto) => {
+                  return (
+                    <Card key={logItem.id}>
+                      <Flex gap={"3"} align={"center"} justify={"between"}>
+                        <Text>
+                          {formatDateUs(new Date(logItem.date!), true)}
+                        </Text>
+                        <Badge size={"3"}>
+                          <Text>{logItem.status}</Text>
+                        </Badge>
+                      </Flex>
+                    </Card>
+                  );
+                })}
               </Flex>
             </Flex>
           </Card>
