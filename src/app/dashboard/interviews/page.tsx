@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Flex, RadioCards, Text } from "@radix-ui/themes";
+import { Box, Card, Flex, RadioCards, Text } from "@radix-ui/themes";
 import InterviewCard from "../../../components/InterviewCard/InterviewCard";
 import { useInterviews } from "../../../hooks/interview/useInterviews";
 import "./interviews.scss";
@@ -81,13 +81,23 @@ const InterviewsPage = () => {
             </Box>
           </Flex>
           <div className="interview-container">
-            {data.map((item) => {
-              return (
-                <div className="interview-card-wrapper" key={item.id}>
-                  <InterviewCard data={item} />
-                </div>
-              );
-            })}
+            {data.length === 0 ? (
+              <Card className="empty-state">
+                <Flex height={"6rem"} justify={"center"} align={"center"}>
+                  <Text size={"4"} weight={"medium"}>
+                    No interviews found
+                  </Text>
+                </Flex>
+              </Card>
+            ) : (
+              data.map((item) => {
+                return (
+                  <div className="interview-card-wrapper" key={item.id}>
+                    <InterviewCard data={item} />
+                  </div>
+                );
+              })
+            )}
           </div>
         </div>
       )}
