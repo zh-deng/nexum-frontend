@@ -81,35 +81,64 @@
 
     @include respond-to(xl) {
       position: fixed;
-      bottom: 100px;
+      bottom: 70px;
       right: 15%;
     }
   }
 
   .job-container {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
     width: 100%;
 
-    @include respond-to(sm) {
-      flex-direction: row;
-      flex-wrap: wrap;
-    }
-
-    .application-card-wrapper {
-      width: 100%;
+    .container-wrapper {
+      height: calc(65vh + 1.5rem);
 
       @include respond-to(md) {
-        width: calc(50% - 0.25rem);
+        flex: 1;
       }
 
       @include respond-to(lg) {
-        width: calc(33% - 0.166rem);
+        flex: 2;
       }
 
       @include respond-to(xl) {
-        width: calc(25% - 0.375rem);
+        flex: 3;
+      }
+
+      .application-card-container {
+        flex: 3;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        row-gap: 0rem;
+        overflow-y: auto;
+        max-height: 100%;
+
+        @include respond-to(sm) {
+          flex-direction: row;
+          flex-wrap: wrap;
+        }
+
+        .application-card-wrapper {
+          width: 100%;
+
+          @include respond-to(lg) {
+            width: calc(50% - 0.125rem);
+          }
+
+          @include respond-to(xl) {
+            width: calc(33.33% - 0.166rem);
+          }
+
+          // @include respond-to(xl) {
+          // 	width: calc(25% - 0.375rem);
+          // }
+        }
+      }
+    }
+
+    .application-preview-wrapper {
+      @include respond-to(md) {
+        flex: 1;
       }
     }
   }

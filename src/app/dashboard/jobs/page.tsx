@@ -9,7 +9,7 @@ import {
 } from "@radix-ui/themes";
 import "./jobs.scss";
 import { ChevronUpIcon, PlusIcon } from "@radix-ui/react-icons";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import ApplicationForm from "../../../components/forms/ApplicationForm/ApplicationForm";
 import { useApplications } from "../../../hooks/application/useApplications";
 import ApplicationCard from "../../../components/ApplicationCard/ApplicationCard";
@@ -20,12 +20,15 @@ import { useDebounce } from "../../../hooks/useDebounce";
 import PaginationControls from "../../../components/PaginationControls/PaginationControls";
 import JobOptions from "../../../components/JobSettings/JobSettings";
 import QueryState from "../../../components/QueryState/QueryState";
+import ApplicationPreview from "../../../components/ApplicationPreview/ApplicationPreview";
+import { ApplicationDto } from "../../../types/dtos/application/application.dto";
+import { useBreakpoint } from "../../../hooks/useBreakpoint";
 
 const JobsPage = () => {
   const [showAppForm, setShowAppForm] = useState<boolean>(false);
   const [showUpdateAppForm, setShowUpdateAppForm] = useState<boolean>(false);
   const [showFilterOptions, setShowFilterOptions] = useState<boolean>(false);
-  const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
+  const [expandedCard, setExpandedCard] = useState<ApplicationDto | null>(null);
 
   const pageRef = useRef<HTMLDivElement>(null);
 
@@ -34,6 +37,7 @@ const JobsPage = () => {
   const [pageSize, setPageSize] = useState<number>(20);
   const [statusFilter, setStatusFilter] = useState<string>("");
   const [sortBy, setSortBy] = useState<SortType>(SortType.DATE_NEW);
+  const { isSm, isMd } = useBreakpoint();
 
   // Debounce search
   const debouncedSearch = useDebounce(searchQuery, 300);
@@ -65,6 +69,12 @@ const JobsPage = () => {
       .sort((a, b) => Number(b.favorited) - Number(a.favorited));
   }, [applications]);
 
+  useEffect(() => {
+    if (isMd) {
+      setExpandedCard(favoritedApplications[0]);
+    }
+  }, [favoritedApplications, isMd]);
+
   function openUpdateAppForm() {
     setShowUpdateAppForm(true);
     scrollToTop();
@@ -77,12 +87,12 @@ const JobsPage = () => {
 
   function closeUpdateAppForm() {
     setShowUpdateAppForm(false);
-    setExpandedCardId(null);
+    !isMd && setExpandedCard(null);
   }
 
   function closeAppForm() {
     setShowAppForm(false);
-    setExpandedCardId(null);
+    !isMd && setExpandedCard(null);
   }
 
   function scrollToTop() {
@@ -203,19 +213,30 @@ const JobsPage = () => {
               </Flex>
             </Card>
           ) : (
-            favoritedApplications.map((app) => (
-              <div className="application-card-wrapper" key={app.id}>
-                <ApplicationCard
-                  data={app}
-                  expandedCardId={expandedCardId}
-                  setExpandedCardId={setExpandedCardId}
-                  editApplication={openUpdateAppForm}
-                />
-                {showUpdateAppForm && expandedCardId === app.id && (
-                  <ApplicationForm data={app} onClose={closeUpdateAppForm} />
-                )}
-              </div>
-            ))
+            <Flex gap={"2"} direction={isSm ? "row" : "column"}>
+              <Card className="container-wrapper">
+                <div className="application-card-container">
+                  {favoritedApplications.map((app) => (
+                    <div className="application-card-wrapper" key={app.id}>
+                      <ApplicationCard
+                        data={app}
+                        expandedCard={expandedCard}
+                        setExpandedCard={setExpandedCard}
+                        editApplication={openUpdateAppForm}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </Card>
+              {isMd && expandedCard && (
+                <div className="application-preview-wrapper">
+                  <ApplicationPreview
+                    data={expandedCard}
+                    editApplication={openUpdateAppForm}
+                  />
+                </div>
+              )}
+            </Flex>
           )}
         </div>
         {pagination && pagination.totalPages > 1 && (
@@ -233,7 +254,16 @@ const JobsPage = () => {
         >
           <PlusIcon width="32" height="32" />
         </IconButton>
-        {showAppForm && <ApplicationForm onClose={closeAppForm} />}
+        {showAppForm && (
+          <ApplicationForm key="create-new" onClose={closeAppForm} />
+        )}
+        {showUpdateAppForm && expandedCard && (
+          <ApplicationForm
+            key={`edit-${expandedCard.id}`}
+            data={expandedCard}
+            onClose={closeUpdateAppForm}
+          />
+        )}
       </div>
     </QueryState>
   );
