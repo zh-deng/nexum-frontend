@@ -196,7 +196,9 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
   return (
     <QueryState isLoading={isLoading} error={error}>
       <div className="app-form">
-        <p className="form-header">Create new application</p>
+        <p className="form-header">
+          {data ? "Edit" : "Create new"} application
+        </p>
         <p className="required-tooltip">required*</p>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div>
