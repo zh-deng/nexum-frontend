@@ -33,7 +33,7 @@ export default function RootLayout({
           appearance="light"
           accentColor="mint"
           grayColor="slate"
-          radius="large"
+          radius="medium"
           scaling="95%"
         >
           <ClientLayout>

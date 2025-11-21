@@ -107,7 +107,10 @@ const ApplicationPreview = ({
   return (
     <>
       <Card>
-        <Box maxHeight={"65vh"} overflowY={"auto"}>
+        <Box
+          maxHeight={isMd ? "65vh" : ""}
+          overflowY={isMd ? "auto" : "visible"}
+        >
           <Flex justify={"between"} align={"center"}>
             <Button
               style={{ cursor: "pointer" }}
