@@ -18,7 +18,7 @@ const InterviewsPage = () => {
     { value: InterviewStatusFilter.DONE, label: "Done" },
     { value: InterviewStatusFilter.ALL, label: "All" },
   ];
-  const emptyInterviewState = (
+  const emptyInterviewsState = (
     <Card className="empty-state">
       <Flex height={"6rem"} justify={"center"} align={"center"}>
         <Text size={"4"} weight={"medium"}>
@@ -86,7 +86,7 @@ const InterviewsPage = () => {
           </Flex>
           <div className="interview-container">
             {data.length === 0
-              ? emptyInterviewState
+              ? emptyInterviewsState
               : data.map((item) => (
                   <div className="interview-card-wrapper" key={item.id}>
                     <InterviewCard data={item} />
