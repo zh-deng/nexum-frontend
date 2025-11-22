@@ -15,8 +15,6 @@ import { useSankesChart } from "../../../hooks/chart/useSankeyChart";
 import QueryState from "../../../components/QueryState/QueryState";
 
 const AnalyticsPage = () => {
-  const isLoading = false;
-  const error = null;
   const chartFallback = <Text weight={"bold"}>No Data Yet</Text>;
 
   const [chartStyle, setChartStyle] = useState<ChartStyle>(
@@ -33,17 +31,17 @@ const AnalyticsPage = () => {
   const { isSm, isMd, isLg } = useBreakpoint();
   const {
     data: pieChartData,
-    isLoading: pieLoading,
+    isPending: piePending,
     error: pieError,
   } = usePieChart(timeFrame);
   const {
     data: barChartData,
-    isLoading: barLoading,
+    isPending: barPending,
     error: barError,
   } = useBarChart(timeFrame);
   const {
     data: sankeyChartData,
-    isLoading: sankeyLoading,
+    isPending: sankeyPending,
     error: sankeyError,
   } = useSankesChart(timeFrame);
 
@@ -51,7 +49,7 @@ const AnalyticsPage = () => {
   const charts = {
     [ChartStyle.PIE_CHART]: {
       data: pieChartData,
-      loading: pieLoading,
+      isPending: piePending,
       error: pieError,
       isEmpty:
         !pieChartData || Object.values(pieChartData).every((n) => n === 0),
@@ -65,7 +63,7 @@ const AnalyticsPage = () => {
     },
     [ChartStyle.BAR_CHART]: {
       data: barChartData,
-      loading: barLoading,
+      isPending: barPending,
       error: barError,
       isEmpty: !barChartData || barChartData[0].total === 0,
       element: (
@@ -78,7 +76,7 @@ const AnalyticsPage = () => {
     },
     [ChartStyle.SANKEY_CHART]: {
       data: sankeyChartData,
-      loading: sankeyLoading,
+      isPending: sankeyPending,
       error: sankeyError,
       isEmpty:
         !sankeyChartData ||
@@ -89,10 +87,11 @@ const AnalyticsPage = () => {
   };
 
   const config = charts[chartStyle];
+  const { isPending, error } = config;
   const chart = config.isEmpty ? chartFallback : config.element;
 
   return (
-    <QueryState isLoading={isLoading!} error={error}>
+    <QueryState isPending={isPending} error={error}>
       <div className="analytics-page">
         <div className="chart-selector">
           <Box maxWidth={"480px"} width={"100%"}>
