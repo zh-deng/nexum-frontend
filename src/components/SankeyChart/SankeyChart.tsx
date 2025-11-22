@@ -133,14 +133,7 @@ const SankeyChart = ({ sankeyChartData }: SankeyChartProps) => {
       .append("text")
       .attr("dy", "0.35em")
       .attr("font-size", 24)
-      .text((d) => d.name);
-
-    label
-      .append("text")
-      .attr("dy", "2em")
-      .attr("font-size", 24)
-      .attr("fill", "#555")
-      .text((d) => (d.value ? format(d.value) : ""));
+      .text((d) => `${d.name}: ${d.value ? format(d.value) : ""}`);
   }, [sankeyChartData]);
 
   return <svg ref={ref}></svg>;

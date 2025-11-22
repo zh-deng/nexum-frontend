@@ -73,3 +73,9 @@ export enum ReminderStatusFilter {
   DONE = "DONE",
   ALL = "ALL",
 }
+
+export enum ChartStyle {
+  PIE_CHART = "PIE_CHART",
+  BAR_CHART = "BAR_CHART",
+  SANKEY_CHART = "SANKEY_CHART",
+}
