@@ -3,4 +3,18 @@
   flex-direction: column;
   gap: 0.5rem;
   margin-bottom: 0.5rem;
+
+  .card {
+    cursor: pointer;
+    border: 2px solid transparent;
+
+    &.active {
+      border-color: aquamarine;
+    }
+  }
+
+  .application-card-company {
+    min-width: 0;
+    overflow: hidden;
+  }
 }

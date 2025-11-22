@@ -70,6 +70,7 @@ export function getPriorityValue(label: string): number {
   return PriorityValue[label] || Priority.MEDIUM;
 }
 
+// Calculate days info string based on log items
 export function calculateDays(logItems: LogItemDto[]) {
   const finishedStatus = new Set([
     ApplicationStatus.OFFER,

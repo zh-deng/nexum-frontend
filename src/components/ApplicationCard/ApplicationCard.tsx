@@ -25,21 +25,20 @@ const ApplicationCard = ({
 }: ApplicationCardProps) => {
   const { id, jobTitle, company, favorited, status, logItems } = data;
   const { name, logoUrl } = company;
+  const isActive = id === expandedCard?.id;
 
   const cardRef = useRef<HTMLDivElement>(null);
-  const isActive = id === expandedCard?.id;
   const prevActiveRef = useRef(isActive);
+
   const { isMd } = useBreakpoint();
 
-  const dayInfo = useMemo(() => {
-    return calculateDays(logItems);
-  }, [logItems]);
+  const dayInfo = useMemo(() => calculateDays(logItems), [logItems]);
 
   useEffect(() => {
     // Only scroll when transitioning from collapsed to expanded
     if (isActive && !prevActiveRef.current && cardRef.current && !isMd) {
       cardRef.current.scrollIntoView({
-        behavior: "instant",
+        behavior: "auto",
         block: "start",
       });
     }
@@ -47,33 +46,37 @@ const ApplicationCard = ({
   }, [isActive]);
 
   function handleToggleExpand() {
-    setExpandedCard(isActive ? (isMd ? data : null) : data);
+    if (!isActive) {
+      setExpandedCard(data);
+      return;
+    }
+
+    if (!isMd) {
+      setExpandedCard(null);
+    }
   }
 
   return (
-    <div id={`card-${id}`} ref={cardRef} className="application-card">
+    <div ref={cardRef} className="application-card">
       <Card
         onClick={handleToggleExpand}
-        style={{
-          cursor: "pointer",
-          border: `2px solid ${isActive ? "aquamarine" : "transparent"}`,
-        }}
+        className={isActive ? "card active" : "card"}
       >
         <NewBadge date={data.createdAt} />
         <Flex align={"center"} justify={"between"} gap={"2"}>
-          <Box style={{ minWidth: 0, flex: 1 }}>
+          <Box className="application-card-company">
             <Flex align={"center"} gap={"3"}>
               {favorited ? (
-                <StarFilledIcon width="16" height="16" />
+                <StarFilledIcon width={"16"} height={"16"} />
               ) : (
-                <StarIcon width="16" height="16" />
+                <StarIcon width={"16"} height={"16"} />
               )}
               <Avatar size={"4"} src={logoUrl} fallback={name.charAt(0)} />
               <Box style={{ minWidth: 0, overflow: "hidden" }}>
-                <Text as="div" weight={"bold"} truncate>
+                <Text as={"div"} weight={"bold"} truncate>
                   {name}
                 </Text>
-                <Text truncate as="div">
+                <Text truncate as={"div"}>
                   {jobTitle}
                 </Text>
               </Box>
