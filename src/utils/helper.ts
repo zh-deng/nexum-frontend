@@ -234,3 +234,13 @@ export function getLocalDatetimeValue(isoString?: string) {
   const minutes = String(now.getMinutes()).padStart(2, "0");
   return `${year}-${month}-${day}T${hours}:${minutes}`;
 }
+
+// Humanize enum label, e.g. "HIGH_PRIORITY" -> "High Priority"
+export function humanizeEnumLabel(key: string) {
+  if (!key) return "";
+  return key
+    .toLowerCase()
+    .split("_")
+    .map((s) => s[0].toUpperCase() + s.slice(1))
+    .join(" ");
+}

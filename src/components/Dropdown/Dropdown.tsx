@@ -1,5 +1,5 @@
 import { Button, DropdownMenu } from "@radix-ui/themes";
-import { humanizeEnumLabel } from "../../utils/humanize";
+import { humanizeEnumLabel } from "../../utils/helper";
 
 type Opt = string | { value: string; label: string };
 
