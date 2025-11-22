@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Nexum",
-  description: "Web app to track job applications",
+  description: "Web app to track and manage job applications",
 };
 
 export default function RootLayout({
@@ -30,11 +30,11 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <Theme
-          appearance="light"
-          accentColor="mint"
-          grayColor="slate"
-          radius="medium"
-          scaling="95%"
+          appearance={"light"}
+          accentColor={"mint"}
+          grayColor={"slate"}
+          radius={"medium"}
+          scaling={"95%"}
         >
           <ClientLayout>
             <Navbar />
