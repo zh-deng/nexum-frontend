@@ -295,55 +295,57 @@ const InterviewCard = ({ data }: InterviewCardProps) => {
   }
 
   return (
-    <div>
-      <Card>
-        <NewBadge date={data.createdAt} />
-        <Flex
-          align={"center"}
-          justify={"between"}
-          gap={"2"}
-          wrap={"wrap-reverse"}
-        >
-          <Flex align={"center"} gap={"4"}>
-            <Text>{formatDateUs(new Date(data.date), true)}</Text>
-            <Box width={"100px"}>
-              <Badge size={"3"}>{data.status}</Badge>
-            </Box>
-          </Flex>
-          <Flex gap={"2"} justify={"end"} width={"100%"}>
-            <InterviewFormContainer form={form} setForm={setForm} />
-            <ReminderFormContainer applicationId={data.applicationId} />
-            <IconButton
-              style={{ cursor: "pointer" }}
-              onClick={() => setShowConfirmationModal(true)}
-              size={"3"}
-              radius="small"
-              color="red"
-            >
-              <TrashIcon width="24" height="24" />
-            </IconButton>
-          </Flex>
-        </Flex>
-        <Flex direction={"column"}>
-          <Text>{data.application.company.name}</Text>
-          <Text>{data.application.jobTitle}</Text>
-        </Flex>
-        {data.notes && (
-          <>
-            <Separator size={"4"} my={"2"} />
-            <Flex direction={"column"}>
-              <Text weight={"medium"}>Notes: </Text>
-              <Text>{data.notes}</Text>
+    <Box height={"100%"}>
+      <Card asChild>
+        <Box height={"100%"}>
+          <NewBadge date={data.createdAt} />
+          <Flex
+            align={"center"}
+            justify={"between"}
+            gap={"2"}
+            wrap={"wrap-reverse"}
+          >
+            <Flex align={"center"} gap={"4"}>
+              <Text>{formatDateUs(new Date(data.date), true)}</Text>
+              <Box width={"100px"}>
+                <Badge size={"3"}>{data.status}</Badge>
+              </Box>
             </Flex>
-          </>
-        )}
+            <Flex gap={"2"} justify={"end"} width={"100%"}>
+              <InterviewFormContainer form={form} setForm={setForm} />
+              <ReminderFormContainer applicationId={data.applicationId} />
+              <IconButton
+                style={{ cursor: "pointer" }}
+                onClick={() => setShowConfirmationModal(true)}
+                size={"3"}
+                radius="small"
+                color="red"
+              >
+                <TrashIcon width="24" height="24" />
+              </IconButton>
+            </Flex>
+          </Flex>
+          <Flex direction={"column"}>
+            <Text>{data.application.company.name}</Text>
+            <Text>{data.application.jobTitle}</Text>
+          </Flex>
+          {data.notes && (
+            <>
+              <Separator size={"4"} my={"2"} />
+              <Flex direction={"column"}>
+                <Text weight={"medium"}>Notes: </Text>
+                <Text>{data.notes}</Text>
+              </Flex>
+            </>
+          )}
+        </Box>
       </Card>
       <ConfirmationModal
         isOpen={showConfirmationModal}
         onConfirmation={handleDeleteInterview}
         onAbortion={() => setShowConfirmationModal(false)}
       />
-    </div>
+    </Box>
   );
 };
 

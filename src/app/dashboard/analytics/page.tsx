@@ -1,8 +1,8 @@
 "use client";
 
-import { Box, Flex, RadioCards, Text } from "@radix-ui/themes";
-import PieChart from "../../../components/PieChart/PieChart";
 import "./analytics.scss";
+import { Box, RadioCards, Text } from "@radix-ui/themes";
+import PieChart from "../../../components/PieChart/PieChart";
 import { useState } from "react";
 import BarChart from "../../../components/BarChart/BarChart";
 import SankeyChart from "../../../components/SankeyChart/SankeyChart";
@@ -102,17 +102,17 @@ const AnalyticsPage = () => {
               onValueChange={(value) => setChartStyle(value as ChartStyle)}
             >
               <RadioCards.Item value={ChartStyle.PIE_CHART}>
-                <Text weight="bold" align={"center"}>
+                <Text weight={"bold"} align={"center"}>
                   Pie Chart
                 </Text>
               </RadioCards.Item>
               <RadioCards.Item value={ChartStyle.BAR_CHART}>
-                <Text weight="bold" align={"center"}>
+                <Text weight={"bold"} align={"center"}>
                   Bar Chart
                 </Text>
               </RadioCards.Item>
               <RadioCards.Item value={ChartStyle.SANKEY_CHART}>
-                <Text weight="bold" align={"center"}>
+                <Text weight={"bold"} align={"center"}>
                   Sankey Chart
                 </Text>
               </RadioCards.Item>
