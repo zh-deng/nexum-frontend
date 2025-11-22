@@ -8,26 +8,28 @@ import { useState } from "react";
 import { InterviewSortType, InterviewStatusFilter } from "../../../types/enums";
 import QueryState from "../../../components/QueryState/QueryState";
 
-const InterviewsPage = () => {
-  const SORT_OPTIONS = [
-    { value: InterviewSortType.NEWEST, label: "Newest" },
-    { value: InterviewSortType.OLDEST, label: "Oldest" },
-  ];
-  const FILTER_OPTIONS = [
-    { value: InterviewStatusFilter.UPCOMING, label: "Upcoming" },
-    { value: InterviewStatusFilter.DONE, label: "Done" },
-    { value: InterviewStatusFilter.ALL, label: "All" },
-  ];
-  const emptyInterviewsState = (
-    <Card className="empty-state">
-      <Flex height={"6rem"} justify={"center"} align={"center"}>
-        <Text size={"4"} weight={"medium"}>
-          No interviews found
-        </Text>
-      </Flex>
-    </Card>
-  );
+const SORT_OPTIONS = [
+  { value: InterviewSortType.NEWEST, label: "Newest" },
+  { value: InterviewSortType.OLDEST, label: "Oldest" },
+];
 
+const FILTER_OPTIONS = [
+  { value: InterviewStatusFilter.UPCOMING, label: "Upcoming" },
+  { value: InterviewStatusFilter.DONE, label: "Done" },
+  { value: InterviewStatusFilter.ALL, label: "All" },
+];
+
+const emptyInterviewsState = (
+  <Card className="empty-state">
+    <Flex height={"6rem"} justify={"center"} align={"center"}>
+      <Text size={"4"} weight={"medium"}>
+        No interviews found
+      </Text>
+    </Flex>
+  </Card>
+);
+
+const InterviewsPage = () => {
   const [sortBy, setSortBy] = useState<InterviewSortType>(
     InterviewSortType.NEWEST,
   );

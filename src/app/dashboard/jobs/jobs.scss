@@ -128,10 +128,6 @@
           @include respond-to(xl) {
             width: calc(33.33% - 0.166rem);
           }
-
-          // @include respond-to(xl) {
-          // 	width: calc(25% - 0.375rem);
-          // }
         }
       }
     }
