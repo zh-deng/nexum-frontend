@@ -1,5 +1,6 @@
 "use client";
 
+import "./ApplicationPreview.scss";
 import {
   Badge,
   Box,
@@ -10,7 +11,6 @@ import {
   Link,
   Text,
 } from "@radix-ui/themes";
-import "./ApplicationPreview.scss";
 import { formatDateUs, getPriorityLabel } from "../../utils/helper";
 import { LogItemDto } from "../../types/dtos/log-item/log-item.dto";
 import {
@@ -27,6 +27,27 @@ import { useToggleFavorite } from "../../hooks/application/useUpdateApplication"
 import { useDeleteApplication } from "../../hooks/application/useDeleteApplication";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 import { useToast } from "../ToastProvider/ToastProvider";
+
+// Helper component to display a label and its corresponding value
+const LabelValue = ({
+  label,
+  value,
+  column = false,
+  gap = "3",
+}: {
+  label: string;
+  value: string | undefined;
+  column?: boolean;
+  gap?: string;
+}) =>
+  value && (
+    <>
+      <Flex direction={column ? "column" : "row"} gap={gap}>
+        <Text weight="medium">{label}:</Text>
+        <Text>{value}</Text>
+      </Flex>
+    </>
+  );
 
 type ApplicationPreviewProps = {
   data: ApplicationDto;
@@ -64,16 +85,24 @@ const ApplicationPreview = ({
     logoUrl,
     notes: companyNotes,
   } = company;
+  const formattedCity =
+    zipCode || city ? `${zipCode ?? ""} ${city ?? ""}` : null;
+  const formattedRegion =
+    state || country ? `${state ?? ""} ${country ?? ""}` : null;
+
+  const priorityBadgeColor =
+    priority === 3 ? "yellow" : priority === 2 ? "orange" : "crimson";
 
   const [showConfirmationModal, setShowConfirmationModal] =
     useState<boolean>(false);
   const [showStatusModal, setShowStatusModal] = useState<boolean>(false);
+
   const toggleFavorite = useToggleFavorite();
   const deleteApplication = useDeleteApplication();
-  const priorityBadgeColor =
-    priority === 3 ? "yellow" : priority === 2 ? "orange" : "crimson";
   const { isSm, isMd } = useBreakpoint();
   const toast = useToast();
+
+  const buttonSize = isMd ? "3" : isSm ? "4" : "3";
 
   function getJobUrl() {
     if (!jobLink) return;
@@ -85,7 +114,6 @@ const ApplicationPreview = ({
   async function handleDeleteApplication() {
     try {
       await deleteApplication.mutateAsync(id);
-
       toast.success("Successfully deleted application");
     } catch (error: unknown) {
       console.error("Delete application error:", error);
@@ -96,7 +124,6 @@ const ApplicationPreview = ({
   async function handleToggleFavorite() {
     try {
       await toggleFavorite.mutateAsync(data.id);
-
       toast.success("Changed favorite");
     } catch (error: unknown) {
       console.error("Toggle favorite error:", error);
@@ -114,7 +141,7 @@ const ApplicationPreview = ({
           <Flex justify={"between"} align={"center"}>
             <Button
               style={{ cursor: "pointer" }}
-              size={isMd ? "3" : isSm ? "4" : "3"}
+              size={buttonSize}
               radius={"small"}
               onClick={() => setShowStatusModal(true)}
             >
@@ -124,32 +151,32 @@ const ApplicationPreview = ({
               <IconButton
                 style={{ cursor: "pointer" }}
                 onClick={handleToggleFavorite}
-                size={isMd ? "3" : isSm ? "4" : "3"}
+                size={buttonSize}
                 radius="small"
                 color={"yellow"}
               >
                 {favorited ? (
-                  <StarFilledIcon width="24" height="24" />
+                  <StarFilledIcon width={"24"} height={"24"} />
                 ) : (
-                  <StarIcon width="24" height="24" />
+                  <StarIcon width={"24"} height={"24"} />
                 )}
               </IconButton>
               <IconButton
                 style={{ cursor: "pointer" }}
                 onClick={editApplication}
-                size={isMd ? "3" : isSm ? "4" : "3"}
-                radius="small"
+                size={buttonSize}
+                radius={"small"}
               >
-                <Pencil2Icon width="24" height="24" />
+                <Pencil2Icon width={"24"} height={"24"} />
               </IconButton>
               <IconButton
                 style={{ cursor: "pointer" }}
                 onClick={() => setShowConfirmationModal(true)}
-                size={isMd ? "3" : isSm ? "4" : "3"}
-                radius="small"
-                color="red"
+                size={buttonSize}
+                radius={"small"}
+                color={"red"}
               >
-                <TrashIcon width="24" height="24" />
+                <TrashIcon width={"24"} height={"24"} />
               </IconButton>
             </Flex>
           </Flex>
@@ -173,30 +200,24 @@ const ApplicationPreview = ({
                     underline="always"
                     weight={"bold"}
                     title={jobLink}
-                    color="indigo"
-                    target="_blank"
-                    rel="noreferrer"
+                    color={"indigo"}
+                    target={"_blank"}
+                    rel={"noopener noreferrer"}
                     truncate
                   >
-                    <Text as="div" truncate>
+                    <Text as={"div"} truncate>
                       {jobLink}
                     </Text>
                   </Link>
                 </Flex>
               </Box>
             )}
-            {jobDescription && (
-              <Flex direction={"column"}>
-                <Text weight={"medium"}>Description:</Text>
-                <Text>{jobDescription}</Text>
-              </Flex>
-            )}
-            {notes && (
-              <Flex direction={"column"}>
-                <Text weight={"medium"}>Job Notes: </Text>
-                <Text>{notes}</Text>
-              </Flex>
-            )}
+            <LabelValue
+              label="Description"
+              value={jobDescription}
+              column={true}
+            />
+            <LabelValue label="Notes" value={notes} column={true} />
             <Card>
               <Flex direction={"column"} gap={"3"}>
                 <Text weight={"bold"} size={"6"}>
@@ -210,15 +231,15 @@ const ApplicationPreview = ({
                     <Flex height={"100%"} align={"center"}>
                       <Link
                         href={website}
-                        underline="always"
+                        underline={"always"}
                         weight={"bold"}
                         title={website}
-                        color="indigo"
-                        target="_blank"
-                        rel="noreferrer"
+                        color={"indigo"}
+                        target={"_blank"}
+                        rel={"noopener noreferrer"}
                         truncate
                       >
-                        <Text as="div" truncate>
+                        <Text as={"div"} truncate>
                           {website}
                         </Text>
                       </Link>
@@ -226,35 +247,19 @@ const ApplicationPreview = ({
                   </Box>
                 )}
                 {(street || zipCode || city || state || country) && (
-                  <Flex direction="column">
+                  <Flex direction={"column"}>
                     <Text weight={"medium"}>Address:</Text>
                     {street && <Text>{street}</Text>}
-                    {(zipCode || city) && (
-                      <Text>
-                        {zipCode && `${zipCode} `}
-                        {city}
-                      </Text>
-                    )}
-                    {(state || country) && (
-                      <Text>
-                        {state && `${state} `}
-                        {country}
-                      </Text>
-                    )}
+                    {formattedCity && <Text>{formattedCity}</Text>}
+                    {formattedRegion && <Text>{formattedRegion}</Text>}
                   </Flex>
                 )}
-                {industry && (
-                  <Flex gap={"3"}>
-                    <Text weight={"medium"}>Industry:</Text>
-                    <Text>{industry}</Text>
-                  </Flex>
-                )}
-                {companySize && (
-                  <Flex gap={"3"}>
-                    <Text weight={"medium"}>Company Size:</Text>
-                    <Text>{companySize} employees</Text>
-                  </Flex>
-                )}
+                <LabelValue label={"Industry"} value={industry} gap={"3"} />
+                <LabelValue
+                  label={"Company Size"}
+                  value={companySize}
+                  gap={"3"}
+                />
                 {(contactName || contactEmail || contactPhone) && (
                   <Flex direction={"column"}>
                     <Text weight={"medium"}>Contact:</Text>
@@ -267,17 +272,16 @@ const ApplicationPreview = ({
                     </Badge>
                   </Flex>
                 )}
-                {companyNotes && (
-                  <Flex direction={"column"}>
-                    <Text weight={"medium"}>Company Notes:</Text>
-                    <Text>{companyNotes}</Text>
-                  </Flex>
-                )}
+                <LabelValue
+                  label={"Company Notes"}
+                  value={companyNotes}
+                  column={true}
+                />
               </Flex>
             </Card>
             <Flex direction={"column"} gap={"2"}>
               <Text weight={"medium"}>History:</Text>
-              {logItems.slice().map((logItem: LogItemDto) => {
+              {logItems.map((logItem: LogItemDto) => {
                 return (
                   <Card key={logItem.id}>
                     <Flex gap={"3"} align={"center"} justify={"between"}>
