@@ -3,6 +3,7 @@
 import { LogItemDto } from "../types/dtos/log-item/log-item.dto";
 import { ApplicationStatus, Priority } from "../types/enums";
 
+// Recursively remove empty string fields from an object
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function removeEmptyStrings(obj: any): any {
   if (Array.isArray(obj)) {
@@ -31,6 +32,7 @@ export function removeEmptyStrings(obj: any): any {
   return cleaned;
 }
 
+// Format date to "MMM DD, YYYY" or "MMM DD, YYYY, HH:MM AM/PM" for US locale
 export function formatDateUs(date: Date, includeTime: boolean = false) {
   return date.toLocaleString(
     "en-US",
@@ -165,6 +167,7 @@ export function getStatusOptions(logItems: LogItemDto[]) {
   return result;
 }
 
+// Get today's date in "YYYY-MM-DD" format
 export const getTodayLocalDate = (): string => {
   const today = new Date();
   const year = today.getFullYear();
@@ -173,6 +176,7 @@ export const getTodayLocalDate = (): string => {
   return `${year}-${month}-${day}`;
 };
 
+// Combine date string "YYYY-MM-DD" with current time if date is today, return ISO string
 export const combineDateWithTime = (dateString: string): string => {
   const [year, month, day] = dateString.split("-").map(Number);
   const isToday = dateString === getTodayLocalDate();
@@ -189,6 +193,7 @@ export const combineDateWithTime = (dateString: string): string => {
   ).toISOString();
 };
 
+// Get enum key by its value
 export function getEnumKeyByValue<T extends Record<string, string | number>>(
   enumObj: T,
   value: T[keyof T],
@@ -198,6 +203,7 @@ export function getEnumKeyByValue<T extends Record<string, string | number>>(
   ) as keyof T | undefined;
 }
 
+// Convert local ISO date-time string to UTC time string "HH:MM"
 export function localTimeToUtc(isoString: string) {
   const date = new Date(isoString);
   return date.toLocaleTimeString("de-DE", {
@@ -207,11 +213,13 @@ export function localTimeToUtc(isoString: string) {
   });
 }
 
+// Convert local ISO date string to UTC date string "YYYY-MM-DD"
 export function localDateToUtc(isoString: string) {
   const date = new Date(isoString);
   return date.toISOString().slice(0, 10);
 }
 
+// Convert UTC ISO date-time string to local date and time parts
 export function convertUtcToLocalParts(isoUtc: string) {
   const d = new Date(isoUtc); // JS Date = same instant, interpreted in your local TZ
   const year = d.getFullYear();
@@ -226,6 +234,7 @@ export function convertUtcToLocalParts(isoUtc: string) {
   };
 }
 
+// Get local datetime string "YYYY-MM-DDTHH:MM" for input fields
 export function getLocalDatetimeValue(isoString?: string) {
   const now = isoString ? new Date(isoString) : new Date();
   const year = now.getFullYear();
