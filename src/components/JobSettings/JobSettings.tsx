@@ -5,28 +5,29 @@ import Dropdown from "../Dropdown/Dropdown";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 import { useState } from "react";
 
-const JobSettings = () => {
-  const ghostedTimeOptions = [
-    "2 Weeks",
-    "3 Weeks",
-    "4 Weeks",
-    "6 Weeks",
-    "8 Weeks",
-    "12 Weeks",
-  ];
-  const { isSm } = useBreakpoint();
+const ghostedTimeOptions = [
+  "2 Weeks",
+  "3 Weeks",
+  "4 Weeks",
+  "6 Weeks",
+  "8 Weeks",
+  "12 Weeks",
+];
 
+const JobSettings = () => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [period, setPeriod] = useState<string>("4 Weeks");
   // TODO add options entity to backend and frontend
   const [ghostingEnabled, setGhostingEnabled] = useState<boolean>(false);
+
+  const { isSm } = useBreakpoint();
 
   function handleGhostingToggle() {
     setGhostingEnabled(!ghostingEnabled);
   }
 
   return (
-    <div className="job-settings">
+    <>
       <IconButton
         size={"4"}
         onClick={() => setModalOpen(true)}
@@ -78,7 +79,7 @@ const JobSettings = () => {
           </Flex>
         </div>
       )}
-    </div>
+    </>
   );
 };
 
