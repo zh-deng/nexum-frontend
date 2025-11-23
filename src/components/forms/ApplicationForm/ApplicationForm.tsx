@@ -2,7 +2,7 @@ import { Button, Card, Flex, IconButton, Text } from "@radix-ui/themes";
 import "./ApplicationForm.scss";
 import { Cross1Icon } from "@radix-ui/react-icons";
 import Dropdown from "../../Dropdown/Dropdown";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import CompanyForm from "../CompanyForm/CompanyForm";
 import { CreateCompanyDto } from "../../../types/dtos/company/create-company.dto";
 import { ApplicationStatus, WorkLocation } from "../../../types/enums";
@@ -23,6 +23,36 @@ import { UpdateApplicationDto } from "../../../types/dtos/application/update-app
 import QueryState from "../../QueryState/QueryState";
 import { useToast } from "../../ToastProvider/ToastProvider";
 
+const defaultCompany: CreateCompanyDto = {
+  name: "",
+  website: "",
+  street: "",
+  city: "",
+  state: "",
+  zipCode: "",
+  country: "",
+  industry: "",
+  companySize: "",
+  contactName: "",
+  contactEmail: "",
+  contactPhone: "",
+  notes: "",
+  logoUrl: "",
+};
+
+const defaultApplication = {
+  jobTitle: "",
+  company: defaultCompany,
+  jobLink: "",
+  jobDescription: "",
+  workLocation: undefined,
+  priority: undefined,
+  notes: "",
+  status: undefined,
+  logItemDate: getLocalDatetimeValue(),
+  fileUrls: [],
+};
+
 type ApplicationFormProps = {
   data?: UpdateApplicationDto;
   onClose: () => void;
@@ -37,63 +67,47 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
     watch,
     resetField,
   } = useForm<CreateApplicationDto | UpdateApplicationDto>({
-    defaultValues: data ?? {
-      jobTitle: "",
-      company: {
-        name: "",
-        website: "",
-        street: "",
-        city: "",
-        state: "",
-        zipCode: "",
-        country: "",
-        industry: "",
-        companySize: "",
-        contactName: "",
-        contactEmail: "",
-        contactPhone: "",
-        notes: "",
-        logoUrl: "",
-      } as CreateCompanyDto,
-      jobLink: "",
-      jobDescription: "",
-      workLocation: undefined,
-      priority: undefined,
-      notes: "",
-      status: undefined,
-      logItemDate: getLocalDatetimeValue(),
-      fileUrls: [],
-    },
+    defaultValues: data ?? defaultApplication,
   });
-
-  const { data: companiesData, isLoading, error } = useCompanies();
-  const createApplication = useCreateApplication();
-  const updateApplication = useUpdateApplication();
-  const [company, setCompany] = useState<string>("Company*");
-  const [showCompanyError, setShowCompanyError] = useState<boolean>(false);
-  const workLocationOptions = ["ON_SITE", "REMOTE", "HYBRID", "UNSURE"].filter(
-    (elem) => elem !== watch("workLocation"),
+  const statusOptions = useMemo(
+    () =>
+      [
+        "DRAFT",
+        "APPLIED",
+        "INTERVIEW",
+        "OFFER",
+        "HIRED",
+        "DECLINED_OFFER",
+        "REJECTED",
+        "GHOSTED",
+        "WITHDRAWN",
+      ].filter((elem) => elem !== watch("status")),
+    [watch("status")],
+  );
+  const workLocationOptions = useMemo(
+    () =>
+      ["ON_SITE", "REMOTE", "HYBRID", "UNSURE"].filter(
+        (elem) => elem !== watch("workLocation"),
+      ),
+    [watch("workLocation")],
   );
   const currentPriority = watch("priority");
   const currentPriorityLabel = currentPriority
     ? getPriorityLabel(currentPriority)
     : "Priority";
-  const priorityOptions = ["HIGH", "MEDIUM", "LOW"].filter(
-    (elem) => elem !== currentPriorityLabel,
+  const priorityOptions = useMemo(
+    () =>
+      ["HIGH", "MEDIUM", "LOW"].filter((elem) => elem !== currentPriorityLabel),
+    [currentPriorityLabel],
   );
-  const toast = useToast();
 
-  const statusOptions = [
-    "DRAFT",
-    "APPLIED",
-    "INTERVIEW",
-    "OFFER",
-    "HIRED",
-    "DECLINED_OFFER",
-    "REJECTED",
-    "GHOSTED",
-    "WITHDRAWN",
-  ].filter((elem) => elem !== watch("status"));
+  const [company, setCompany] = useState<string>("Company*");
+  const [showCompanyError, setShowCompanyError] = useState<boolean>(false);
+
+  const { data: companiesData, isLoading, error } = useCompanies();
+  const createApplication = useCreateApplication();
+  const updateApplication = useUpdateApplication();
+  const toast = useToast();
 
   useEffect(() => {
     if (!data) return;
@@ -101,7 +115,7 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
     setCompany(data.company.name!);
   }, [data?.company]);
 
-  const handleCompanyChange = (selected: string) => {
+  function handleCompanyChange(selected: string) {
     setCompany(selected);
     setShowCompanyError(false);
 
@@ -114,7 +128,10 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
 
       setValue("company", companyData!);
     }
-  };
+  }
+
+  // Dummy file upload handler
+  function handleFileChange() {}
 
   function getCompanyNames(): string[] {
     if (!companiesData) return [];
@@ -127,8 +144,6 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
     ];
   }
 
-  function handleFileChange() {}
-
   async function onSubmit(data: CreateApplicationDto | UpdateApplicationDto) {
     if (company === "Company*") {
       setShowCompanyError(true);
@@ -139,7 +154,6 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
       const cleanedData = removeEmptyStrings(data);
 
       if ("id" in data && data.id) {
-        console.log(cleanedData);
         const {
           createdAt,
           updatedAt,
@@ -151,13 +165,13 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
           company,
           ...rest
         } = cleanedData;
-
         const {
           userId: companyUserId,
           createdAt: companyCreatedAt,
           updatedAt: companyUpdatedAt,
           ...companyRest
         } = company;
+
         await updateApplication.mutateAsync({
           id: data.id,
           data: { company: companyRest, ...rest },
@@ -186,6 +200,7 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
 
         toast.success("Successfully created application");
       }
+
       onClose();
     } catch (error: unknown) {
       console.error("Create or update application error:", error);
@@ -204,7 +219,7 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
           <div>
             <FloatingTextField
               className="radix-textfield"
-              placeholder="Job Title*"
+              placeholder={"Job Title*"}
               {...register("jobTitle", {
                 required: "Job title is required",
                 validate: (value) =>
@@ -219,7 +234,7 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
           <div>
             <FloatingTextField
               className="radix-textfield"
-              placeholder="Job Description"
+              placeholder={"Job Description"}
               {...register("jobDescription")}
               value={watch("jobDescription") ?? ""}
             />
@@ -227,7 +242,7 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
           <div>
             <FloatingTextField
               className="radix-textfield"
-              placeholder="Job Link"
+              placeholder={"Job Link"}
               {...register("jobLink")}
               value={watch("jobLink") ?? ""}
             />
@@ -295,7 +310,7 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
             </label>
             <input
               id="file-upload"
-              type="file"
+              type={"file"}
               multiple
               style={{ display: "none" }}
               onChange={handleFileChange}
@@ -303,19 +318,19 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
           </div>
           <div>
             <FloatingTextArea
-              placeholder="Job Notes"
+              placeholder={"Job Notes"}
               size={"3"}
               {...register("notes")}
               value={watch("notes") ?? ""}
             />
           </div>
           <Button
-            type="submit"
+            type={"submit"}
             style={{ cursor: "pointer" }}
             mt={"4"}
             disabled={isSubmitting}
           >
-            Create
+            {data ? "Update" : "Create"}
           </Button>
         </form>
         <IconButton
@@ -324,8 +339,9 @@ const ApplicationForm = ({ data, onClose }: ApplicationFormProps) => {
           onClick={onClose}
           size={"4"}
           radius={"small"}
+          type={"button"}
         >
-          <Cross1Icon width="32" height="32" />
+          <Cross1Icon width={"32"} height={"32"} />
         </IconButton>
       </div>
     </QueryState>

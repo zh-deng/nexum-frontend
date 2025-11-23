@@ -1,5 +1,7 @@
+import "./Dropdown.scss";
 import { Button, DropdownMenu } from "@radix-ui/themes";
 import { humanizeEnumLabel } from "../../utils/helper";
+import React from "react";
 
 type Opt = string | { value: string; label: string };
 
@@ -11,6 +13,8 @@ type DropdownProps = {
   onChange: (value: string) => void;
 };
 
+const PATTERN = /^[A-Z0-9_]+$/;
+
 const Dropdown = ({
   name,
   options,
@@ -18,16 +22,16 @@ const Dropdown = ({
   width,
   disabled,
 }: DropdownProps) => {
+  const triggerText = PATTERN.test(name) ? humanizeEnumLabel(name) : name;
+
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger
         style={{ width: `${width ?? "100%"}` }}
         disabled={disabled}
       >
-        <Button variant="soft" style={{ cursor: "pointer" }}>
-          {typeof name === "string" && /^[A-Z0-9_]+$/.test(name)
-            ? humanizeEnumLabel(name)
-            : name}
+        <Button variant={"soft"} style={{ cursor: "pointer" }}>
+          {triggerText}
           <DropdownMenu.TriggerIcon />
         </Button>
       </DropdownMenu.Trigger>
@@ -36,22 +40,23 @@ const Dropdown = ({
           const value = typeof option === "string" ? option : option.value;
           let label = typeof option === "string" ? option : option.label;
           // auto-humanize enum-like constants (e.g. DATE_NEW -> Date New)
-          if (typeof option === "string" && /^[A-Z0-9_]+$/.test(option)) {
+          if (typeof option === "string" && PATTERN.test(option)) {
             label = humanizeEnumLabel(option);
           }
+
           return (
-            <div key={value}>
+            <React.Fragment key={value}>
               <DropdownMenu.Item
                 style={{
                   width: "var(--radix-popper-anchor-width)",
                   textAlign: "center",
                 }}
-                onSelect={() => onChange(value)}
+                onClick={() => onChange(value)}
               >
-                <p style={{ width: "100%" }}>{label}</p>
+                <span style={{ width: "100%" }}>{label}</span>
               </DropdownMenu.Item>
               {index !== options.length - 1 && <DropdownMenu.Separator />}
-            </div>
+            </React.Fragment>
           );
         })}
       </DropdownMenu.Content>
