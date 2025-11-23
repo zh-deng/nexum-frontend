@@ -14,14 +14,13 @@ import "./InterviewCard.scss";
 import { formatDateUs, getLocalDatetimeValue } from "../../utils/helper";
 import { ClockIcon, Pencil2Icon, TrashIcon } from "@radix-ui/react-icons";
 import ConfirmationModal from "../ConfirmationModal/ConfirmationModal";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import FloatingTextField from "../FloatingTextField/FloatingTextField";
 import FloatingTextArea from "../FloatingTextArea/FloatingTextArea";
 import { useUpdateInterview } from "../../hooks/interview/useUpdateInterview";
 import { useDeleteInterview } from "../../hooks/interview/useDeleteInterview";
 import { useCreateReminder } from "../../hooks/reminder/useCreateReminder";
 import NewBadge from "../NewBadge/NewBadge";
-import { useBreakpoint } from "../../hooks/useBreakpoint";
 import { useRouter } from "next/navigation";
 import { useToast } from "../ToastProvider/ToastProvider";
 
@@ -35,7 +34,8 @@ const InterviewFormContainer = ({
   form,
   setForm,
 }: InterviewFormContainerProps) => {
-  const [initialSnapshot] = useState<InterviewForm>(form);
+  const initialSnapshot = useRef(form).current;
+
   const updateInterview = useUpdateInterview();
   const toast = useToast();
 
@@ -92,16 +92,16 @@ const InterviewFormContainer = ({
         </IconButton>
       </Dialog.Trigger>
 
-      <Dialog.Content maxWidth="300px">
+      <Dialog.Content maxWidth={"300px"}>
         <Dialog.Title>Edit interview</Dialog.Title>
-        <Flex direction="column" gap="3">
+        <Flex direction={"column"} gap={"3"}>
           <Box width={"180px"}>
-            <Text as="div" size="2" mb="1" weight="bold">
+            <Text as={"div"} size={"2"} mb={"1"} weight={"bold"}>
               Date
             </Text>
             <FloatingTextField
-              placeholder="Date"
-              type="datetime-local"
+              placeholder={"Date"}
+              type={"datetime-local"}
               isFloating={false}
               value={getLocalDatetimeValue(form.date)}
               onChange={(value) =>
@@ -109,13 +109,12 @@ const InterviewFormContainer = ({
               }
             />
           </Box>
-
           <Box>
-            <Text as="div" size="2" mb="1" weight="bold">
+            <Text as={"div"} size={"2"} mb={"1"} weight={"bold"}>
               Notes
             </Text>
             <FloatingTextArea
-              placeholder="Notes"
+              placeholder={"Notes"}
               value={form.notes}
               isFloating={false}
               size={"3"}
@@ -125,10 +124,9 @@ const InterviewFormContainer = ({
             />
           </Box>
         </Flex>
-
-        <Flex gap="3" mt="4" justify="end">
+        <Flex gap={"3"} mt={"4"} justify={"end"}>
           <Dialog.Close>
-            <Button variant="soft" color="gray" onClick={handleClose}>
+            <Button variant={"soft"} color={"gray"} onClick={handleClose}>
               Cancel
             </Button>
           </Dialog.Close>
@@ -158,8 +156,10 @@ const ReminderFormContainer = ({
     alarmDate: getLocalDatetimeValue(),
     message: "",
   };
-  const router = useRouter();
+
   const [form, setForm] = useState<ReminderForm>(intialValues);
+
+  const router = useRouter();
   const createReminder = useCreateReminder();
   const toast = useToast();
 
@@ -209,17 +209,16 @@ const ReminderFormContainer = ({
         </IconButton>
       </Dialog.Trigger>
 
-      <Dialog.Content maxWidth="300px">
+      <Dialog.Content maxWidth={"300px"}>
         <Dialog.Title>Create Reminder</Dialog.Title>
-
-        <Flex direction="column" gap="3">
+        <Flex direction={"column"} gap={"3"}>
           <Box width={"180px"}>
-            <Text as="div" size="2" mb="1" weight="bold">
+            <Text as={"div"} size={"2"} mb={"1"} weight={"bold"}>
               Alarm Date
             </Text>
             <FloatingTextField
-              placeholder="Alarm Date"
-              type="datetime-local"
+              placeholder={"Alarm Date"}
+              type={"datetime-local"}
               isFloating={false}
               value={getLocalDatetimeValue(form.alarmDate)}
               onChange={(value) =>
@@ -227,13 +226,12 @@ const ReminderFormContainer = ({
               }
             />
           </Box>
-
           <Box>
-            <Text as="div" size="2" mb="1" weight="bold">
+            <Text as={"div"} size={"2"} mb={"1"} weight={"bold"}>
               Message
             </Text>
             <FloatingTextArea
-              placeholder="Message"
+              placeholder={"Message"}
               value={form.message}
               isFloating={false}
               size={"3"}
@@ -243,10 +241,9 @@ const ReminderFormContainer = ({
             />
           </Box>
         </Flex>
-
-        <Flex gap="3" mt="4" justify="end">
+        <Flex gap={"3"} mt={"4"} justify={"end"}>
           <Dialog.Close>
-            <Button variant="soft" color="gray" onClick={handleClose}>
+            <Button variant={"soft"} color={"gray"} onClick={handleClose}>
               Cancel
             </Button>
           </Dialog.Close>
@@ -280,12 +277,13 @@ const InterviewCard = ({ data }: InterviewCardProps) => {
   const [showConfirmationModal, setShowConfirmationModal] =
     useState<boolean>(false);
   const [form, setForm] = useState<InterviewForm>(initialForm);
+
   const deleteInterview = useDeleteInterview();
   const toast = useToast();
 
   async function handleDeleteInterview() {
     try {
-      deleteInterview.mutateAsync(data.id);
+      await deleteInterview.mutateAsync(data.id);
 
       toast.success("Successfully deleted interview");
     } catch (error: unknown) {
@@ -318,10 +316,10 @@ const InterviewCard = ({ data }: InterviewCardProps) => {
                 style={{ cursor: "pointer" }}
                 onClick={() => setShowConfirmationModal(true)}
                 size={"3"}
-                radius="small"
-                color="red"
+                radius={"small"}
+                color={"red"}
               >
-                <TrashIcon width="24" height="24" />
+                <TrashIcon width={"24"} height={"24"} />
               </IconButton>
             </Flex>
           </Flex>
