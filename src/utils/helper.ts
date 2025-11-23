@@ -121,7 +121,7 @@ export function calculateDays(logItems: LogItemDto[]) {
     return `${recentDays}D ${totalDays ? ` / ${totalDays}D` : ""}`;
   }
 }
-
+// Get available status options based on existing log items
 export function getStatusOptions(logItems: LogItemDto[]) {
   const statusOptions = [
     ApplicationStatus.DRAFT,

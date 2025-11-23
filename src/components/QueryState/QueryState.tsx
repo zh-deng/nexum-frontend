@@ -8,6 +8,7 @@ type QueryStateProps = {
   children: React.ReactNode;
 };
 
+// Component to handle loading, error, and success states of a query
 const QueryState = ({
   isLoading,
   isPending,

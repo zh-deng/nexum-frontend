@@ -1,39 +1,24 @@
-import { LoginDto, SignUpDto } from "../../types/auth";
+import {
+  LoginDto,
+  LoginResponse,
+  SignUpDto,
+  SignUpResponse,
+} from "../../types/auth";
 import { API_BASE } from "../../utils/environment";
+import { apiClient } from "../api-client";
 
-export async function signupUser(data: SignUpDto) {
-  const res = await fetch(`${API_BASE}/auth/signup`, {
+export async function signupUser(data: SignUpDto): Promise<SignUpResponse> {
+  return apiClient<SignUpResponse>(`/auth/signup`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
     body: JSON.stringify(data),
   });
-
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error.message || "Signup failed");
-  }
-
-  return await res.json();
 }
 
-export async function loginUser(data: LoginDto) {
-  const res = await fetch(`${API_BASE}/auth/login`, {
+export async function loginUser(data: LoginDto): Promise<LoginResponse> {
+  return apiClient<LoginResponse>(`/auth/login`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    credentials: "include",
     body: JSON.stringify(data),
   });
-
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error.message || "Login failed");
-  }
-
-  return await res.json();
 }
 
 export async function logoutUser() {

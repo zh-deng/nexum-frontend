@@ -50,8 +50,8 @@ const StatusInputContainer = ({
   const [showConfirmationModal, setShowConfirmationModal] =
     useState<boolean>(false);
   const [statusError, setStatusError] = useState<string>("");
-  const toast = useToast();
 
+  const toast = useToast();
   const createLogItem = useCreateLogItem();
   const updateLogItem = useUpdateLogItem();
   const deleteLogItem = useDeleteLogItem();
@@ -137,7 +137,7 @@ const StatusInputContainer = ({
         <Flex direction={"column"} gap={"4"}>
           <Flex justify={"between"} wrap={"wrap"} gap={"4"}>
             <Dropdown
-              width="50%"
+              width={"50%"}
               name={form.status || "Status"}
               options={options}
               onChange={(value) =>
@@ -154,7 +154,7 @@ const StatusInputContainer = ({
             />
           </Flex>
           <FloatingTextArea
-            placeholder="Notes"
+            placeholder={"Notes"}
             size={"3"}
             value={form.notes}
             onChange={(value) =>
@@ -228,6 +228,7 @@ const StatusModal = ({
   logItems,
   onClose,
 }: StatusModalProps) => {
+  const statusOptions = getStatusOptions(logItems);
   const initialForm = {
     id: null,
     status: "",
@@ -235,7 +236,6 @@ const StatusModal = ({
     notes: "",
   };
 
-  const statusOptions = getStatusOptions(logItems);
   const [form, setForm] = useState<LogItemForm>(initialForm);
 
   function openStatusForm(logItem?: LogItemDto) {
