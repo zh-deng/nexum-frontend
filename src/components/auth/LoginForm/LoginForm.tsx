@@ -1,10 +1,12 @@
 "use client";
 
-import { useForm } from "react-hook-form";
 import "./LoginForm.scss";
+import { useForm } from "react-hook-form";
 import { Button, Checkbox, Flex, Text } from "@radix-ui/themes";
 import FloatingTextField from "../../FloatingTextField/FloatingTextField";
 import { useEffect, useState } from "react";
+import { validateEmail } from "../../../utils/helper";
+import { DEMO_EMAIL, DEMO_PASSWORD } from "../../../utils/environment";
 
 export type LoginFormData = {
   email: string;
@@ -24,14 +26,15 @@ const LoginForm = ({ onSubmit, defaultValues }: LoginFormProps) => {
     formState: { errors, isSubmitting },
   } = useForm<LoginFormData>({
     defaultValues,
+    mode: "onBlur",
+    reValidateMode: "onBlur",
   });
-
   const [isDemo, setIsDemo] = useState<boolean>(true);
 
   useEffect(() => {
     if (isDemo) {
-      setValue("email", "test@gmail.com");
-      setValue("password", "password");
+      setValue("email", DEMO_EMAIL);
+      setValue("password", DEMO_PASSWORD);
     } else {
       setValue("email", "");
       setValue("password", "");
@@ -40,7 +43,6 @@ const LoginForm = ({ onSubmit, defaultValues }: LoginFormProps) => {
 
   return (
     <form className="login-form" onSubmit={handleSubmit(onSubmit)}>
-      {/* TODO handle email input better and validation */}
       <Text>
         <Flex gap={"2"} align={"center"}>
           <Checkbox
@@ -54,18 +56,24 @@ const LoginForm = ({ onSubmit, defaultValues }: LoginFormProps) => {
       <div>
         <FloatingTextField
           className="radix-textfield"
-          placeholder="Email"
-          type="email"
-          {...register("email", { required: "Email is required" })}
+          placeholder={"Email"}
+          type={"email"}
           disabled={isDemo}
+          {...register("email", {
+            required: "Email is required",
+            validate: {
+              isValid: (value) =>
+                validateEmail(value) || "Please enter a valid email address",
+            },
+          })}
         />
         {errors.email && <span className="error">{errors.email.message}</span>}
       </div>
       <div>
         <FloatingTextField
           className="radix-textfield"
-          placeholder="Password"
-          type="password"
+          placeholder={"Password"}
+          type={"password"}
           {...register("password", { required: "Password is required" })}
           disabled={isDemo}
         />
@@ -74,7 +82,7 @@ const LoginForm = ({ onSubmit, defaultValues }: LoginFormProps) => {
         )}
       </div>
       <Button
-        type="submit"
+        type={"submit"}
         style={{ cursor: "pointer" }}
         mt={"4"}
         disabled={isSubmitting}

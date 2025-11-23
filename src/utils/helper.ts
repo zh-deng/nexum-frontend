@@ -245,3 +245,10 @@ export function humanizeEnumLabel(key: string) {
     .map((s) => s[0].toUpperCase() + s.slice(1))
     .join(" ");
 }
+
+// Simple email validation
+export function validateEmail(email: string): boolean {
+  const pattern =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@(([^<>()[\]\\.,;:\s@"]+\.)+[^<>()[\]\\.,;:\s@"]{2,})$/i;
+  return pattern.test(String(email).toLowerCase());
+}
