@@ -5,9 +5,20 @@ export type SignUpDto = {
   signupAccessCode: string;
 };
 
+export type SignUpResponse = {
+  id: string;
+  username: string;
+  email: string;
+};
+
 export type LoginDto = {
   email: string;
   password: string;
+};
+
+export type LoginResponse = {
+  id: string;
+  email: string;
 };
 
 export type AuthUser = {

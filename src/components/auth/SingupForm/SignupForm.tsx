@@ -4,6 +4,7 @@ import { Button, Text } from "@radix-ui/themes";
 import "./SignupForm.scss";
 import { useForm } from "react-hook-form";
 import FloatingTextField from "../../FloatingTextField/FloatingTextField";
+import { validateEmail } from "../../../utils/helper";
 
 export type SignUpFormData = {
   username: string;
@@ -26,9 +27,9 @@ const SignupForm = ({ onSubmit, defaultValues }: SignupFormProps) => {
     formState: { errors, isSubmitting },
   } = useForm<SignUpFormData>({
     defaultValues,
+    mode: "onBlur",
+    reValidateMode: "onBlur",
   });
-
-  const password = watch("password");
 
   return (
     <form className="signup-form" onSubmit={handleSubmit(onSubmit)}>
@@ -43,21 +44,26 @@ const SignupForm = ({ onSubmit, defaultValues }: SignupFormProps) => {
           <span className="error">{errors.username.message}</span>
         )}
       </div>
-      {/* TODO handle email input better and validation */}
       <div>
         <FloatingTextField
           className="radix-textfield"
           placeholder="Email"
           type="email"
-          {...register("email", { required: "Email is required" })}
+          {...register("email", {
+            required: "Email is required",
+            validate: {
+              isValid: (value) =>
+                validateEmail(value) || "Please enter a valid email address",
+            },
+          })}
         />
         {errors.email && <span className="error">{errors.email.message}</span>}
       </div>
       <div>
         <FloatingTextField
           className="radix-textfield"
-          placeholder="Password"
-          type="password"
+          placeholder={"Password"}
+          type={"password"}
           {...register("password", { required: "Password is required" })}
         />
         {errors.password && (
@@ -67,11 +73,12 @@ const SignupForm = ({ onSubmit, defaultValues }: SignupFormProps) => {
       <div>
         <FloatingTextField
           className="radix-textfield"
-          placeholder="Repeat-Password"
-          type="password"
+          placeholder={"Repeat-Password"}
+          type={"password"}
           {...register("repeatPassword", {
             required: "Please confirm your password",
-            validate: (value) => value === password || "Passwords do not match",
+            validate: (value) =>
+              value === watch("password") || "Passwords do not match",
           })}
         />
         {errors.repeatPassword && (
@@ -84,8 +91,8 @@ const SignupForm = ({ onSubmit, defaultValues }: SignupFormProps) => {
       <div>
         <FloatingTextField
           className="radix-textfield"
-          placeholder="Signup Access Code"
-          type="text"
+          placeholder={"Signup Access Code"}
+          type={"text"}
           {...register("signupAccessCode", {
             required: "Invite code is required",
           })}
@@ -95,7 +102,7 @@ const SignupForm = ({ onSubmit, defaultValues }: SignupFormProps) => {
         )}
       </div>
       <Button
-        type="submit"
+        type={"submit"}
         style={{ cursor: "pointer" }}
         mt={"4"}
         disabled={isSubmitting}

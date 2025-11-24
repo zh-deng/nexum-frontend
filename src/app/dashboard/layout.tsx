@@ -1,3 +1,5 @@
+"use client";
+
 import "./dashboard.scss";
 import BottomMenu from "../../components/BottomMenu/BottomMenu";
 

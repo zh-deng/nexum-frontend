@@ -16,14 +16,14 @@ type CompanyFormProps = {
 };
 
 const CompanyForm = ({ register, watch, errors }: CompanyFormProps) => {
-  const [extraInfoRequired, setExtraInfoRequired] = useState<boolean>(false);
-
   const companyValues: (CreateCompanyDto | UpdateCompanyDto) & {
     id?: string;
     userId?: string;
     createdAt?: string;
     updatedAt?: string;
   } = watch("company");
+
+  const [extraInfoRequired, setExtraInfoRequired] = useState<boolean>(false);
 
   useEffect(() => {
     if (!companyValues) return;
@@ -45,7 +45,7 @@ const CompanyForm = ({ register, watch, errors }: CompanyFormProps) => {
       <div>
         <FloatingTextField
           className="radix-textfield"
-          placeholder="Company Name*"
+          placeholder={"Company Name*"}
           {...register("company.name", {
             required: "Company name is required",
             validate: (value) =>
@@ -62,7 +62,7 @@ const CompanyForm = ({ register, watch, errors }: CompanyFormProps) => {
           <div>
             <FloatingTextField
               className="radix-textfield"
-              placeholder="Website"
+              placeholder={"Website"}
               {...register("company.website")}
               value={watch("company.website") ?? ""}
             />
@@ -70,7 +70,7 @@ const CompanyForm = ({ register, watch, errors }: CompanyFormProps) => {
           <div>
             <FloatingTextField
               className="radix-textfield"
-              placeholder="Street"
+              placeholder={"Street"}
               {...register("company.street")}
               value={watch("company.street") ?? ""}
             />
@@ -78,7 +78,7 @@ const CompanyForm = ({ register, watch, errors }: CompanyFormProps) => {
           <div>
             <FloatingTextField
               className="radix-textfield"
-              placeholder="City"
+              placeholder={"City"}
               {...register("company.city")}
               value={watch("company.city") ?? ""}
             />
@@ -86,7 +86,7 @@ const CompanyForm = ({ register, watch, errors }: CompanyFormProps) => {
           <div>
             <FloatingTextField
               className="radix-textfield"
-              placeholder="State"
+              placeholder={"State"}
               {...register("company.state")}
               value={watch("company.state") ?? ""}
             />
@@ -94,7 +94,7 @@ const CompanyForm = ({ register, watch, errors }: CompanyFormProps) => {
           <div>
             <FloatingTextField
               className="radix-textfield"
-              placeholder="ZIP Code"
+              placeholder={"ZIP Code"}
               {...register("company.zipCode")}
               value={watch("company.zipCode") ?? ""}
             />
@@ -102,7 +102,7 @@ const CompanyForm = ({ register, watch, errors }: CompanyFormProps) => {
           <div>
             <FloatingTextField
               className="radix-textfield"
-              placeholder="Country"
+              placeholder={"Country"}
               {...register("company.country")}
               value={watch("company.country") ?? ""}
             />
@@ -110,7 +110,7 @@ const CompanyForm = ({ register, watch, errors }: CompanyFormProps) => {
           <div>
             <FloatingTextField
               className="radix-textfield"
-              placeholder="Industry"
+              placeholder={"Industry"}
               {...register("company.industry")}
               value={watch("company.industry") ?? ""}
             />
@@ -118,7 +118,7 @@ const CompanyForm = ({ register, watch, errors }: CompanyFormProps) => {
           <div>
             <FloatingTextField
               className="radix-textfield"
-              placeholder="Company Size"
+              placeholder={"Company Size"}
               {...register("company.companySize")}
               value={watch("company.companySize") ?? ""}
             />
@@ -126,7 +126,7 @@ const CompanyForm = ({ register, watch, errors }: CompanyFormProps) => {
           <div>
             <FloatingTextField
               className="radix-textfield"
-              placeholder="Contact Name"
+              placeholder={"Contact Name"}
               {...register("company.contactName")}
               value={watch("company.contactName") ?? ""}
             />
@@ -134,7 +134,7 @@ const CompanyForm = ({ register, watch, errors }: CompanyFormProps) => {
           <div>
             <FloatingTextField
               className="radix-textfield"
-              placeholder="Contact Email"
+              placeholder={"Contact Email"}
               {...register("company.contactEmail")}
               value={watch("company.contactEmail") ?? ""}
             />
@@ -143,14 +143,14 @@ const CompanyForm = ({ register, watch, errors }: CompanyFormProps) => {
           <div>
             <FloatingTextField
               className="radix-textfield"
-              placeholder="Contact Phone"
+              placeholder={"Contact Phone"}
               {...register("company.contactPhone")}
               value={watch("company.contactPhone") ?? ""}
             />
           </div>
           <div>
             <FloatingTextArea
-              placeholder="Company Notes"
+              placeholder={"Company Notes"}
               size={"3"}
               {...register("company.notes")}
               value={watch("company.notes") ?? ""}
@@ -160,6 +160,7 @@ const CompanyForm = ({ register, watch, errors }: CompanyFormProps) => {
       ) : (
         <div>
           <Button
+            type={"button"}
             style={{ cursor: "pointer" }}
             onClick={() => setExtraInfoRequired(true)}
           >

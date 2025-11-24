@@ -1,6 +1,7 @@
 import { Box, Card, Flex, Text } from "@radix-ui/themes";
 import "./ComingUpCard.scss";
 
+// A card component to indicate that a feature is coming soon
 const ComingUpCard = () => {
   return (
     <div className="coming-up-card">

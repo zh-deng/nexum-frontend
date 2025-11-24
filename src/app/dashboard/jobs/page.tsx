@@ -1,5 +1,6 @@
 "use client";
 
+import "./jobs.scss";
 import {
   Card,
   ChevronDownIcon,
@@ -7,9 +8,8 @@ import {
   IconButton,
   Text,
 } from "@radix-ui/themes";
-import "./jobs.scss";
 import { ChevronUpIcon, PlusIcon } from "@radix-ui/react-icons";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import ApplicationForm from "../../../components/forms/ApplicationForm/ApplicationForm";
 import { useApplications } from "../../../hooks/application/useApplications";
 import ApplicationCard from "../../../components/ApplicationCard/ApplicationCard";
@@ -20,24 +20,26 @@ import { useDebounce } from "../../../hooks/useDebounce";
 import PaginationControls from "../../../components/PaginationControls/PaginationControls";
 import JobOptions from "../../../components/JobSettings/JobSettings";
 import QueryState from "../../../components/QueryState/QueryState";
+import ApplicationPreview from "../../../components/ApplicationPreview/ApplicationPreview";
+import { ApplicationDto } from "../../../types/dtos/application/application.dto";
+import { useBreakpoint } from "../../../hooks/useBreakpoint";
 
 const JobsPage = () => {
-  const [showAppForm, setShowAppForm] = useState<boolean>(false);
-  const [showUpdateAppForm, setShowUpdateAppForm] = useState<boolean>(false);
+  const [activeForm, setActiveForm] = useState<"create" | "update" | null>(
+    null,
+  );
   const [showFilterOptions, setShowFilterOptions] = useState<boolean>(false);
-  const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
-
-  const pageRef = useRef<HTMLDivElement>(null);
-
+  const [expandedCard, setExpandedCard] = useState<ApplicationDto | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(20);
   const [statusFilter, setStatusFilter] = useState<string>("");
   const [sortBy, setSortBy] = useState<SortType>(SortType.DATE_NEW);
 
-  // Debounce search
-  const debouncedSearch = useDebounce(searchQuery, 300);
+  const pageRef = useRef<HTMLDivElement>(null);
 
+  const { isSm, isMd } = useBreakpoint();
+  const debouncedSearch = useDebounce(searchQuery, 300);
   const { data, isLoading, error } = useApplications({
     searchQuery: debouncedSearch,
     status: statusFilter,
@@ -52,11 +54,11 @@ const JobsPage = () => {
   const sortOptions = Object.values(SortType).filter(
     (option) => option !== sortBy,
   );
-
   const statusOptions = ["ALL", ...Object.values(ApplicationStatus)].filter(
     (option) => option !== statusFilter,
   );
 
+  // Memoized sorted applications with favorited ones on top
   const favoritedApplications = useMemo(() => {
     if (!applications) return [];
 
@@ -65,39 +67,26 @@ const JobsPage = () => {
       .sort((a, b) => Number(b.favorited) - Number(a.favorited));
   }, [applications]);
 
-  function openUpdateAppForm() {
-    setShowUpdateAppForm(true);
-    scrollToTop();
+  useEffect(() => {
+    // Expand the first favorited application card on medium screens or above
+    if (isMd) {
+      setExpandedCard(favoritedApplications[0]);
+    }
+  }, [favoritedApplications, isMd]);
+
+  function scrollToTop() {
+    pageRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  function openAppForm() {
-    setShowAppForm(true);
+  function openAppForm(isUpdate: boolean = false) {
+    isUpdate ? setActiveForm("update") : setActiveForm("create");
     scrollToTop();
-  }
-
-  function closeUpdateAppForm() {
-    setShowUpdateAppForm(false);
-    setExpandedCardId(null);
   }
 
   function closeAppForm() {
-    setShowAppForm(false);
-    setExpandedCardId(null);
-  }
-
-  function scrollToTop() {
-    if (pageRef.current) {
-      pageRef.current.scrollTop = 0;
-    }
-    window.scrollTo(0, 0);
-  }
-
-  function toggleSortFilter() {
-    setShowFilterOptions(!showFilterOptions);
-  }
-
-  function updateSort(selected: string) {
-    setSortBy(selected as SortType);
+    setActiveForm(null);
+    !isMd && setExpandedCard(null);
   }
 
   // Reset to page 1 when search or filters change
@@ -107,7 +96,7 @@ const JobsPage = () => {
   }
 
   function handleStatusChange(value: string) {
-    setStatusFilter(value === "All" ? "" : value);
+    setStatusFilter(value === "ALL" ? "" : value);
     setCurrentPage(1);
   }
 
@@ -119,13 +108,13 @@ const JobsPage = () => {
   return (
     <QueryState isLoading={isLoading} error={error}>
       <div
-        className={`jobs-page ${showAppForm || showUpdateAppForm ? "no-scroll" : ""}`}
+        className={`jobs-page ${activeForm ? "no-scroll" : ""}`}
         ref={pageRef}
       >
         <div className="sort-filter-container">
           <Flex align={"center"} gap={"4"}>
             <Card
-              onClick={toggleSortFilter}
+              onClick={() => setShowFilterOptions((s) => !s)}
               style={{ flex: 1, cursor: "pointer" }}
             >
               <Flex align={"center"} justify={"center"} gap={"2"}>
@@ -143,7 +132,7 @@ const JobsPage = () => {
                   <Dropdown
                     name={sortBy}
                     options={sortOptions}
-                    onChange={updateSort}
+                    onChange={(value) => setSortBy(value as SortType)}
                   />
                 </div>
               </div>
@@ -193,29 +182,34 @@ const JobsPage = () => {
         )}
         <div className="job-container">
           {applications.length === 0 ? (
-            <Card className="empty-state">
-              <Flex height={"6rem"} justify={"center"} align={"center"}>
-                <Text size={"4"} weight={"medium"}>
-                  {searchQuery || statusFilter
-                    ? "No applications found"
-                    : "No applications yet"}
-                </Text>
-              </Flex>
-            </Card>
+            <EmptyApplicationsState
+              hasFilters={!!(searchQuery || statusFilter)}
+            />
           ) : (
-            favoritedApplications.map((app) => (
-              <div className="application-card-wrapper" key={app.id}>
-                <ApplicationCard
-                  data={app}
-                  expandedCardId={expandedCardId}
-                  setExpandedCardId={setExpandedCardId}
-                  editApplication={openUpdateAppForm}
-                />
-                {showUpdateAppForm && expandedCardId === app.id && (
-                  <ApplicationForm data={app} onClose={closeUpdateAppForm} />
-                )}
-              </div>
-            ))
+            <Flex gap={"2"} direction={isSm ? "row" : "column"}>
+              <Card className="container-wrapper">
+                <div className="application-card-container">
+                  {favoritedApplications.map((app) => (
+                    <div className="application-card-wrapper" key={app.id}>
+                      <ApplicationCard
+                        data={app}
+                        expandedCard={expandedCard}
+                        setExpandedCard={setExpandedCard}
+                        editApplication={() => openAppForm(true)}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </Card>
+              {isMd && expandedCard && (
+                <div className="application-preview-wrapper">
+                  <ApplicationPreview
+                    data={expandedCard}
+                    editApplication={() => openAppForm(true)}
+                  />
+                </div>
+              )}
+            </Flex>
           )}
         </div>
         {pagination && pagination.totalPages > 1 && (
@@ -228,15 +222,34 @@ const JobsPage = () => {
         <IconButton
           style={{ cursor: "pointer" }}
           className="add-button"
-          variant="surface"
-          onClick={openAppForm}
+          variant={"surface"}
+          onClick={() => openAppForm()}
         >
-          <PlusIcon width="32" height="32" />
+          <PlusIcon width={"32"} height={"32"} />
         </IconButton>
-        {showAppForm && <ApplicationForm onClose={closeAppForm} />}
+        {activeForm === "create" && (
+          <ApplicationForm key={"create-new"} onClose={closeAppForm} />
+        )}
+        {activeForm === "update" && expandedCard && (
+          <ApplicationForm
+            key={`edit-${expandedCard.id}`}
+            data={expandedCard}
+            onClose={closeAppForm}
+          />
+        )}
       </div>
     </QueryState>
   );
 };
+
+const EmptyApplicationsState = ({ hasFilters }: { hasFilters: boolean }) => (
+  <Card className="empty-state">
+    <Flex height={"6rem"} justify={"center"} align={"center"}>
+      <Text size={"4"} weight={"medium"}>
+        {hasFilters ? "No applications found" : "No applications yet"}
+      </Text>
+    </Flex>
+  </Card>
+);
 
 export default JobsPage;

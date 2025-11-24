@@ -4,34 +4,34 @@ import { usePathname, useRouter } from "next/navigation";
 import "./BottomMenu.scss";
 import { SegmentedControl, Separator } from "@radix-ui/themes";
 import { useEffect, useState } from "react";
-import { useBreakpoint } from "../../hooks/useBreakpoint";
 
 type MenuItem = {
   name: string;
   route: string;
 };
 
+const menuItems: MenuItem[] = [
+  {
+    name: "Jobs",
+    route: "jobs",
+  },
+  {
+    name: "Interviews",
+    route: "interviews",
+  },
+  {
+    name: "Reminders",
+    route: "reminders",
+  },
+  {
+    name: "Analytics",
+    route: "analytics",
+  },
+];
+
 const BottomMenu = () => {
   const router = useRouter();
   const pathname = usePathname();
-  const menuItems: MenuItem[] = [
-    {
-      name: "Jobs",
-      route: "jobs",
-    },
-    {
-      name: "Interviews",
-      route: "interviews",
-    },
-    {
-      name: "Reminders",
-      route: "reminders",
-    },
-    {
-      name: "Analytics",
-      route: "analytics",
-    },
-  ];
   const currentRoute = pathname.split("/").pop() || "jobs";
   const [activeItem, setActiveItem] = useState<string>(currentRoute);
 
@@ -49,7 +49,7 @@ const BottomMenu = () => {
       <div className="desktop-only">
         <SegmentedControl.Root
           value={activeItem}
-          radius="medium"
+          radius={"medium"}
           size={"3"}
           onValueChange={(v) => navigateTo(v)}
         >
@@ -76,7 +76,7 @@ const BottomMenu = () => {
               {item.name}
             </div>
             {index !== menuItems.length - 1 && (
-              <Separator orientation="vertical" size={"4"} />
+              <Separator orientation={"vertical"} size={"4"} />
             )}
           </div>
         ))}

@@ -4,25 +4,17 @@ import {
   SankeyChartData,
 } from "../../types/dtos/chart.dto";
 import { TimeFrameType } from "../../types/enums";
-import { API_BASE } from "../../utils/environment";
 import { getEnumKeyByValue } from "../../utils/helper";
+import { apiClient } from "../api-client";
 
 export async function getPieChartData(
   timeFrame: TimeFrameType,
 ): Promise<PieChartData> {
   const convertedTimeFrame = getEnumKeyByValue(TimeFrameType, timeFrame);
 
-  const res = await fetch(`${API_BASE}/charts/pie/${convertedTimeFrame}`, {
+  return apiClient<PieChartData>(`/charts/pie/${convertedTimeFrame}`, {
     method: "GET",
-    credentials: "include",
   });
-
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error.message || "Fetching pie chart data failed");
-  }
-
-  return await res.json();
 }
 
 export async function getBarChartData(
@@ -30,17 +22,9 @@ export async function getBarChartData(
 ): Promise<BarChartData> {
   const convertedTimeFrame = getEnumKeyByValue(TimeFrameType, timeFrame);
 
-  const res = await fetch(`${API_BASE}/charts/bar/${convertedTimeFrame}`, {
+  return apiClient<BarChartData>(`/charts/bar/${convertedTimeFrame}`, {
     method: "GET",
-    credentials: "include",
   });
-
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error.message || "Fetching bar chart data failed");
-  }
-
-  return await res.json();
 }
 
 export async function getSankeyChartData(
@@ -48,15 +32,7 @@ export async function getSankeyChartData(
 ): Promise<SankeyChartData> {
   const convertedTimeFrame = getEnumKeyByValue(TimeFrameType, timeFrame);
 
-  const res = await fetch(`${API_BASE}/charts/sankey/${convertedTimeFrame}`, {
+  return apiClient<SankeyChartData>(`/charts/sankey/${convertedTimeFrame}`, {
     method: "GET",
-    credentials: "include",
   });
-
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error.message || "Fetching sankey chart data failed");
-  }
-
-  return await res.json();
 }

@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import "./login.scss";
+import Link from "next/link";
 import LoginForm, {
   LoginFormData,
 } from "../../components/auth/LoginForm/LoginForm";
@@ -18,8 +18,7 @@ export default function LoginPage() {
   async function handleLogin(data: LoginFormData) {
     try {
       await loginUser(data);
-      const user = await getCurrentUser();
-      setUser(user);
+      setUser(await getCurrentUser());
       router.push("/dashboard");
       toast.success("Login successful");
     } catch (error: unknown) {

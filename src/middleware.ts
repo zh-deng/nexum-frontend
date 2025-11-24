@@ -7,7 +7,7 @@ export function middleware(request: NextRequest) {
   const isSignupPage = request.nextUrl.pathname === "/signup";
   const isHomePage = request.nextUrl.pathname === "/";
 
-  // If no token and not on login/signup/home page, redirect to login
+  // If no token and not on login/signup/home page, redirect to login page
   if (!token && !isLoginPage && !isSignupPage && !isHomePage) {
     return NextResponse.redirect(new URL("/login", request.url));
   }

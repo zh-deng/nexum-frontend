@@ -2,13 +2,20 @@ import { Spinner } from "@radix-ui/themes";
 import "./QueryState.scss";
 
 type QueryStateProps = {
-  isLoading: boolean;
+  isLoading?: boolean;
+  isPending?: boolean;
   error: unknown;
   children: React.ReactNode;
 };
 
-const QueryState = ({ isLoading, error, children }: QueryStateProps) => {
-  if (isLoading) {
+// Component to handle loading, error, and success states of a query
+const QueryState = ({
+  isLoading,
+  isPending,
+  error,
+  children,
+}: QueryStateProps) => {
+  if (isLoading || isPending) {
     return (
       <div className="loading-spinner">
         <Spinner size={"3"} />

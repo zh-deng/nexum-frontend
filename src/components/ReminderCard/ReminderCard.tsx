@@ -47,12 +47,15 @@ export const ReminderFormContainer = ({
     status: data?.status ?? ReminderStatus.STOPPED,
     message: data?.message ?? "",
   };
+
   const [form, setForm] = useState<ReminderForm>(intialValues);
   const [error, setError] = useState<string>("");
   const [isOpen, setIsOpen] = useState<boolean>(false);
+
   const statusOptions = Object.values(ReminderStatus).filter(
     (elem) => elem !== form.status,
   );
+
   const toast = useToast();
   const updateReminder = useUpdateReminder();
 
@@ -74,6 +77,7 @@ export const ReminderFormContainer = ({
   async function handleCreateOrUpdateReminder() {
     const currentDateTime = new Date(Date.now()).toISOString();
     const submitAlarmDate = new Date(form.alarmDate).toISOString();
+    const isFuture = submitAlarmDate > currentDateTime;
 
     setError("");
 
@@ -81,16 +85,13 @@ export const ReminderFormContainer = ({
     if (
       (form.status === ReminderStatus.ACTIVE ||
         form.status === ReminderStatus.STOPPED) &&
-      submitAlarmDate < currentDateTime
+      !isFuture
     ) {
       setError("Date must be in the future for this status.");
       return;
     }
 
-    if (
-      form.status === ReminderStatus.DONE &&
-      submitAlarmDate > currentDateTime
-    ) {
+    if (form.status === ReminderStatus.DONE && isFuture) {
       setError("Date must be in the past for this status.");
       return;
     }
@@ -151,14 +152,14 @@ export const ReminderFormContainer = ({
           <Dialog.Title>Edit Reminder</Dialog.Title>
         )}
 
-        <Flex direction="column" gap="3">
+        <Flex direction={"column"} gap={"3"}>
           <Box width={"180px"}>
-            <Text as="div" size="2" mb="1" weight="bold">
+            <Text as={"div"} size={"2"} mb={"1"} weight={"bold"}>
               Alarm Date
             </Text>
             <FloatingTextField
-              placeholder="Date"
-              type="datetime-local"
+              placeholder={"Date"}
+              type={"datetime-local"}
               isFloating={false}
               value={getLocalDatetimeValue(form.alarmDate)}
               onChange={(value) =>
@@ -167,7 +168,7 @@ export const ReminderFormContainer = ({
             />
           </Box>
           <Box>
-            <Text as="div" size="2" mb="1" weight="bold">
+            <Text as={"div"} size={"2"} mb={"1"} weight={"bold"}>
               Status
             </Text>
             <Dropdown
@@ -178,17 +179,17 @@ export const ReminderFormContainer = ({
               }
             />
             {error && (
-              <Text color="red" size="2" mt="1">
+              <Text color={"red"} size={"2"} mt={"1"}>
                 {error}
               </Text>
             )}
           </Box>
           <Box>
-            <Text as="div" size="2" mb="1" weight="bold">
+            <Text as={"div"} size={"2"} mb={"1"} weight={"bold"}>
               Message
             </Text>
             <FloatingTextArea
-              placeholder="Message"
+              placeholder={"Message"}
               value={form.message}
               isFloating={false}
               size={"3"}
@@ -198,9 +199,9 @@ export const ReminderFormContainer = ({
             />
           </Box>
         </Flex>
-        <Flex gap="3" mt="4" justify="end">
+        <Flex gap={"3"} mt={"4"} justify={"end"}>
           <Dialog.Close>
-            <Button variant="soft" color="gray" onClick={handleClose}>
+            <Button variant={"soft"} color={"gray"} onClick={handleClose}>
               Cancel
             </Button>
           </Dialog.Close>
@@ -218,6 +219,7 @@ type ReminderCardProps = {
 const ReminderCard = ({ data }: ReminderCardProps) => {
   const [showConfirmationModal, setShowConfirmationModal] =
     useState<boolean>(false);
+
   const deleteReminder = useDeleteReminder();
   const toast = useToast();
 
@@ -261,10 +263,10 @@ const ReminderCard = ({ data }: ReminderCardProps) => {
                 style={{ cursor: "pointer" }}
                 onClick={() => setShowConfirmationModal(true)}
                 size={"3"}
-                radius="small"
-                color="red"
+                radius={"small"}
+                color={"red"}
               >
-                <TrashIcon width="24" height="24" />
+                <TrashIcon width={"24"} height={"24"} />
               </IconButton>
             </Flex>
           </Flex>
