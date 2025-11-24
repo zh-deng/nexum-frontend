@@ -12,16 +12,26 @@ import { useBreakpoint } from "../../hooks/useBreakpoint";
 import { useToast } from "../ToastProvider/ToastProvider";
 
 const Navbar = () => {
-  const { user, setUser } = useAuth();
+  const navItems = [
+    { label: "Home", href: "/" },
+    { label: "Dashboard", href: "/dashboard" },
+  ];
+
   const [navbarHidden, setNavbarHidden] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [hamburgerOpen, setHamburgerOpen] = useState(false);
+
   const menuRef = useRef<HTMLDivElement>(null);
+
+  const { user, setUser } = useAuth();
   const router = useRouter();
-  const userInitials = user?.username?.slice(0, 2).toUpperCase();
   const { isSm } = useBreakpoint();
   const toast = useToast();
   const pathname = usePathname();
+
+  const userInitials = user?.username
+    ? user.username.slice(0, 2).toUpperCase()
+    : "?";
 
   useEffect(() => {
     function handleOutsideClick(event: MouseEvent) {
@@ -83,28 +93,24 @@ const Navbar = () => {
           <div className="logo">Nexum</div>
         </Link>
         <ul className="nav-links-desktop desktop-only">
-          <li>
-            <Link href="/">Home</Link>
-          </li>
-          <li>
-            <Link href="/dashboard">Dashboard</Link>
-          </li>
+          {navItems.map((item) => (
+            <li key={item.href}>
+              <Link href={item.href}>{item.label}</Link>
+            </li>
+          ))}
         </ul>
         <ul
           className={`nav-links mobile-only ${hamburgerOpen ? "open" : "closed"}`}
           onClick={closeHamburger}
         >
-          <li>
-            <Link href="/">Home</Link>
-          </li>
-          <li>
-            <Link href="/dashboard">Dashboard</Link>
-          </li>
+          {navItems.map((item) => (
+            <li key={item.href}>
+              <Link href={item.href}>{item.label}</Link>
+            </li>
+          ))}
           <li>
             {user ? (
-              <button onClick={handleLogout}>
-                <a>Log Out</a>
-              </button>
+              <button onClick={handleLogout}>Log Out</button>
             ) : (
               <Link href="/login">Log In / Sign Up</Link>
             )}

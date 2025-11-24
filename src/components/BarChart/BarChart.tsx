@@ -31,6 +31,7 @@ const BarChart = ({
   height = 400,
 }: BarChartProps) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
+
   const { isSm, isMd } = useBreakpoint();
 
   const data: BarData[] = barChartData.map((item) => ({
@@ -178,11 +179,11 @@ const BarChart = ({
       .attr("font-weight", "bold")
       .text((d) => (d.total > 0 ? d.total.toString() : ""));
 
-    // --- Legend ---
+    // Legend
     const legend = svg.append("g").attr("class", "legend");
 
     if (isMd) {
-      // SIDE LEGEND for medium screens and up
+      // Side legend for medium screens and up
       const rectSize = 14;
       const fontSize = 13;
       const spacing = 24;
@@ -213,7 +214,7 @@ const BarChart = ({
           .attr("font-weight", "500");
       });
     } else {
-      // TOP LEGEND for small screens (wrapped)
+      // Top legend for small screens (wrapped)
       const itemsPerRow = 3;
       const itemSpacingX = 100;
       const itemSpacingY = 22;

@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, TextArea } from "@radix-ui/themes";
 import { useState, useEffect } from "react";
 import type { ComponentPropsWithoutRef } from "react";

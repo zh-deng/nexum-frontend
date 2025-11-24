@@ -5,16 +5,14 @@
   overflow-y: auto;
 
   .chart-selector {
-    display: flex;
-    justify-content: center;
+    @include flex-center;
     width: 100%;
     padding: 1rem 0;
   }
 
   .timeframe-dropdown {
+    @include flex-center;
     width: 100%;
-    display: flex;
-    justify-content: center;
     padding: 1rem 0;
 
     & > * {
@@ -23,9 +21,7 @@
   }
 
   .chart {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    @include flex-center;
     padding: 1rem 0;
   }
 }

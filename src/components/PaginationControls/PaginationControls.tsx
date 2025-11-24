@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@radix-ui/themes";
 import { Pagination } from "../../types/dtos/application/application.dto";
 import "./PaginationControls.scss";

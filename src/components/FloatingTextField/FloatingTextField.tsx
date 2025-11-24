@@ -1,3 +1,5 @@
+"use client";
+
 import { TextField } from "@radix-ui/themes";
 import { useState, useEffect, type ComponentPropsWithoutRef } from "react";
 import "./FloatingTextField.scss";
