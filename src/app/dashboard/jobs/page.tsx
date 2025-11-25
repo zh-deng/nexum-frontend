@@ -115,8 +115,8 @@ const JobsPage = () => {
         <div className="sort-filter-container">
           <Flex align={"center"} gap={"4"}>
             <Card
+              className="sort-filter-trigger"
               onClick={() => setShowFilterOptions((s) => !s)}
-              style={{ flex: 1, cursor: "pointer" }}
             >
               <Flex align={"center"} justify={"center"} gap={"2"}>
                 <Text>{`${showFilterOptions ? "Hide" : "Show"} Sort and Filter`}</Text>
@@ -187,8 +187,12 @@ const JobsPage = () => {
               hasFilters={!!(searchQuery || statusFilter)}
             />
           ) : (
-            <Flex gap={"2"} direction={isSm ? "row" : "column"}>
-              <Box width={"100%"}>
+            <Flex
+              gap={"2"}
+              direction={isSm ? "row" : "column"}
+              className="jobs-flex-container"
+            >
+              <Box className="jobs-list-wrapper">
                 <Card className="container-wrapper">
                   <div className="application-card-container">
                     {favoritedApplications.map((app) => (

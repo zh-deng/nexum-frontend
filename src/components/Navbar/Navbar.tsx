@@ -7,7 +7,7 @@ import { useAuth } from "../../context/AuthContext";
 import { logoutUser } from "../../lib/api/auth";
 import { useRouter, usePathname } from "next/navigation";
 import { EnterIcon, ExitIcon, HamburgerMenuIcon } from "@radix-ui/react-icons";
-import { Avatar, IconButton } from "@radix-ui/themes";
+import { Avatar, Button, Flex, IconButton } from "@radix-ui/themes";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 import { useToast } from "../ToastProvider/ToastProvider";
 import { queryClient } from "../../lib/react-query";
@@ -33,6 +33,8 @@ const Navbar = () => {
   const userInitials = user?.username
     ? user.username.slice(0, 2).toUpperCase()
     : "?";
+  const isLoginPage = pathname === "/login";
+  const isSignupPage = pathname === "/signup";
 
   useEffect(() => {
     function handleOutsideClick(event: MouseEvent) {
@@ -130,14 +132,27 @@ const Navbar = () => {
           {/* Right-side: render three variants and let CSS show the correct one */}
           <div className="md-only">
             {user ? (
-              <a onClick={handleLogout}>Log Out</a>
+              <Button onClick={handleLogout} style={{ cursor: "pointer" }}>
+                Log Out
+              </Button>
             ) : (
-              <Link href="/login">Log In / Sign Up</Link>
+              <Flex gap={"4"}>
+                {!isLoginPage && (
+                  <Button color={"cyan"} style={{ cursor: "pointer" }}>
+                    <Link href="/login">Log In</Link>
+                  </Button>
+                )}
+                {!isSignupPage && (
+                  <Button style={{ cursor: "pointer" }}>
+                    <Link href="/signup">Sign Up</Link>
+                  </Button>
+                )}
+              </Flex>
             )}
           </div>
 
           <div className="sm-only">
-            <IconButton color={"gray"}>
+            <IconButton style={{ cursor: "pointer" }}>
               {user ? (
                 <ExitIcon
                   width={26}

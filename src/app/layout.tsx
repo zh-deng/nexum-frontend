@@ -31,7 +31,7 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <Theme
           appearance={"light"}
-          accentColor={"mint"}
+          accentColor={"indigo"}
           grayColor={"slate"}
           radius={"medium"}
           scaling={"95%"}

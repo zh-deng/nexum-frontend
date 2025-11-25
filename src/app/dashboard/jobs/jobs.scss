@@ -14,6 +14,12 @@
     gap: 0.5rem;
     margin-top: 0.5rem;
 
+    .sort-filter-trigger {
+      flex: 1;
+      cursor: pointer;
+      background-color: lightblue;
+    }
+
     .jobs-sort-filter {
       padding: 0.5rem;
       display: flex;
@@ -89,8 +95,13 @@
   .job-container {
     width: 100%;
 
-    .container-wrapper {
-      height: calc(65vh + 1.5rem);
+    .jobs-flex-container {
+      min-width: 0;
+    }
+
+    .jobs-list-wrapper {
+      flex: 1;
+      min-width: 0;
 
       @include respond-to(md) {
         flex: 1;
@@ -103,6 +114,10 @@
       @include respond-to(xl) {
         flex: 3;
       }
+    }
+
+    .container-wrapper {
+      height: calc(65vh + 1.5rem);
 
       .application-card-container {
         flex: 3;
@@ -135,6 +150,7 @@
     .application-preview-wrapper {
       @include respond-to(md) {
         flex: 1;
+        min-width: 0;
       }
     }
   }
