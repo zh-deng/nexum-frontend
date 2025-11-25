@@ -133,12 +133,13 @@ const ApplicationPreview = ({
 
   return (
     <>
-      <Card>
+      <Card className="min-width-0">
         <Box
           maxHeight={isMd ? "65vh" : ""}
           overflowY={isMd ? "auto" : "visible"}
+          className="min-width-0"
         >
-          <Flex justify={"between"} align={"center"}>
+          <Flex justify={"between"} align={"center"} mb={"2"}>
             <Button
               style={{ cursor: "pointer" }}
               size={buttonSize}
@@ -152,8 +153,7 @@ const ApplicationPreview = ({
                 style={{ cursor: "pointer" }}
                 onClick={handleToggleFavorite}
                 size={buttonSize}
-                radius="small"
-                color={"yellow"}
+                radius={"small"}
               >
                 {favorited ? (
                   <StarFilledIcon width={"24"} height={"24"} />
@@ -180,9 +180,9 @@ const ApplicationPreview = ({
               </IconButton>
             </Flex>
           </Flex>
-          <Flex direction={"column"} gap={"5"}>
+          <Flex direction={"column"} gap={"5"} className="min-width-0">
             <Box height={"3rem"}>
-              <Flex gap={"2"} height={"100%"} align={"center"}>
+              <Flex gap={"4"} height={"100%"} align={"center"}>
                 <Badge size={"3"} color={priorityBadgeColor}>
                   <Text size={"3"}>Priority: {getPriorityLabel(priority)}</Text>
                 </Badge>
@@ -192,8 +192,12 @@ const ApplicationPreview = ({
               </Flex>
             </Box>
             {jobLink && (
-              <Box style={{ minWidth: 0, overflow: "hidden" }} height={"3rem"}>
-                <Flex height={"100%"} align={"center"}>
+              <Box
+                className="min-width-0"
+                style={{ overflow: "hidden" }}
+                height={"3rem"}
+              >
+                <Flex height={"100%"} align={"center"} className="min-width-0">
                   <Link
                     href={getJobUrl()}
                     size={"5"}
@@ -204,10 +208,9 @@ const ApplicationPreview = ({
                     target={"_blank"}
                     rel={"noopener noreferrer"}
                     truncate
+                    style={{ minWidth: 0, maxWidth: "100%" }}
                   >
-                    <Text as={"div"} truncate>
-                      {jobLink}
-                    </Text>
+                    {jobLink}
                   </Link>
                 </Flex>
               </Box>
@@ -225,10 +228,15 @@ const ApplicationPreview = ({
                 </Text>
                 {website && (
                   <Box
-                    style={{ minWidth: 0, overflow: "hidden" }}
+                    className="min-width-0"
+                    style={{ overflow: "hidden" }}
                     height={"2rem"}
                   >
-                    <Flex height={"100%"} align={"center"}>
+                    <Flex
+                      height={"100%"}
+                      align={"center"}
+                      className="min-width-0"
+                    >
                       <Link
                         href={website}
                         underline={"always"}
@@ -238,10 +246,9 @@ const ApplicationPreview = ({
                         target={"_blank"}
                         rel={"noopener noreferrer"}
                         truncate
+                        style={{ minWidth: 0, maxWidth: "100%" }}
                       >
-                        <Text as={"div"} truncate>
-                          {website}
-                        </Text>
+                        {website}
                       </Link>
                     </Flex>
                   </Box>
