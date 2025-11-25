@@ -31,7 +31,7 @@ const SignupPage = () => {
       <div className="form-container">
         <h1>Sign Up</h1>
         <SignupForm onSubmit={handleSignup} />
-        <Link href="/login">You have an account already? Log in!</Link>
+        <Link href="/login">Already have an account? Log in!</Link>
       </div>
     </div>
   );

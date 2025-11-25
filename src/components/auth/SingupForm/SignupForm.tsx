@@ -5,6 +5,7 @@ import "./SignupForm.scss";
 import { useForm } from "react-hook-form";
 import FloatingTextField from "../../FloatingTextField/FloatingTextField";
 import { validateEmail } from "../../../utils/helper";
+import InfoBox from "../../InfoBox/InfoBox";
 
 export type SignUpFormData = {
   username: string;
@@ -85,9 +86,6 @@ const SignupForm = ({ onSubmit, defaultValues }: SignupFormProps) => {
           <span className="error">{errors.repeatPassword.message}</span>
         )}
       </div>
-      <Text size={"2"}>
-        Currently in closed Beta. Signup access code required.
-      </Text>
       <div>
         <FloatingTextField
           className="radix-textfield"
@@ -101,6 +99,7 @@ const SignupForm = ({ onSubmit, defaultValues }: SignupFormProps) => {
           <span className="error">{errors.signupAccessCode.message}</span>
         )}
       </div>
+      <InfoBox text={"Currently in closed Beta. Signup access code required"} />
       <Button
         type={"submit"}
         style={{ cursor: "pointer" }}

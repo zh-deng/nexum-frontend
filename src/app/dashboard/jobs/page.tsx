@@ -2,6 +2,7 @@
 
 import "./jobs.scss";
 import {
+  Box,
   Card,
   ChevronDownIcon,
   Flex,
@@ -187,20 +188,22 @@ const JobsPage = () => {
             />
           ) : (
             <Flex gap={"2"} direction={isSm ? "row" : "column"}>
-              <Card className="container-wrapper">
-                <div className="application-card-container">
-                  {favoritedApplications.map((app) => (
-                    <div className="application-card-wrapper" key={app.id}>
-                      <ApplicationCard
-                        data={app}
-                        expandedCard={expandedCard}
-                        setExpandedCard={setExpandedCard}
-                        editApplication={() => openAppForm(true)}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </Card>
+              <Box width={"100%"}>
+                <Card className="container-wrapper">
+                  <div className="application-card-container">
+                    {favoritedApplications.map((app) => (
+                      <div className="application-card-wrapper" key={app.id}>
+                        <ApplicationCard
+                          data={app}
+                          expandedCard={expandedCard}
+                          setExpandedCard={setExpandedCard}
+                          editApplication={() => openAppForm(true)}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+              </Box>
               {isMd && expandedCard && (
                 <div className="application-preview-wrapper">
                   <ApplicationPreview
