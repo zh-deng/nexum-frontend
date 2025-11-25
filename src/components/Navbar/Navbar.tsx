@@ -112,7 +112,7 @@ const Navbar = () => {
           ))}
           <li>
             {user ? (
-              <button onClick={handleLogout}>Log Out</button>
+              <a onClick={handleLogout}>Log Out</a>
             ) : (
               <Link href="/login">Log In / Sign Up</Link>
             )}
