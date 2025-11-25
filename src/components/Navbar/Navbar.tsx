@@ -10,6 +10,7 @@ import { EnterIcon, ExitIcon, HamburgerMenuIcon } from "@radix-ui/react-icons";
 import { Avatar, IconButton } from "@radix-ui/themes";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 import { useToast } from "../ToastProvider/ToastProvider";
+import { queryClient } from "../../lib/react-query";
 
 const Navbar = () => {
   const navItems = [
@@ -79,6 +80,7 @@ const Navbar = () => {
       await logoutUser();
       setUser(null);
       router.push("/login");
+      queryClient.clear();
       toast.success("Logout successful");
     } catch (error: unknown) {
       console.error("Logout failed:", error);
