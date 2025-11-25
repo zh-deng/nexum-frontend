@@ -73,7 +73,10 @@ export function getPriorityValue(label: string): number {
 }
 
 // Calculate days info string based on log items
-export function calculateDays(logItems: LogItemDto[]) {
+export function calculateDays(logItems: LogItemDto[]): {
+  additionalInfo: string;
+  latestLogSince: string;
+} {
   const finishedStatus = new Set([
     ApplicationStatus.OFFER,
     ApplicationStatus.HIRED,
@@ -81,18 +84,13 @@ export function calculateDays(logItems: LogItemDto[]) {
     ApplicationStatus.REJECTED,
     ApplicationStatus.WITHDRAWN,
   ]);
+  let additionalInfo = "";
 
   const appliedItem = logItems.find(
     (item) => item.status === ApplicationStatus.APPLIED,
   );
 
   const finishedItem = logItems.find((item) => finishedStatus.has(item.status));
-
-  if (finishedItem && appliedItem) {
-    return `Ended ${Math.ceil((new Date(finishedItem.date!).getTime() - new Date(appliedItem.date!).getTime()) / (1000 * 60 * 60 * 24))}D`;
-  } else if (finishedItem) {
-    return "Ended";
-  }
 
   const totalDays = appliedItem
     ? Math.floor(
@@ -108,20 +106,36 @@ export function calculateDays(logItems: LogItemDto[]) {
         )[0]
       : null;
 
-  if (!recentItem) return "";
-
-  if (recentItem.status === ApplicationStatus.APPLIED) {
-    return `${totalDays} D`;
-  } else if (recentItem.status === ApplicationStatus.DRAFT) {
-    return null;
-  } else {
-    const recentDays = Math.floor(
-      (Date.now() - new Date(recentItem.date!).getTime()) /
-        (1000 * 60 * 60 * 24),
-    );
-
-    return `${recentDays}D ${totalDays ? ` / ${totalDays}D` : ""}`;
+  if (!recentItem) {
+    return {
+      additionalInfo: "",
+      latestLogSince: "",
+    };
   }
+
+  if (finishedItem && appliedItem) {
+    additionalInfo = `App-Duration ${Math.ceil((new Date(finishedItem.date!).getTime() - new Date(appliedItem.date!).getTime()) / (1000 * 60 * 60 * 24))}D`;
+  } else if (finishedItem) {
+    additionalInfo = "Ended";
+  } else {
+    additionalInfo = `APPLIED ${totalDays}D ago`;
+  }
+
+  const recentDays = Math.floor(
+    (Date.now() - new Date(recentItem.date!).getTime()) / (1000 * 60 * 60 * 24),
+  );
+
+  const latestLogSince =
+    recentItem.status === ApplicationStatus.DRAFT
+      ? ""
+      : recentDays < 0
+        ? `in ${-recentDays}D`
+        : `${recentDays}D ago`;
+
+  return {
+    additionalInfo,
+    latestLogSince,
+  };
 }
 // Get available status options based on existing log items
 export function getStatusOptions(logItems: LogItemDto[]) {

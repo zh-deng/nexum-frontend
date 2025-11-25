@@ -2,7 +2,7 @@
 
 import { Avatar, Badge, Box, Card, Flex, Text } from "@radix-ui/themes";
 import "./ApplicationCard.scss";
-import { StarFilledIcon, StarIcon, StopwatchIcon } from "@radix-ui/react-icons";
+import { StarFilledIcon, StarIcon } from "@radix-ui/react-icons";
 import { useEffect, useMemo, useRef } from "react";
 import { calculateDays } from "../../utils/helper";
 import { ApplicationDto } from "../../types/dtos/application/application.dto";
@@ -32,7 +32,10 @@ const ApplicationCard = ({
 
   const { isMd } = useBreakpoint();
 
-  const dayInfo = useMemo(() => calculateDays(logItems), [logItems]);
+  const { additionalInfo, latestLogSince } = useMemo(
+    () => calculateDays(logItems),
+    [logItems],
+  );
 
   useEffect(() => {
     // Only scroll when transitioning from collapsed to expanded
@@ -82,12 +85,18 @@ const ApplicationCard = ({
               </Box>
             </Flex>
           </Box>
-          <Box style={{ textAlign: "right", flexShrink: 0 }}>
-            <Badge size={"2"}>{status}</Badge>
-            <Text as="div">
-              {dayInfo ? dayInfo : <StopwatchIcon width={"28"} height={"16"} />}
-            </Text>
-          </Box>
+          <Flex
+            direction={"column"}
+            gap={"2"}
+            style={{ textAlign: "right", flexShrink: 0 }}
+          >
+            <Badge size={"2"}>{`${status} ${latestLogSince}`}</Badge>
+            {additionalInfo && (
+              <Badge size={"2"} color={"gray"}>
+                {additionalInfo}
+              </Badge>
+            )}
+          </Flex>
         </Flex>
       </Card>
       {isActive && !isMd && (
