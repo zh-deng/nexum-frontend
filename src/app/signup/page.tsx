@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import "./signup.scss";
 import SignupForm, {
   SignUpFormData,
@@ -31,7 +30,6 @@ const SignupPage = () => {
       <div className="form-container">
         <h1>Sign Up</h1>
         <SignupForm onSubmit={handleSignup} />
-        <Link href="/login">Already have an account? Log in!</Link>
       </div>
     </div>
   );
