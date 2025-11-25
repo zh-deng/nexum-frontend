@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Badge,
   Box,
@@ -31,6 +33,7 @@ import { useDeleteLogItem } from "../../hooks/log-item/useDeleteLogItem";
 import ConfirmationModal from "../ConfirmationModal/ConfirmationModal";
 import { ApplicationStatus } from "../../types/enums";
 import { useToast } from "../ToastProvider/ToastProvider";
+import { useBreakpoint } from "../../hooks/useBreakpoint";
 
 type StatusInputContainerProps = {
   applicationId: string;
@@ -51,6 +54,7 @@ const StatusInputContainer = ({
     useState<boolean>(false);
   const [statusError, setStatusError] = useState<string>("");
 
+  const { isSm } = useBreakpoint();
   const toast = useToast();
   const createLogItem = useCreateLogItem();
   const updateLogItem = useUpdateLogItem();
@@ -137,7 +141,7 @@ const StatusInputContainer = ({
         <Flex direction={"column"} gap={"4"}>
           <Flex justify={"between"} wrap={"wrap"} gap={"4"}>
             <Dropdown
-              width={"50%"}
+              width={isSm ? "50%" : "100%"}
               name={form.status || "Status"}
               options={options}
               onChange={(value) =>

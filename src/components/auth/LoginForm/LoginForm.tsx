@@ -7,6 +7,7 @@ import FloatingTextField from "../../FloatingTextField/FloatingTextField";
 import { useEffect, useState } from "react";
 import { validateEmail } from "../../../utils/helper";
 import { DEMO_EMAIL, DEMO_PASSWORD } from "../../../utils/environment";
+import InfoBox from "../../InfoBox/InfoBox";
 
 export type LoginFormData = {
   email: string;
@@ -53,6 +54,7 @@ const LoginForm = ({ onSubmit, defaultValues }: LoginFormProps) => {
           Log into demo version
         </Flex>
       </Text>
+      <InfoBox text={"Demo data will be reset every day"} />
       <div>
         <FloatingTextField
           className="radix-textfield"
