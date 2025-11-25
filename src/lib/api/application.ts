@@ -27,7 +27,7 @@ export async function updateApplication(
 }
 
 export async function toggleFavorite(id: string): Promise<ApplicationDto> {
-  return apiClient<ApplicationDto>(`/applications/${id}/toggle-favorite`, {
+  return apiClient<ApplicationDto>(`/applications/${id}/favorite`, {
     method: "PATCH",
   });
 }
