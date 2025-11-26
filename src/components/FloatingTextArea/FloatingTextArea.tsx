@@ -7,21 +7,23 @@ import "./FloatingTextArea.scss";
 
 type FloatingTextAreaProps = ComponentPropsWithoutRef<typeof TextArea> & {
   isFloating?: boolean;
+  hasTrigger?: boolean;
 };
 
 function FloatingTextArea({
   placeholder,
   value,
   isFloating = true,
+  hasTrigger = true,
   ...props
 }: FloatingTextAreaProps) {
   const [hasValue, setHasValue] = useState<boolean>(false);
-  const [hasNote, setHasNote] = useState<boolean>(false);
+  const [hasTextArea, setHasTextArea] = useState<boolean>(!hasTrigger);
 
   useEffect(() => {
     if (value) {
       setHasValue(true);
-      setHasNote(true);
+      setHasTextArea(true);
     } else {
       setHasValue(false);
     }
@@ -34,7 +36,7 @@ function FloatingTextArea({
 
   return (
     <>
-      {hasNote ? (
+      {hasTextArea ? (
         <div className="floating-textarea">
           <TextArea
             {...props}
@@ -47,14 +49,13 @@ function FloatingTextArea({
           )}
         </div>
       ) : (
-        <div>
-          <Button
-            style={{ cursor: "pointer" }}
-            onClick={() => setHasNote(true)}
-          >
-            Add {placeholder}
-          </Button>
-        </div>
+        <Button
+          className="trigger-button"
+          style={{ cursor: "pointer" }}
+          onClick={() => setHasTextArea(true)}
+        >
+          Add {placeholder}
+        </Button>
       )}
     </>
   );
