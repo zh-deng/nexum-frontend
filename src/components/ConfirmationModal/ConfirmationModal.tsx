@@ -1,4 +1,4 @@
-import { Button, Flex, Text } from "@radix-ui/themes";
+import { Button, Dialog, Flex, Text } from "@radix-ui/themes";
 import "./ConfirmationModal.scss";
 
 type ConfirmationModalProps = {
@@ -23,24 +23,31 @@ const ConfirmationModal = ({
     onAbortion();
   }
 
-  if (!isOpen) return null;
-
   return (
-    <div className="confirmation-modal">
-      <Flex direction={"column"} gap={"6"} align={"center"}>
-        <Text size={"5"} weight={"bold"}>
-          {questionString}
-        </Text>
-        <Flex gap={"7"}>
-          <Button size={"4"} onClick={confirmAndClose}>
-            {confirmationString}
-          </Button>
-          <Button size={"4"} onClick={onAbortion}>
+    <Dialog.Root open={isOpen} onOpenChange={(open) => !open && onAbortion()}>
+      <Dialog.Content maxWidth={"250px"}>
+        <Dialog.Title align={"center"}>{questionString}</Dialog.Title>
+
+        <Flex gap={"6"} mt={"5"} justify={"center"}>
+          <Button
+            variant={"soft"}
+            color={"gray"}
+            style={{ cursor: "pointer" }}
+            size={"3"}
+            onClick={onAbortion}
+          >
             {abortionString}
           </Button>
+          <Button
+            style={{ cursor: "pointer" }}
+            size={"3"}
+            onClick={confirmAndClose}
+          >
+            {confirmationString}
+          </Button>
         </Flex>
-      </Flex>
-    </div>
+      </Dialog.Content>
+    </Dialog.Root>
   );
 };
 
