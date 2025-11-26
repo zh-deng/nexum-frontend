@@ -5,6 +5,7 @@ import {
   Box,
   Button,
   Card,
+  Dialog,
   Flex,
   IconButton,
   Text,
@@ -171,7 +172,7 @@ const StatusInputContainer = ({
             </Text>
           )}
           <Flex justify={"between"}>
-            <Flex gap={"4"}>
+            <Flex gap={"4"} justify={"end"} width={"100%"}>
               <IconButton
                 style={{ cursor: "pointer" }}
                 size={"3"}
@@ -192,6 +193,7 @@ const StatusInputContainer = ({
             </Flex>
             {form.id !== -1 && form.status !== ApplicationStatus.DRAFT && (
               <IconButton
+                style={{ cursor: "pointer" }}
                 size={"3"}
                 radius={"small"}
                 color={"red"}
@@ -259,80 +261,86 @@ const StatusModal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="status-modal">
-      <Flex direction={"column"} gap={"4"}>
-        <Flex justify={"end"}>
-          <IconButton
+    <Dialog.Root
+      open={isOpen}
+      onOpenChange={(open) => !open && handleCloseModal()}
+    >
+      <Dialog.Title />
+      <Dialog.Content className="status-modal">
+        <Flex direction={"column"} gap={"4"}>
+          <Flex justify={"end"}>
+            <IconButton
+              style={{ cursor: "pointer" }}
+              size={"3"}
+              radius={"small"}
+              color={"crimson"}
+              onClick={handleCloseModal}
+            >
+              <Cross1Icon width={"24"} height={"24"} />
+            </IconButton>
+          </Flex>
+          <Button
             style={{ cursor: "pointer" }}
             size={"3"}
             radius={"small"}
-            color={"crimson"}
-            onClick={handleCloseModal}
+            onClick={() => openStatusForm()}
           >
-            <Cross1Icon width={"24"} height={"24"} />
-          </IconButton>
-        </Flex>
-        <Button
-          style={{ cursor: "pointer" }}
-          size={"3"}
-          radius={"small"}
-          onClick={() => openStatusForm()}
-        >
-          <Flex align={"center"} gap={"4"}>
-            <PlusIcon width={"20"} height={"20"} />
-            <Text weight={"bold"}>Add new status</Text>
-          </Flex>
-        </Button>
-        <Box overflowY={"auto"}>
-          <Flex direction={"column"} gap={"2"} pb={"2"}>
-            {form.id === -1 && (
-              <StatusInputContainer
-                applicationId={applicationId}
-                form={form}
-                statusOptions={statusOptions}
-                setForm={setForm}
-              />
-            )}
-            {logItems.slice().map((logItem: LogItemDto) => {
-              return (
-                <div key={logItem.id}>
-                  {form.id === logItem.id ? (
-                    <StatusInputContainer
-                      applicationId={applicationId}
-                      statusOptions={statusOptions}
-                      form={form}
-                      setForm={setForm}
-                    />
-                  ) : (
-                    <Card>
-                      <Flex align={"center"} justify={"between"}>
-                        <Text>
-                          {formatDateUs(new Date(logItem.date!), true)}
-                        </Text>
-                        <Flex align={"center"} gap={"4"}>
-                          <Badge size={"3"}>
-                            <Text>{logItem.status}</Text>
-                          </Badge>
-                          <IconButton
-                            style={{ cursor: "pointer" }}
-                            size={"3"}
-                            radius={"small"}
-                            onClick={() => openStatusForm(logItem)}
-                          >
-                            <Pencil2Icon width={"24"} height={"24"} />
-                          </IconButton>
+            <Flex align={"center"} gap={"4"}>
+              <PlusIcon width={"20"} height={"20"} />
+              <Text weight={"bold"}>Add new status</Text>
+            </Flex>
+          </Button>
+          <Box overflowY={"auto"}>
+            <Flex direction={"column"} gap={"2"} pb={"2"}>
+              {form.id === -1 && (
+                <StatusInputContainer
+                  applicationId={applicationId}
+                  form={form}
+                  statusOptions={statusOptions}
+                  setForm={setForm}
+                />
+              )}
+              {logItems.slice().map((logItem: LogItemDto) => {
+                return (
+                  <div key={logItem.id}>
+                    {form.id === logItem.id ? (
+                      <StatusInputContainer
+                        applicationId={applicationId}
+                        statusOptions={statusOptions}
+                        form={form}
+                        setForm={setForm}
+                      />
+                    ) : (
+                      <Card>
+                        <Flex align={"center"} justify={"between"}>
+                          <Text>
+                            {formatDateUs(new Date(logItem.date!), true)}
+                          </Text>
+                          <Flex align={"center"} gap={"4"}>
+                            <Badge size={"3"}>
+                              <Text>{logItem.status}</Text>
+                            </Badge>
+                            <IconButton
+                              style={{ cursor: "pointer" }}
+                              size={"2"}
+                              radius={"small"}
+                              onClick={() => openStatusForm(logItem)}
+                            >
+                              <Pencil2Icon width={"20"} height={"20"} />
+                            </IconButton>
+                          </Flex>
                         </Flex>
-                      </Flex>
-                      <Text>{logItem.notes}</Text>
-                    </Card>
-                  )}
-                </div>
-              );
-            })}
-          </Flex>
-        </Box>
-      </Flex>
-    </div>
+                        <Text>{logItem.notes}</Text>
+                      </Card>
+                    )}
+                  </div>
+                );
+              })}
+            </Flex>
+          </Box>
+        </Flex>
+      </Dialog.Content>
+    </Dialog.Root>
   );
 };
 
