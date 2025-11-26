@@ -1,15 +1,8 @@
 "use client";
 
 import "./jobs.scss";
-import {
-  Box,
-  Card,
-  ChevronDownIcon,
-  Flex,
-  IconButton,
-  Text,
-} from "@radix-ui/themes";
-import { ChevronUpIcon, PlusIcon } from "@radix-ui/react-icons";
+import { Box, Card, Flex, IconButton, Text } from "@radix-ui/themes";
+import { MixerHorizontalIcon, PlusIcon } from "@radix-ui/react-icons";
 import { useEffect, useMemo, useRef, useState } from "react";
 import ApplicationForm from "../../../components/forms/ApplicationForm/ApplicationForm";
 import { useApplications } from "../../../hooks/application/useApplications";
@@ -19,7 +12,6 @@ import Dropdown from "../../../components/Dropdown/Dropdown";
 import FloatingTextField from "../../../components/FloatingTextField/FloatingTextField";
 import { useDebounce } from "../../../hooks/useDebounce";
 import PaginationControls from "../../../components/PaginationControls/PaginationControls";
-import JobOptions from "../../../components/JobSettings/JobSettings";
 import QueryState from "../../../components/QueryState/QueryState";
 import ApplicationPreview from "../../../components/ApplicationPreview/ApplicationPreview";
 import { ApplicationDto } from "../../../types/dtos/application/application.dto";
@@ -29,17 +21,18 @@ const JobsPage = () => {
   const [activeForm, setActiveForm] = useState<"create" | "update" | null>(
     null,
   );
-  const [showFilterOptions, setShowFilterOptions] = useState<boolean>(false);
+  const [showSortOptions, setShowSortOptions] = useState<boolean>(false);
   const [expandedCard, setExpandedCard] = useState<ApplicationDto | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(20);
   const [statusFilter, setStatusFilter] = useState<string>("");
   const [sortBy, setSortBy] = useState<SortType>(SortType.DATE_NEW);
+  const [showStatusModal, setShowStatusModal] = useState<boolean>(false);
 
   const pageRef = useRef<HTMLDivElement>(null);
 
-  const { isSm, isMd } = useBreakpoint();
+  const { isSm, isMd, isLg } = useBreakpoint();
   const debouncedSearch = useDebounce(searchQuery, 300);
   const { data, isLoading, error } = useApplications({
     searchQuery: debouncedSearch,
@@ -70,10 +63,26 @@ const JobsPage = () => {
 
   useEffect(() => {
     // Expand the first favorited application card on medium screens or above
-    if (isMd) {
+    if (isMd && !showStatusModal) {
       setExpandedCard(favoritedApplications[0]);
     }
   }, [favoritedApplications, isMd]);
+
+  useEffect(() => {
+    // Update expandedCard when applications data changes
+    if (expandedCard) {
+      const updatedApp = applications.find((app) => app.id === expandedCard.id);
+      if (updatedApp) {
+        setExpandedCard(updatedApp);
+      }
+    }
+  }, [applications]);
+
+  useEffect(() => {
+    if (!isLg) {
+      setShowSortOptions(false);
+    }
+  }, [isLg]);
 
   function scrollToTop() {
     pageRef.current?.scrollTo({ top: 0, behavior: "smooth" });
@@ -112,68 +121,79 @@ const JobsPage = () => {
         className={`jobs-page ${activeForm ? "no-scroll" : ""}`}
         ref={pageRef}
       >
-        <div className="sort-filter-container">
-          <Flex align={"center"} gap={"4"}>
-            <Card
-              className="sort-filter-trigger"
-              onClick={() => setShowFilterOptions((s) => !s)}
-            >
-              <Flex align={"center"} justify={"center"} gap={"2"}>
-                <Text>{`${showFilterOptions ? "Hide" : "Show"} Sort and Filter`}</Text>
-                {showFilterOptions ? <ChevronUpIcon /> : <ChevronDownIcon />}
-              </Flex>
-            </Card>
-            <JobOptions />
-          </Flex>
-          {showFilterOptions && (
-            <Card className="jobs-sort-filter">
-              <div className="sort-dropdown-container">
-                <p>Sort By:</p>
-                <div className="sort-dropdown">
+        <Flex
+          width={"100%"}
+          align={"end"}
+          justify={isMd ? "between" : "end"}
+          my={"2"}
+          px={"2"}
+          gap={"2"}
+          wrap={isMd ? "nowrap" : "wrap"}
+        >
+          <Flex gap={"6"} gapY={"2"} flexGrow={"1"} wrap={"wrap-reverse"}>
+            <Box width={isSm ? "300px" : "100%"}>
+              <FloatingTextField
+                placeholder="Search by title, company, location..."
+                value={searchQuery}
+                onChange={(e) => handleSearchChange(e.target.value)}
+              />
+            </Box>
+            {(isLg || showSortOptions) && (
+              <Flex wrap={"wrap"} gap={"6"} gapY={"2"}>
+                <Flex align={"center"} gap={"2"}>
+                  <Text size={"2"} wrap={"nowrap"}>
+                    Sort By:
+                  </Text>
                   <Dropdown
                     name={sortBy}
                     options={sortOptions}
+                    width={"200px"}
                     onChange={(value) => setSortBy(value as SortType)}
                   />
-                </div>
-              </div>
-              <div className="status-dropdown-container">
-                <p>Filter By Status:</p>
-                <div className="status-dropdown">
+                </Flex>
+                <Flex align={"center"} gap={"2"}>
+                  <Text size={"2"}>Filter By Status:</Text>
                   <Dropdown
                     name={statusFilter || "All"}
                     options={statusOptions}
+                    width={"150px"}
                     onChange={handleStatusChange}
                   />
-                </div>
-              </div>
-              <div className="keyword-container">
-                <div className="keyword-input">
-                  <p>Search:</p>
-                  <FloatingTextField
-                    placeholder="Search by title, company, location..."
-                    value={searchQuery}
-                    onChange={(e) => handleSearchChange(e.target.value)}
-                  />
-                </div>
-                <div className="page-size-input">
-                  <p>Page Size: </p>
+                </Flex>
+                <Flex align={"center"} gap={"2"}>
+                  <Text size={"2"}>Page size:</Text>
                   <Dropdown
                     name={pageSize.toString()}
                     options={["10", "20", "50", "100"]}
+                    width={"75px"}
                     onChange={handlePageSizeChange}
                   />
-                </div>
+                </Flex>
+              </Flex>
+            )}
+          </Flex>
+          <Flex
+            justify={"between"}
+            width={isLg ? "auto" : "100%"}
+            align={"end"}
+          >
+            {!isLg && (
+              <IconButton
+                variant={"surface"}
+                onClick={() => setShowSortOptions(!showSortOptions)}
+              >
+                <MixerHorizontalIcon width={"20"} height={"20"} />
+              </IconButton>
+            )}
+            {pagination && (
+              <div className="results-info">
+                Showing {applications.length} of {pagination.total} applications
+                {debouncedSearch && ` matching "${debouncedSearch}"`}
               </div>
-            </Card>
-          )}
-        </div>
-        {pagination && (
-          <div className="results-info">
-            Showing {applications.length} of {pagination.total} applications
-            {debouncedSearch && ` matching "${debouncedSearch}"`}
-          </div>
-        )}
+            )}
+          </Flex>
+        </Flex>
+
         {pagination && pagination.totalPages > 1 && (
           <PaginationControls
             pagination={pagination}
@@ -193,25 +213,44 @@ const JobsPage = () => {
               className="jobs-flex-container"
             >
               <Box className="jobs-list-wrapper">
-                <Card className="container-wrapper">
-                  <div className="application-card-container">
-                    {favoritedApplications.map((app) => (
-                      <div className="application-card-wrapper" key={app.id}>
-                        <ApplicationCard
-                          data={app}
-                          expandedCard={expandedCard}
-                          setExpandedCard={setExpandedCard}
-                          editApplication={() => openAppForm(true)}
-                        />
-                      </div>
-                    ))}
+                {isMd ? (
+                  <Card className="container-wrapper">
+                    <div className="application-card-container">
+                      {favoritedApplications.map((app) => (
+                        <div className="application-card-wrapper" key={app.id}>
+                          <ApplicationCard
+                            data={app}
+                            expandedCard={expandedCard}
+                            setExpandedCard={setExpandedCard}
+                            editApplication={() => openAppForm(true)}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </Card>
+                ) : (
+                  <div className="container-wrapper">
+                    <div className="application-card-container">
+                      {favoritedApplications.map((app) => (
+                        <div className="application-card-wrapper" key={app.id}>
+                          <ApplicationCard
+                            data={app}
+                            expandedCard={expandedCard}
+                            setExpandedCard={setExpandedCard}
+                            editApplication={() => openAppForm(true)}
+                          />
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </Card>
+                )}
               </Box>
               {isMd && expandedCard && (
                 <div className="application-preview-wrapper">
                   <ApplicationPreview
                     data={expandedCard}
+                    showStatusModal={showStatusModal}
+                    setShowStatusModal={setShowStatusModal}
                     editApplication={() => openAppForm(true)}
                   />
                 </div>
@@ -219,13 +258,6 @@ const JobsPage = () => {
             </Flex>
           )}
         </div>
-        {pagination && pagination.totalPages > 1 && (
-          <PaginationControls
-            pagination={pagination}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-          />
-        )}
         <IconButton
           style={{ cursor: "pointer" }}
           className="add-button"
@@ -234,12 +266,15 @@ const JobsPage = () => {
         >
           <PlusIcon width={"32"} height={"32"} />
         </IconButton>
-        {activeForm === "create" && (
-          <ApplicationForm key={"create-new"} onClose={closeAppForm} />
-        )}
-        {activeForm === "update" && expandedCard && (
+        <ApplicationForm
+          key={"create-new"}
+          isOpen={activeForm === "create"}
+          onClose={closeAppForm}
+        />
+        {expandedCard && (
           <ApplicationForm
             key={`edit-${expandedCard.id}`}
+            isOpen={activeForm === "update"}
             data={expandedCard}
             onClose={closeAppForm}
           />

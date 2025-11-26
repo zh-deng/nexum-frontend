@@ -32,7 +32,7 @@ const ApplicationCard = ({
 
   const { isMd } = useBreakpoint();
 
-  const { additionalInfo, latestLogSince } = useMemo(
+  const { additionalInfo, additionalInfoDays, latestLogSince } = useMemo(
     () => calculateDays(logItems),
     [logItems],
   );
@@ -69,11 +69,13 @@ const ApplicationCard = ({
         <Flex align={"center"} justify={"between"} gap={"2"}>
           <Box className="application-card-company">
             <Flex align={"center"} gap={"3"}>
-              {favorited ? (
-                <StarFilledIcon width={"16"} height={"16"} />
-              ) : (
-                <StarIcon width={"16"} height={"16"} />
-              )}
+              <Flex>
+                {favorited ? (
+                  <StarFilledIcon width={"16"} height={"16"} />
+                ) : (
+                  <StarIcon width={"16"} height={"16"} />
+                )}
+              </Flex>
               <Avatar size={"4"} src={logoUrl} fallback={name.charAt(0)} />
               <Box style={{ minWidth: 0, overflow: "hidden" }}>
                 <Text as={"div"} weight={"bold"} truncate>
@@ -90,10 +92,18 @@ const ApplicationCard = ({
             gap={"2"}
             style={{ textAlign: "right", flexShrink: 0 }}
           >
-            <Badge size={"2"}>{`${status} ${latestLogSince}`}</Badge>
+            <Badge>
+              <Flex justify={"between"} width={"100%"} gap={"1"}>
+                <span>{status}</span>
+                <span>{latestLogSince}</span>
+              </Flex>
+            </Badge>
             {additionalInfo && (
-              <Badge size={"2"} color={"gray"}>
-                {additionalInfo}
+              <Badge color={"gray"}>
+                <Flex justify={"between"} width={"100%"} gap={"1"}>
+                  <span>{additionalInfo}</span>
+                  <span>{additionalInfoDays}</span>
+                </Flex>
               </Badge>
             )}
           </Flex>

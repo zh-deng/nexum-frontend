@@ -76,6 +76,7 @@ export function getPriorityValue(label: string): number {
 export function calculateDays(logItems: LogItemDto[]): {
   additionalInfo: string;
   latestLogSince: string;
+  additionalInfoDays: string;
 } {
   const finishedStatus = new Set([
     ApplicationStatus.OFFER,
@@ -85,6 +86,7 @@ export function calculateDays(logItems: LogItemDto[]): {
     ApplicationStatus.WITHDRAWN,
   ]);
   let additionalInfo = "";
+  let additionalInfoDays = "";
 
   const appliedItem = logItems.find(
     (item) => item.status === ApplicationStatus.APPLIED,
@@ -110,15 +112,22 @@ export function calculateDays(logItems: LogItemDto[]): {
     return {
       additionalInfo: "",
       latestLogSince: "",
+      additionalInfoDays: "",
     };
   }
 
   if (finishedItem && appliedItem) {
-    additionalInfo = `App-Duration ${Math.ceil((new Date(finishedItem.date!).getTime() - new Date(appliedItem.date!).getTime()) / (1000 * 60 * 60 * 24))}D`;
+    additionalInfo = "App-Duration";
+    additionalInfoDays = `${Math.ceil((new Date(finishedItem.date!).getTime() - new Date(appliedItem.date!).getTime()) / (1000 * 60 * 60 * 24))}D`;
   } else if (finishedItem) {
     additionalInfo = "Ended";
   } else {
-    additionalInfo = `APPLIED ${totalDays}D ago`;
+    additionalInfo =
+      recentItem.status === ApplicationStatus.DRAFT ||
+      recentItem.status === ApplicationStatus.APPLIED
+        ? ""
+        : `APPLIED`;
+    additionalInfoDays = `${totalDays}D ago`;
   }
 
   const recentDays = Math.floor(
@@ -135,6 +144,7 @@ export function calculateDays(logItems: LogItemDto[]): {
   return {
     additionalInfo,
     latestLogSince,
+    additionalInfoDays,
   };
 }
 // Get available status options based on existing log items

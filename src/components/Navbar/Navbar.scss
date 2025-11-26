@@ -46,7 +46,6 @@
 
 .hamburger-button {
   @include flex-center;
-
   background: none;
   border: none;
   cursor: pointer;
@@ -97,7 +96,11 @@
 .nav-links-desktop {
   list-style: none;
   display: flex;
-  gap: 3rem;
+  gap: 1rem;
+
+  @include respond-to(md) {
+    gap: 3rem;
+  }
 
   li a {
     font-size: 1.2rem;
@@ -109,45 +112,15 @@
 
 .mobile-only {
   display: block;
+
+  @include respond-to(sm) {
+    display: none;
+  }
 }
 .desktop-only {
   display: none;
-}
 
-.xs-only {
-  display: block;
-}
-.sm-only {
-  display: none;
-}
-.md-only {
-  display: none;
-}
-
-@include respond-to(sm) {
-  .mobile-only {
-    display: none;
-  }
-  .desktop-only {
-    display: flex;
-  }
-
-  .xs-only {
-    display: none;
-  }
-  .sm-only {
-    display: block;
-  }
-  .md-only {
-    display: none;
-  }
-}
-
-@include respond-to(md) {
-  .sm-only {
-    display: none;
-  }
-  .md-only {
+  @include respond-to(sm) {
     display: flex;
   }
 }

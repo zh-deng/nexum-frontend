@@ -6,7 +6,11 @@ export const queryClient = new QueryClient({
       if (error && typeof error === "object") {
         const err = error as { statusCode?: number; message?: string };
 
-        if (err.statusCode === 401 || err.message === "Unauthorized") {
+        // Only redirect to login if we're not already there (prevent loops)
+        if (
+          (err.statusCode === 401 || err.message === "Unauthorized") &&
+          window.location.pathname !== "/login"
+        ) {
           window.location.href = "/login";
         }
       }
@@ -15,6 +19,7 @@ export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: 3,
+      refetchOnWindowFocus: false,
     },
   },
 });

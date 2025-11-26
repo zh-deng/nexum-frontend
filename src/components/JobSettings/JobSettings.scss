@@ -1,14 +1,6 @@
 .settings-modal {
-  height: 50%;
-  width: 75%;
-  max-width: 500px;
-  position: fixed;
-  border: 1px solid lightgray;
-  border-radius: 0.5rem;
-  padding: 1rem;
-  top: 50%;
-  left: 50%;
-  z-index: 1000;
-  transform: translate(-50%, -50%);
-  background-color: white;
+  height: 600px;
+  max-height: 70vh;
+  width: 95%;
+  max-width: 450px;
 }
