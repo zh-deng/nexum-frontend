@@ -24,17 +24,11 @@ const HomePage = () => {
           </div>
         </div>
         <div className="hero-visual" aria-hidden>
-          <div className="mock-dashboard">
-            <div className="md-row">
-              <div className="card small" />
-              <div className="card large" />
-            </div>
-            <div className="md-row">
-              <div className="card medium" />
-              <div className="card small" />
-              <div className="card medium" />
-            </div>
-          </div>
+          <img
+            src="homepage-mockup.png"
+            className="mock-dashboard"
+            alt="App dashboard preview"
+          />
         </div>
       </section>
 

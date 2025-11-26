@@ -62,26 +62,8 @@
         padding: 1rem;
         box-shadow: 0 8px 30px rgba(20, 30, 50, 0.06);
 
-        .md-row {
-          display: flex;
-          gap: 8px;
-          margin-bottom: 8px;
-        }
-        .card {
-          background: linear-gradient(180deg, #f3f8ff, #ffffff);
-          border-radius: 8px;
-        }
-        .card.small {
-          width: 64px;
-          height: 42px;
-        }
-        .card.medium {
-          flex: 1;
-          height: 72px;
-        }
-        .card.large {
-          flex: 1.8;
-          height: 72px;
+        img {
+          width: 100%;
         }
       }
     }

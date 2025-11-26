@@ -16,9 +16,13 @@ export default function LoginPage() {
 
   async function handleLogin(data: LoginFormData) {
     try {
+      // Perform login (sets auth cookie server-side)
       await loginUser(data);
-      setUser(await getCurrentUser());
-      router.push("/dashboard");
+      // Fetch the full user profile to populate username immediately
+      const fullUser = await getCurrentUser();
+      setUser(fullUser);
+      // Navigate straight to jobs to avoid middleware timing
+      router.replace("/dashboard/jobs");
       toast.success("Login successful");
     } catch (error: unknown) {
       console.error("Signin error:", error);
