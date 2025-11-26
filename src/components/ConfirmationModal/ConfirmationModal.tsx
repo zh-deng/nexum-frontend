@@ -30,6 +30,13 @@ const ConfirmationModal = ({
 
         <Flex gap={"6"} mt={"5"} justify={"center"}>
           <Button
+            style={{ cursor: "pointer" }}
+            size={"3"}
+            onClick={confirmAndClose}
+          >
+            {confirmationString}
+          </Button>
+          <Button
             variant={"soft"}
             color={"gray"}
             style={{ cursor: "pointer" }}
@@ -37,13 +44,6 @@ const ConfirmationModal = ({
             onClick={onAbortion}
           >
             {abortionString}
-          </Button>
-          <Button
-            style={{ cursor: "pointer" }}
-            size={"3"}
-            onClick={confirmAndClose}
-          >
-            {confirmationString}
           </Button>
         </Flex>
       </Dialog.Content>
