@@ -30,9 +30,7 @@ const Navbar = () => {
   const toast = useToast();
   const pathname = usePathname();
 
-  const userInitials = user?.username
-    ? user.username.slice(0, 2).toUpperCase()
-    : "?";
+  const userInitials = user?.username?.slice(0, 2).toUpperCase() ?? "?";
   const isLoginPage = pathname === "/login";
   const isSignupPage = pathname === "/signup";
 
