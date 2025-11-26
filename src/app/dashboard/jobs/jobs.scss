@@ -1,77 +1,22 @@
 .jobs-page {
   height: 100%;
   width: 100%;
-  padding: 0.5rem;
+  padding: 0;
   position: relative;
+
+  @include respond-to(lg) {
+    padding: 2rem 0;
+  }
 
   &.no-scroll {
     overflow: hidden;
   }
 
-  .sort-filter-container {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
-
-    .sort-filter-trigger {
-      flex: 1;
-      cursor: pointer;
-      background-color: lightblue;
-    }
-
-    .jobs-sort-filter {
-      padding: 0.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-
-      .sort-dropdown-container {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        justify-content: space-between;
-
-        .sort-dropdown {
-          width: 60%;
-        }
-      }
-
-      .status-dropdown-container {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        justify-content: space-between;
-
-        .status-dropdown {
-          width: 60%;
-        }
-      }
-
-      .keyword-container {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-
-        .keyword-input {
-          width: 70%;
-          display: flex;
-          flex-direction: column;
-          gap: 0.5rem;
-        }
-
-        .page-size-input {
-          display: flex;
-          flex-direction: column;
-          gap: 0.5rem;
-        }
-      }
-    }
-  }
-
   .results-info {
-    padding: 0.5rem;
-    text-align: center;
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-align: end;
+    min-width: 200px;
   }
 
   .add-button {
@@ -118,6 +63,11 @@
 
     .container-wrapper {
       height: calc(65vh + 1.5rem);
+      padding: 0 0.5rem;
+
+      @include respond-to(md) {
+        padding: 0.75rem;
+      }
 
       .application-card-container {
         flex: 3;
