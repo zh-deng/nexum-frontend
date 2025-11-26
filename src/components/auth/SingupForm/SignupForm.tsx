@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Text } from "@radix-ui/themes";
+import { Button } from "@radix-ui/themes";
 import "./SignupForm.scss";
 import { useForm } from "react-hook-form";
 import FloatingTextField from "../../FloatingTextField/FloatingTextField";

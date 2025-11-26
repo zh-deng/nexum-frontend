@@ -1,6 +1,7 @@
 import Link from "next/link";
 import "./homePage.scss";
 import Footer from "../components/Footer/Footer";
+import Image from "next/image";
 
 const HomePage = () => {
   return (
@@ -24,10 +25,12 @@ const HomePage = () => {
           </div>
         </div>
         <div className="hero-visual" aria-hidden>
-          <img
-            src="homepage-mockup.png"
+          <Image
+            src="/homepage-mockup.png"
             className="mock-dashboard"
             alt="App dashboard preview"
+            width={360}
+            height={250}
           />
         </div>
       </section>

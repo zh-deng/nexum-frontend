@@ -3,7 +3,7 @@
 import { Avatar, Badge, Box, Card, Flex, Text } from "@radix-ui/themes";
 import "./ApplicationCard.scss";
 import { StarFilledIcon, StarIcon } from "@radix-ui/react-icons";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { calculateDays } from "../../utils/helper";
 import { ApplicationDto } from "../../types/dtos/application/application.dto";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
@@ -26,6 +26,8 @@ const ApplicationCard = ({
   const { id, jobTitle, company, favorited, status, logItems } = data;
   const { name, logoUrl } = company;
   const isActive = id === expandedCard?.id;
+
+  const [showStatusModal, setShowStatusModal] = useState<boolean>(false);
 
   const cardRef = useRef<HTMLDivElement>(null);
   const prevActiveRef = useRef(isActive);
@@ -110,7 +112,12 @@ const ApplicationCard = ({
         </Flex>
       </Card>
       {isActive && !isMd && (
-        <ApplicationPreview data={data} editApplication={editApplication} />
+        <ApplicationPreview
+          data={data}
+          editApplication={editApplication}
+          showStatusModal={showStatusModal}
+          setShowStatusModal={setShowStatusModal}
+        />
       )}
     </div>
   );
