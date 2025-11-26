@@ -48,7 +48,7 @@ const Dropdown = ({
             <React.Fragment key={value}>
               <DropdownMenu.Item
                 style={{
-                  width: "var(--radix-popper-anchor-width)",
+                  width: "calc(var(--radix-popper-anchor-width) - 15px)",
                   textAlign: "center",
                 }}
                 onClick={() => onChange(value)}

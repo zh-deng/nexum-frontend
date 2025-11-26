@@ -1,11 +1,4 @@
-.confirmation-modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1000;
-  background-color: white;
-  border: 1px solid;
-  padding: 1rem 2rem;
-  border-radius: 0.5rem;
+// Make the dialog overlay completely transparent to see the actual page
+.rt-DialogOverlay {
+  background-color: transparent !important;
 }

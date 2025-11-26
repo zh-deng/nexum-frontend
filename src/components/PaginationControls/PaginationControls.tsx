@@ -24,7 +24,7 @@ const PaginationControls = ({
   return (
     <div className="pagination-container">
       <Button
-        size={"3"}
+        size={"2"}
         onClick={() => setCurrentPage(1)}
         disabled={!pagination.hasPrev}
         style={{ cursor: pagination.hasPrev ? "pointer" : "not-allowed" }}
@@ -32,7 +32,7 @@ const PaginationControls = ({
         <DoubleArrowLeftIcon />
       </Button>
       <Button
-        size={"3"}
+        size={"2"}
         onClick={() => setCurrentPage(currentPage - 1)}
         disabled={!pagination.hasPrev}
         style={{ cursor: pagination.hasPrev ? "pointer" : "not-allowed" }}
@@ -43,7 +43,7 @@ const PaginationControls = ({
         Page {pagination.page} of {pagination.totalPages}
       </span>
       <Button
-        size={"3"}
+        size={"2"}
         onClick={() => setCurrentPage(currentPage + 1)}
         disabled={!pagination.hasNext}
         style={{ cursor: pagination.hasNext ? "pointer" : "not-allowed" }}
@@ -51,7 +51,7 @@ const PaginationControls = ({
         <ChevronRightIcon />
       </Button>
       <Button
-        size={"3"}
+        size={"2"}
         onClick={() => setCurrentPage(pagination.totalPages)}
         disabled={!pagination.hasNext}
         style={{ cursor: pagination.hasNext ? "pointer" : "not-allowed" }}

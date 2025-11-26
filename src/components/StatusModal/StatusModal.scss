@@ -1,15 +1,7 @@
 .status-modal {
-  border: 1px solid;
-  border-radius: 0.5rem;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  height: 70%;
   width: 95%;
-  z-index: 50000;
-  background-color: white;
-  padding: 1rem;
+  height: 600px;
+  max-height: 70vh;
   overflow-y: auto;
 
   @include respond-to(md) {

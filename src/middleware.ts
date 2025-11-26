@@ -9,11 +9,6 @@ export function middleware(request: NextRequest) {
   const publicRoutes = ["/", "/login", "/signup"];
   const isPublicRoute = publicRoutes.includes(pathname);
 
-  // If user has token and is on login/signup page, redirect to dashboard
-  if (token && (pathname === "/login" || pathname === "/signup")) {
-    return NextResponse.redirect(new URL("/dashboard/jobs", request.url));
-  }
-
   // If no token and trying to access protected route, redirect to login
   if (!token && !isPublicRoute) {
     return NextResponse.redirect(new URL("/login", request.url));

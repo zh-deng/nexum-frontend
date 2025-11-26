@@ -22,7 +22,7 @@ import {
 import ConfirmationModal from "../ConfirmationModal/ConfirmationModal";
 import StatusModal from "../StatusModal/StatusModal";
 import { ApplicationDto } from "../../types/dtos/application/application.dto";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useToggleFavorite } from "../../hooks/application/useUpdateApplication";
 import { useDeleteApplication } from "../../hooks/application/useDeleteApplication";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
@@ -51,11 +51,15 @@ const LabelValue = ({
 
 type ApplicationPreviewProps = {
   data: ApplicationDto;
+  showStatusModal: boolean;
+  setShowStatusModal: React.Dispatch<React.SetStateAction<boolean>>;
   editApplication: () => void;
 };
 
 const ApplicationPreview = ({
   data,
+  showStatusModal,
+  setShowStatusModal,
   editApplication,
 }: ApplicationPreviewProps) => {
   const {
@@ -93,16 +97,12 @@ const ApplicationPreview = ({
   const priorityBadgeColor =
     priority === 3 ? "yellow" : priority === 2 ? "orange" : "crimson";
 
-  const [showConfirmationModal, setShowConfirmationModal] =
-    useState<boolean>(false);
-  const [showStatusModal, setShowStatusModal] = useState<boolean>(false);
+  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
 
   const toggleFavorite = useToggleFavorite();
   const deleteApplication = useDeleteApplication();
-  const { isSm, isMd } = useBreakpoint();
+  const { isSm, isMd, isXl } = useBreakpoint();
   const toast = useToast();
-
-  const buttonSize = isMd ? "3" : isSm ? "4" : "3";
 
   function getJobUrl() {
     if (!jobLink) return;
@@ -142,17 +142,17 @@ const ApplicationPreview = ({
           <Flex justify={"between"} align={"center"} mb={"2"}>
             <Button
               style={{ cursor: "pointer" }}
-              size={buttonSize}
+              size={"3"}
               radius={"small"}
               onClick={() => setShowStatusModal(true)}
             >
               <Text>Update Status</Text>
             </Button>
-            <Flex gap={"3"}>
+            <Flex gap={isXl ? "1" : "2"}>
               <IconButton
                 style={{ cursor: "pointer" }}
                 onClick={handleToggleFavorite}
-                size={buttonSize}
+                size={"3"}
                 radius={"small"}
               >
                 {favorited ? (
@@ -164,15 +164,15 @@ const ApplicationPreview = ({
               <IconButton
                 style={{ cursor: "pointer" }}
                 onClick={editApplication}
-                size={buttonSize}
+                size={"3"}
                 radius={"small"}
               >
                 <Pencil2Icon width={"24"} height={"24"} />
               </IconButton>
               <IconButton
                 style={{ cursor: "pointer" }}
-                onClick={() => setShowConfirmationModal(true)}
-                size={buttonSize}
+                onClick={() => setShowDeleteModal(true)}
+                size={"3"}
                 radius={"small"}
                 color={"red"}
               >
@@ -305,9 +305,9 @@ const ApplicationPreview = ({
         </Box>
       </Card>
       <ConfirmationModal
-        isOpen={showConfirmationModal}
+        isOpen={showDeleteModal}
         onConfirmation={handleDeleteApplication}
-        onAbortion={() => setShowConfirmationModal(false)}
+        onAbortion={() => setShowDeleteModal(false)}
       />
       <StatusModal
         applicationId={id}
