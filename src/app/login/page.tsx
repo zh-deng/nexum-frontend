@@ -1,7 +1,6 @@
 "use client";
 
 import "./login.scss";
-import Link from "next/link";
 import LoginForm, {
   LoginFormData,
 } from "../../components/auth/LoginForm/LoginForm";
@@ -32,7 +31,6 @@ export default function LoginPage() {
       <div className="form-container">
         <h1>Log In</h1>
         <LoginForm onSubmit={handleLogin} />
-        <Link href="/signup">No account? Sign up here!</Link>
       </div>
     </div>
   );
