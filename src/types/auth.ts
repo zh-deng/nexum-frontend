@@ -19,11 +19,10 @@ export type LoginDto = {
 export type LoginResponse = {
   id: string;
   email: string;
-  username?: string;
 };
 
 export type AuthUser = {
-  id?: string;
+  id: string;
   email?: string;
   username?: string;
 };

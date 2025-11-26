@@ -24,7 +24,7 @@ const Navbar = () => {
 
   const menuRef = useRef<HTMLDivElement>(null);
 
-  const { user, setUser } = useAuth();
+  const { user, setUser, isLoading } = useAuth();
   const router = useRouter();
   const { isSm } = useBreakpoint();
   const toast = useToast();
@@ -33,6 +33,9 @@ const Navbar = () => {
   const userInitials = user?.username?.slice(0, 2).toUpperCase() ?? "?";
   const isLoginPage = pathname === "/login";
   const isSignupPage = pathname === "/signup";
+
+  // Only show auth buttons if we're done loading and no user
+  const showAuthButtons = !isLoading && !user;
 
   useEffect(() => {
     function handleOutsideClick(event: MouseEvent) {
@@ -114,7 +117,7 @@ const Navbar = () => {
             {user ? (
               <a onClick={handleLogout}>Log Out</a>
             ) : (
-              <Link href="/login">Log In / Sign Up</Link>
+              showAuthButtons && <Link href="/login">Log In / Sign Up</Link>
             )}
           </li>
         </ul>
@@ -134,18 +137,20 @@ const Navbar = () => {
                 Log Out
               </Button>
             ) : (
-              <Flex gap={"4"}>
-                {!isLoginPage && (
-                  <Button color={"cyan"} style={{ cursor: "pointer" }}>
-                    <Link href="/login">Log In</Link>
-                  </Button>
-                )}
-                {!isSignupPage && (
-                  <Button style={{ cursor: "pointer" }}>
-                    <Link href="/signup">Sign Up</Link>
-                  </Button>
-                )}
-              </Flex>
+              showAuthButtons && (
+                <Flex gap={"4"}>
+                  {!isLoginPage && (
+                    <Button color={"cyan"} style={{ cursor: "pointer" }}>
+                      <Link href="/login">Log In</Link>
+                    </Button>
+                  )}
+                  {!isSignupPage && (
+                    <Button style={{ cursor: "pointer" }}>
+                      <Link href="/signup">Sign Up</Link>
+                    </Button>
+                  )}
+                </Flex>
+              )
             )}
           </div>
 
@@ -159,9 +164,11 @@ const Navbar = () => {
                   color={"white"}
                 />
               ) : (
-                <Link href="/login" className="login-link">
-                  <EnterIcon width={26} height={20} color={"white"} />
-                </Link>
+                showAuthButtons && (
+                  <Link href="/login" className="login-link">
+                    <EnterIcon width={26} height={20} color={"white"} />
+                  </Link>
+                )
               )}
             </IconButton>
           </div>
