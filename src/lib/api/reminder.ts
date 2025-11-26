@@ -4,7 +4,6 @@ import {
   ReminderDto,
 } from "../../types/dtos/reminder/reminder.dto";
 import { UpdateReminderDto } from "../../types/dtos/reminder/update-reminder.dto";
-import { API_BASE } from "../../utils/environment";
 import { apiClient } from "../api-client";
 
 export async function createReminder(

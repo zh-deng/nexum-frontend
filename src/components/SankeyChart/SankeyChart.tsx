@@ -2,7 +2,6 @@ import * as d3 from "d3";
 import {
   sankey,
   sankeyLinkHorizontal,
-  sankeyLeft,
   sankeyCenter,
   SankeyNode,
   SankeyLink,

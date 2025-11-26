@@ -101,7 +101,7 @@ const ApplicationPreview = ({
 
   const toggleFavorite = useToggleFavorite();
   const deleteApplication = useDeleteApplication();
-  const { isSm, isMd, isXl } = useBreakpoint();
+  const { isMd, isXl } = useBreakpoint();
   const toast = useToast();
 
   function getJobUrl() {

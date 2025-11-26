@@ -1,7 +1,6 @@
 import { CreateLogItemDto } from "../../types/dtos/log-item/create-log-item.dto";
 import { LogItemDto } from "../../types/dtos/log-item/log-item.dto";
 import { UpdateLogItemDto } from "../../types/dtos/log-item/update-log-item.dto";
-import { API_BASE } from "../../utils/environment";
 import { apiClient } from "../api-client";
 
 export async function createLogItem(

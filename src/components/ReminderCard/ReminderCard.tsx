@@ -22,7 +22,6 @@ import Dropdown from "../Dropdown/Dropdown";
 import { ReminderStatus } from "../../types/enums";
 import { useUpdateReminder } from "../../hooks/reminder/useUpdateReminder";
 import NewBadge from "../NewBadge/NewBadge";
-import { useBreakpoint } from "../../hooks/useBreakpoint";
 import { useToast } from "../ToastProvider/ToastProvider";
 
 type ReminderFormContainerProps = {
