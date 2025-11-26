@@ -6,8 +6,8 @@ import "./Navbar.scss";
 import { useAuth } from "../../context/AuthContext";
 import { logoutUser } from "../../lib/api/auth";
 import { useRouter, usePathname } from "next/navigation";
-import { EnterIcon, ExitIcon, HamburgerMenuIcon } from "@radix-ui/react-icons";
-import { Avatar, Button, Flex, IconButton } from "@radix-ui/themes";
+import { HamburgerMenuIcon } from "@radix-ui/react-icons";
+import { Avatar, Button, Flex } from "@radix-ui/themes";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 import { useToast } from "../ToastProvider/ToastProvider";
 import { queryClient } from "../../lib/react-query";
@@ -113,13 +113,23 @@ const Navbar = () => {
               <Link href={item.href}>{item.label}</Link>
             </li>
           ))}
-          <li>
-            {user ? (
+
+          {user ? (
+            <li>
               <a onClick={handleLogout}>Log Out</a>
-            ) : (
-              showAuthButtons && <Link href="/login">Log In / Sign Up</Link>
-            )}
-          </li>
+            </li>
+          ) : (
+            showAuthButtons && (
+              <>
+                <li>
+                  <Link href="/login">Log In</Link>
+                </li>
+                <li>
+                  <Link href="/signup">Sign Up</Link>
+                </li>
+              </>
+            )
+          )}
         </ul>
         <div className="container-right">
           {user && (
@@ -130,8 +140,7 @@ const Navbar = () => {
               fallback={userInitials!}
             />
           )}
-          {/* Right-side: render three variants and let CSS show the correct one */}
-          <div className="md-only">
+          <div className="desktop-only">
             {user ? (
               <Button onClick={handleLogout} style={{ cursor: "pointer" }}>
                 Log Out
@@ -140,40 +149,22 @@ const Navbar = () => {
               showAuthButtons && (
                 <Flex gap={"4"}>
                   {!isLoginPage && (
-                    <Button color={"cyan"} style={{ cursor: "pointer" }}>
-                      <Link href="/login">Log In</Link>
-                    </Button>
+                    <Link href="/login">
+                      <Button color={"cyan"} style={{ cursor: "pointer" }}>
+                        Log In
+                      </Button>
+                    </Link>
                   )}
                   {!isSignupPage && (
-                    <Button style={{ cursor: "pointer" }}>
-                      <Link href="/signup">Sign Up</Link>
-                    </Button>
+                    <Link href="/signup">
+                      <Button style={{ cursor: "pointer" }}>Sign Up</Button>
+                    </Link>
                   )}
                 </Flex>
               )
             )}
           </div>
-
-          <div className="sm-only">
-            <IconButton style={{ cursor: "pointer" }}>
-              {user ? (
-                <ExitIcon
-                  width={26}
-                  height={20}
-                  onClick={handleLogout}
-                  color={"white"}
-                />
-              ) : (
-                showAuthButtons && (
-                  <Link href="/login" className="login-link">
-                    <EnterIcon width={26} height={20} color={"white"} />
-                  </Link>
-                )
-              )}
-            </IconButton>
-          </div>
-
-          <div className="xs-only">
+          <div className="mobile-only">
             <button
               className="hamburger-button"
               onClick={() => {
