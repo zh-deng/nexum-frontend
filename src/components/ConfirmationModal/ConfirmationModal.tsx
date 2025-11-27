@@ -1,4 +1,4 @@
-import { Button, Dialog, Flex, Text } from "@radix-ui/themes";
+import { Button, Dialog, Flex, Spinner, Text } from "@radix-ui/themes";
 import "./ConfirmationModal.scss";
 
 type ConfirmationModalProps = {
@@ -6,12 +6,14 @@ type ConfirmationModalProps = {
   confirmationString?: string;
   abortionString?: string;
   isOpen: boolean;
+  isLoading?: boolean;
   onConfirmation: () => void;
   onAbortion: () => void;
 };
 
 const ConfirmationModal = ({
   isOpen,
+  isLoading = false,
   questionString = "Are you sure?",
   confirmationString = "YES",
   abortionString = "NO",
@@ -20,7 +22,9 @@ const ConfirmationModal = ({
 }: ConfirmationModalProps) => {
   function confirmAndClose() {
     onConfirmation();
-    onAbortion();
+    if (!isLoading) {
+      onAbortion();
+    }
   }
 
   return (
@@ -33,8 +37,9 @@ const ConfirmationModal = ({
             style={{ cursor: "pointer" }}
             size={"3"}
             onClick={confirmAndClose}
+            disabled={isLoading}
           >
-            {confirmationString}
+            {isLoading ? <Spinner size="2" /> : confirmationString}
           </Button>
           <Button
             variant={"soft"}
@@ -42,6 +47,7 @@ const ConfirmationModal = ({
             style={{ cursor: "pointer" }}
             size={"3"}
             onClick={onAbortion}
+            disabled={isLoading}
           >
             {abortionString}
           </Button>

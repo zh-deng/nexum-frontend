@@ -9,6 +9,7 @@ import {
   Flex,
   IconButton,
   Link,
+  Spinner,
   Text,
 } from "@radix-ui/themes";
 import { formatDateUs, getPriorityLabel } from "../../utils/helper";
@@ -33,7 +34,7 @@ const LabelValue = ({
   label,
   value,
   column = false,
-  gap = "3",
+  gap = "0",
 }: {
   label: string;
   value: string | undefined;
@@ -66,6 +67,7 @@ const ApplicationPreview = ({
     id,
     company,
     jobLink,
+    jobTitle,
     jobDescription,
     workLocation,
     priority,
@@ -98,6 +100,8 @@ const ApplicationPreview = ({
     priority === 3 ? "yellow" : priority === 2 ? "orange" : "crimson";
 
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
+  const [isTogglingFavorite, setIsTogglingFavorite] = useState<boolean>(false);
 
   const toggleFavorite = useToggleFavorite();
   const deleteApplication = useDeleteApplication();
@@ -112,22 +116,28 @@ const ApplicationPreview = ({
   }
 
   async function handleDeleteApplication() {
+    setIsDeleting(true);
     try {
       await deleteApplication.mutateAsync(id);
       toast.success("Successfully deleted application");
     } catch (error: unknown) {
       console.error("Delete application error:", error);
       toast.error("Failed to delete application");
+    } finally {
+      setIsDeleting(false);
     }
   }
 
   async function handleToggleFavorite() {
+    setIsTogglingFavorite(true);
     try {
       await toggleFavorite.mutateAsync(data.id);
       toast.success("Changed favorite");
     } catch (error: unknown) {
       console.error("Toggle favorite error:", error);
       toast.error("Failed to change favorite");
+    } finally {
+      setIsTogglingFavorite(false);
     }
   }
 
@@ -154,8 +164,11 @@ const ApplicationPreview = ({
                 onClick={handleToggleFavorite}
                 size={"3"}
                 radius={"small"}
+                disabled={isTogglingFavorite || isDeleting}
               >
-                {favorited ? (
+                {isTogglingFavorite ? (
+                  <Spinner size="2" />
+                ) : favorited ? (
                   <StarFilledIcon width={"24"} height={"24"} />
                 ) : (
                   <StarIcon width={"24"} height={"24"} />
@@ -166,6 +179,7 @@ const ApplicationPreview = ({
                 onClick={editApplication}
                 size={"3"}
                 radius={"small"}
+                disabled={isTogglingFavorite || isDeleting}
               >
                 <Pencil2Icon width={"24"} height={"24"} />
               </IconButton>
@@ -175,12 +189,13 @@ const ApplicationPreview = ({
                 size={"3"}
                 radius={"small"}
                 color={"red"}
+                disabled={isTogglingFavorite || isDeleting}
               >
                 <TrashIcon width={"24"} height={"24"} />
               </IconButton>
             </Flex>
           </Flex>
-          <Flex direction={"column"} gap={"5"} className="min-width-0">
+          <Flex direction={"column"} gap={"4"} className="min-width-0">
             <Box height={"3rem"}>
               <Flex gap={"4"} height={"100%"} align={"center"}>
                 <Badge size={"3"} color={priorityBadgeColor}>
@@ -190,6 +205,11 @@ const ApplicationPreview = ({
                   <Text size={"3"}>Type: {workLocation}</Text>
                 </Badge>
               </Flex>
+            </Box>
+            <Box>
+              <Text weight={"bold"} size={"6"}>
+                {jobTitle}
+              </Text>
             </Box>
             {jobLink && (
               <Box
@@ -308,6 +328,7 @@ const ApplicationPreview = ({
         isOpen={showDeleteModal}
         onConfirmation={handleDeleteApplication}
         onAbortion={() => setShowDeleteModal(false)}
+        isLoading={isDeleting}
       />
       <StatusModal
         applicationId={id}

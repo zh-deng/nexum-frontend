@@ -8,6 +8,7 @@ import {
   Dialog,
   Flex,
   IconButton,
+  Spinner,
   Text,
 } from "@radix-ui/themes";
 import "./StatusModal.scss";
@@ -54,6 +55,7 @@ const StatusInputContainer = ({
   const [showConfirmationModal, setShowConfirmationModal] =
     useState<boolean>(false);
   const [statusError, setStatusError] = useState<string>("");
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const { isSm } = useBreakpoint();
   const toast = useToast();
@@ -91,6 +93,7 @@ const StatusInputContainer = ({
       return;
     }
 
+    setIsSubmitting(true);
     try {
       const { id, date, ...rest } = form;
 
@@ -102,6 +105,7 @@ const StatusInputContainer = ({
         });
 
         toast.success("Successfully created status");
+        resetId();
       } else {
         if (typeof id !== "string") return;
 
@@ -114,15 +118,15 @@ const StatusInputContainer = ({
         });
 
         toast.success("Successfully updated status");
+        resetId();
       }
     } catch (error: unknown) {
       console.error("Create or update log item error:", error);
       toast.error("Failed to create or update status");
+    } finally {
+      setIsSubmitting(false);
     }
-
-    resetId();
   }
-
   async function handleDeleteLogItem() {
     try {
       if (typeof form.id !== "string") return;
@@ -172,14 +176,19 @@ const StatusInputContainer = ({
             </Text>
           )}
           <Flex justify={"between"}>
-            <Flex gap={"4"} justify={"end"} width={"100%"}>
+            <Flex gap={"4"} justify={"start"} width={"100%"}>
               <IconButton
                 style={{ cursor: "pointer" }}
                 size={"3"}
                 radius={"small"}
                 onClick={createOrUpdateLogItem}
+                disabled={isSubmitting}
               >
-                <CheckIcon width={"24"} height={"24"} />
+                {isSubmitting ? (
+                  <Spinner size="2" />
+                ) : (
+                  <CheckIcon width={"24"} height={"24"} />
+                )}
               </IconButton>
               <IconButton
                 style={{ cursor: "pointer" }}
@@ -187,6 +196,7 @@ const StatusInputContainer = ({
                 radius={"small"}
                 color={"crimson"}
                 onClick={resetId}
+                disabled={isSubmitting}
               >
                 <Cross1Icon width={"24"} height={"24"} />
               </IconButton>
@@ -198,6 +208,7 @@ const StatusInputContainer = ({
                 radius={"small"}
                 color={"red"}
                 onClick={() => setShowConfirmationModal(true)}
+                disabled={isSubmitting}
               >
                 <TrashIcon width={"24"} height={"24"} />
               </IconButton>
