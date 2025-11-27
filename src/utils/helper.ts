@@ -148,7 +148,7 @@ export function calculateDays(logItems: LogItemDto[]): {
   };
 }
 // Get available status options based on existing log items
-export function getStatusOptions(logItems: LogItemDto[]) {
+export function getStatusOptions(logItems: LogItemDto[] = []) {
   const statusOptions = [
     ApplicationStatus.DRAFT,
     ApplicationStatus.APPLIED,

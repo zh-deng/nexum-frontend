@@ -245,7 +245,7 @@ const StatusModal = ({
   logItems,
   onClose,
 }: StatusModalProps) => {
-  const statusOptions = getStatusOptions(logItems);
+  const statusOptions = getStatusOptions(logItems ?? []);
   const initialForm = {
     id: null,
     status: "",
@@ -311,7 +311,7 @@ const StatusModal = ({
                   setForm={setForm}
                 />
               )}
-              {logItems.slice().map((logItem: LogItemDto) => {
+              {(logItems ?? []).slice().map((logItem: LogItemDto) => {
                 return (
                   <div key={logItem.id}>
                     {form.id === logItem.id ? (
