@@ -134,12 +134,14 @@ const ApplicationForm = ({
     setCompany(data.company.name!);
   }, [data?.company]);
 
-  // Reset form when data prop changes (switching between create/edit)
+  // Reset form when modal opens or data changes
   useEffect(() => {
-    reset(data ?? defaultApplication);
-    setCompany(data?.company.name ?? "Company*");
-    setShowCompanyError(false);
-  }, [data, reset]);
+    if (isOpen) {
+      reset(data ?? defaultApplication);
+      setCompany(data?.company.name ?? "Company*");
+      setShowCompanyError(false);
+    }
+  }, [isOpen, data, reset]);
 
   function handleCompanyChange(selected: string) {
     setCompany(selected);
