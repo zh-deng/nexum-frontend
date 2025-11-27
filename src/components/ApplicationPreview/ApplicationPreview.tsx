@@ -33,7 +33,7 @@ const LabelValue = ({
   label,
   value,
   column = false,
-  gap = "3",
+  gap = "0",
 }: {
   label: string;
   value: string | undefined;
@@ -66,6 +66,7 @@ const ApplicationPreview = ({
     id,
     company,
     jobLink,
+    jobTitle,
     jobDescription,
     workLocation,
     priority,
@@ -180,7 +181,7 @@ const ApplicationPreview = ({
               </IconButton>
             </Flex>
           </Flex>
-          <Flex direction={"column"} gap={"5"} className="min-width-0">
+          <Flex direction={"column"} gap={"4"} className="min-width-0">
             <Box height={"3rem"}>
               <Flex gap={"4"} height={"100%"} align={"center"}>
                 <Badge size={"3"} color={priorityBadgeColor}>
@@ -190,6 +191,11 @@ const ApplicationPreview = ({
                   <Text size={"3"}>Type: {workLocation}</Text>
                 </Badge>
               </Flex>
+            </Box>
+            <Box>
+              <Text weight={"bold"} size={"6"}>
+                {jobTitle}
+              </Text>
             </Box>
             {jobLink && (
               <Box
