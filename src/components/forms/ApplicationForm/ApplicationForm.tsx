@@ -76,7 +76,7 @@ const ApplicationForm = ({ isOpen, data, onClose }: ApplicationFormProps) => {
     formState: { errors, isSubmitting },
     setValue,
     watch,
-    resetField,
+    reset,
   } = useForm<CreateApplicationDto | UpdateApplicationDto>({
     defaultValues: data ?? defaultApplication,
   });
@@ -132,7 +132,7 @@ const ApplicationForm = ({ isOpen, data, onClose }: ApplicationFormProps) => {
     setShowCompanyError(false);
 
     if (selected === "Add new company") {
-      resetField("company");
+      setValue("company", defaultCompany);
     } else {
       const companyData = companiesData!.find(
         (element) => element.name === selected,
@@ -154,6 +154,13 @@ const ApplicationForm = ({ isOpen, data, onClose }: ApplicationFormProps) => {
         .map((company) => company.name)
         .filter((name) => name !== company),
     ];
+  }
+
+  function handleClose() {
+    reset();
+    !data && setCompany("Company*");
+    setShowCompanyError(false);
+    onClose();
   }
 
   async function onSubmit(data: CreateApplicationDto | UpdateApplicationDto) {
@@ -222,7 +229,10 @@ const ApplicationForm = ({ isOpen, data, onClose }: ApplicationFormProps) => {
 
   return (
     <QueryState isLoading={isLoading} error={error}>
-      <Dialog.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <Dialog.Root
+        open={isOpen}
+        onOpenChange={(open) => !open && handleClose()}
+      >
         <Dialog.Content className="app-form">
           <form onSubmit={handleSubmit(onSubmit)} style={{ height: "100%" }}>
             <Flex
@@ -237,7 +247,7 @@ const ApplicationForm = ({ isOpen, data, onClose }: ApplicationFormProps) => {
                     <IconButton
                       className="cancel-button"
                       style={{ cursor: "pointer" }}
-                      onClick={onClose}
+                      onClick={handleClose}
                       size={"3"}
                       radius={"small"}
                       type={"button"}
