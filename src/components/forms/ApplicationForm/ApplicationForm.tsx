@@ -11,7 +11,7 @@ import {
 import "./ApplicationForm.scss";
 import { Cross1Icon } from "@radix-ui/react-icons";
 import Dropdown from "../../Dropdown/Dropdown";
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import CompanyForm from "../CompanyForm/CompanyForm";
 import { CreateCompanyDto } from "../../../types/dtos/company/create-company.dto";
 import { ApplicationStatus, WorkLocation } from "../../../types/enums";
@@ -32,6 +32,7 @@ import { UpdateApplicationDto } from "../../../types/dtos/application/update-app
 import QueryState from "../../QueryState/QueryState";
 import { useToast } from "../../ToastProvider/ToastProvider";
 import { useBreakpoint } from "../../../hooks/useBreakpoint";
+import { ApplicationDto } from "../../../types/dtos/application/application.dto";
 
 const defaultCompany: CreateCompanyDto = {
   name: "",
@@ -66,10 +67,16 @@ const defaultApplication = {
 type ApplicationFormProps = {
   isOpen: boolean;
   data?: UpdateApplicationDto;
+  setExpandedCard: React.Dispatch<React.SetStateAction<ApplicationDto | null>>;
   onClose: () => void;
 };
 
-const ApplicationForm = ({ isOpen, data, onClose }: ApplicationFormProps) => {
+const ApplicationForm = ({
+  isOpen,
+  data,
+  setExpandedCard,
+  onClose,
+}: ApplicationFormProps) => {
   const {
     register,
     handleSubmit,
@@ -127,6 +134,13 @@ const ApplicationForm = ({ isOpen, data, onClose }: ApplicationFormProps) => {
     setCompany(data.company.name!);
   }, [data?.company]);
 
+  // Reset form when data prop changes (switching between create/edit)
+  useEffect(() => {
+    reset(data ?? defaultApplication);
+    setCompany(data?.company.name ?? "Company*");
+    setShowCompanyError(false);
+  }, [data, reset]);
+
   function handleCompanyChange(selected: string) {
     setCompany(selected);
     setShowCompanyError(false);
@@ -157,8 +171,8 @@ const ApplicationForm = ({ isOpen, data, onClose }: ApplicationFormProps) => {
   }
 
   function handleClose() {
-    reset();
-    !data && setCompany("Company*");
+    reset(defaultApplication);
+    setCompany("Company*");
     setShowCompanyError(false);
     onClose();
   }
@@ -191,10 +205,11 @@ const ApplicationForm = ({ isOpen, data, onClose }: ApplicationFormProps) => {
           ...companyRest
         } = company;
 
-        await updateApplication.mutateAsync({
+        const updatedApplication = await updateApplication.mutateAsync({
           id: data.id,
           data: { company: companyRest, ...rest },
         });
+        setExpandedCard(updatedApplication);
 
         toast.success("Successfully updated application");
       } else {
@@ -211,11 +226,12 @@ const ApplicationForm = ({ isOpen, data, onClose }: ApplicationFormProps) => {
           ...rest
         } = cleanedData;
 
-        await createApplication.mutateAsync({
+        const createdApplication = await createApplication.mutateAsync({
           company: cleanCompany,
           logItemDate: new Date(logItemDate).toISOString(),
           ...rest,
         });
+        setExpandedCard(createdApplication);
 
         toast.success("Successfully created application");
       }
