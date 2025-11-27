@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@radix-ui/themes";
+import { Button, Spinner } from "@radix-ui/themes";
 import "./SignupForm.scss";
 import { useForm } from "react-hook-form";
 import FloatingTextField from "../../FloatingTextField/FloatingTextField";
@@ -106,7 +106,7 @@ const SignupForm = ({ onSubmit, defaultValues }: SignupFormProps) => {
         mt={"4"}
         disabled={isSubmitting}
       >
-        Sign Up
+        {isSubmitting ? <Spinner size="2" /> : "Sign Up"}
       </Button>
     </form>
   );
