@@ -91,6 +91,7 @@ const ApplicationPreview = ({
     logoUrl,
     notes: companyNotes,
   } = company;
+  const logItemArray = logItems || [];
   const formattedCity =
     zipCode || city ? `${zipCode ?? ""} ${city ?? ""}` : null;
   const formattedRegion =
@@ -308,7 +309,7 @@ const ApplicationPreview = ({
             </Card>
             <Flex direction={"column"} gap={"2"}>
               <Text weight={"medium"}>History:</Text>
-              {logItems.map((logItem: LogItemDto) => {
+              {logItemArray.map((logItem: LogItemDto) => {
                 return (
                   <Card key={logItem.id}>
                     <Flex gap={"3"} align={"center"} justify={"between"}>
