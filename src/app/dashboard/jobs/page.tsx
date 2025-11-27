@@ -269,6 +269,7 @@ const JobsPage = () => {
         <ApplicationForm
           key={"create-new"}
           isOpen={activeForm === "create"}
+          setExpandedCard={setExpandedCard}
           onClose={closeAppForm}
         />
         {expandedCard && (
@@ -276,6 +277,7 @@ const JobsPage = () => {
             key={`edit-${expandedCard.id}`}
             isOpen={activeForm === "update"}
             data={expandedCard}
+            setExpandedCard={setExpandedCard}
             onClose={closeAppForm}
           />
         )}
