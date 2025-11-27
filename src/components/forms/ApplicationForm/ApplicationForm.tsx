@@ -5,6 +5,7 @@ import {
   Dialog,
   Flex,
   IconButton,
+  Spinner,
   Text,
 } from "@radix-ui/themes";
 import "./ApplicationForm.scss";
@@ -383,7 +384,13 @@ const ApplicationForm = ({ isOpen, data, onClose }: ApplicationFormProps) => {
                 style={{ cursor: "pointer", width: "100%" }}
                 disabled={isSubmitting}
               >
-                {data ? "Update" : "Create"}
+                {isSubmitting ? (
+                  <Spinner size="2" />
+                ) : data ? (
+                  "Update"
+                ) : (
+                  "Create"
+                )}
               </Button>
             </Flex>
           </form>

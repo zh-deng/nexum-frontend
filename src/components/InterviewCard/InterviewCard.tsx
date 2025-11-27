@@ -7,6 +7,7 @@ import {
   Flex,
   IconButton,
   Separator,
+  Spinner,
   Text,
 } from "@radix-ui/themes";
 import { InterviewDto } from "../../types/dtos/interview/interview.dto";
@@ -35,6 +36,7 @@ const InterviewFormContainer = ({
   setForm,
 }: InterviewFormContainerProps) => {
   const initialSnapshot = useRef(form).current;
+  const [isUpdating, setIsUpdating] = useState<boolean>(false);
 
   const updateInterview = useUpdateInterview();
   const toast = useToast();
@@ -60,6 +62,7 @@ const InterviewFormContainer = ({
 
     if (!hasChanged) return;
 
+    setIsUpdating(true);
     try {
       const { id, date, ...rest } = form;
 
@@ -77,6 +80,8 @@ const InterviewFormContainer = ({
     } catch (error: unknown) {
       console.error("Update interview error:", error);
       toast.error("Failed to update interview");
+    } finally {
+      setIsUpdating(false);
     }
   }
 
@@ -126,12 +131,19 @@ const InterviewFormContainer = ({
         </Flex>
         <Flex gap={"3"} mt={"4"} justify={"end"}>
           <Dialog.Close>
-            <Button variant={"soft"} color={"gray"} onClick={handleClose}>
+            <Button
+              variant={"soft"}
+              color={"gray"}
+              onClick={handleClose}
+              disabled={isUpdating}
+            >
               Cancel
             </Button>
           </Dialog.Close>
           <Dialog.Close>
-            <Button onClick={handleUpdateInterview}>Save</Button>
+            <Button onClick={handleUpdateInterview} disabled={isUpdating}>
+              {isUpdating ? <Spinner size="2" /> : "Save"}
+            </Button>
           </Dialog.Close>
         </Flex>
       </Dialog.Content>
@@ -158,6 +170,7 @@ const ReminderFormContainer = ({
   };
 
   const [form, setForm] = useState<ReminderForm>(intialValues);
+  const [isCreating, setIsCreating] = useState<boolean>(false);
 
   const router = useRouter();
   const createReminder = useCreateReminder();
@@ -178,6 +191,7 @@ const ReminderFormContainer = ({
   }
 
   async function handleCreateReminder() {
+    setIsCreating(true);
     try {
       const { alarmDate, ...rest } = form;
 
@@ -192,6 +206,8 @@ const ReminderFormContainer = ({
     } catch (error: unknown) {
       console.error("Create reminder error:", error);
       toast.error("Failed to create reminder");
+    } finally {
+      setIsCreating(false);
     }
 
     handleClose();
@@ -243,12 +259,19 @@ const ReminderFormContainer = ({
         </Flex>
         <Flex gap={"3"} mt={"4"} justify={"end"}>
           <Dialog.Close>
-            <Button variant={"soft"} color={"gray"} onClick={handleClose}>
+            <Button
+              variant={"soft"}
+              color={"gray"}
+              onClick={handleClose}
+              disabled={isCreating}
+            >
               Cancel
             </Button>
           </Dialog.Close>
           <Dialog.Close>
-            <Button onClick={handleCreateReminder}>Save</Button>
+            <Button onClick={handleCreateReminder} disabled={isCreating}>
+              {isCreating ? <Spinner size="2" /> : "Save"}
+            </Button>
           </Dialog.Close>
         </Flex>
       </Dialog.Content>
@@ -277,11 +300,13 @@ const InterviewCard = ({ data }: InterviewCardProps) => {
   const [showConfirmationModal, setShowConfirmationModal] =
     useState<boolean>(false);
   const [form, setForm] = useState<InterviewForm>(initialForm);
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
   const deleteInterview = useDeleteInterview();
   const toast = useToast();
 
   async function handleDeleteInterview() {
+    setIsDeleting(true);
     try {
       await deleteInterview.mutateAsync(data.id);
 
@@ -289,6 +314,8 @@ const InterviewCard = ({ data }: InterviewCardProps) => {
     } catch (error: unknown) {
       console.error("Delete interview error:", error);
       toast.error("Failed to delete interview");
+    } finally {
+      setIsDeleting(false);
     }
   }
 
@@ -342,6 +369,7 @@ const InterviewCard = ({ data }: InterviewCardProps) => {
         isOpen={showConfirmationModal}
         onConfirmation={handleDeleteInterview}
         onAbortion={() => setShowConfirmationModal(false)}
+        isLoading={isDeleting}
       />
     </Box>
   );

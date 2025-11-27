@@ -7,6 +7,7 @@ import {
   Flex,
   IconButton,
   Separator,
+  Spinner,
   Text,
 } from "@radix-ui/themes";
 import { ReminderDto } from "../../types/dtos/reminder/reminder.dto";
@@ -50,6 +51,7 @@ export const ReminderFormContainer = ({
   const [form, setForm] = useState<ReminderForm>(intialValues);
   const [error, setError] = useState<string>("");
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isUpdating, setIsUpdating] = useState<boolean>(false);
 
   const statusOptions = Object.values(ReminderStatus).filter(
     (elem) => elem !== form.status,
@@ -95,6 +97,7 @@ export const ReminderFormContainer = ({
       return;
     }
 
+    setIsUpdating(true);
     try {
       const { alarmDate, ...rest } = form;
 
@@ -112,6 +115,8 @@ export const ReminderFormContainer = ({
     } catch (error: unknown) {
       console.error("Create reminder error:", error);
       toast.error("Failed to update reminder");
+    } finally {
+      setIsUpdating(false);
     }
 
     setIsOpen(false);
@@ -200,11 +205,18 @@ export const ReminderFormContainer = ({
         </Flex>
         <Flex gap={"3"} mt={"4"} justify={"end"}>
           <Dialog.Close>
-            <Button variant={"soft"} color={"gray"} onClick={handleClose}>
+            <Button
+              variant={"soft"}
+              color={"gray"}
+              onClick={handleClose}
+              disabled={isUpdating}
+            >
               Cancel
             </Button>
           </Dialog.Close>
-          <Button onClick={handleCreateOrUpdateReminder}>Save</Button>
+          <Button onClick={handleCreateOrUpdateReminder} disabled={isUpdating}>
+            {isUpdating ? <Spinner size="2" /> : "Save"}
+          </Button>
         </Flex>
       </Dialog.Content>
     </Dialog.Root>
@@ -218,18 +230,22 @@ type ReminderCardProps = {
 const ReminderCard = ({ data }: ReminderCardProps) => {
   const [showConfirmationModal, setShowConfirmationModal] =
     useState<boolean>(false);
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
   const deleteReminder = useDeleteReminder();
   const toast = useToast();
 
   async function handleDeleteReminder() {
+    setIsDeleting(true);
     try {
-      deleteReminder.mutateAsync(data.id);
+      await deleteReminder.mutateAsync(data.id);
 
       toast.success("Successfully deleted reminder");
     } catch (error: unknown) {
       console.error("Delete reminder error:", error);
       toast.error("Failed to delete reminder");
+    } finally {
+      setIsDeleting(false);
     }
   }
 
@@ -284,6 +300,7 @@ const ReminderCard = ({ data }: ReminderCardProps) => {
         isOpen={showConfirmationModal}
         onConfirmation={handleDeleteReminder}
         onAbortion={() => setShowConfirmationModal(false)}
+        isLoading={isDeleting}
       />
     </div>
   );
