@@ -2,7 +2,7 @@
 
 import "./LoginForm.scss";
 import { useForm } from "react-hook-form";
-import { Button, Checkbox, Flex, Text } from "@radix-ui/themes";
+import { Button, Checkbox, Flex, Spinner, Text } from "@radix-ui/themes";
 import FloatingTextField from "../../FloatingTextField/FloatingTextField";
 import { useEffect, useState } from "react";
 import { validateEmail } from "../../../utils/helper";
@@ -89,7 +89,7 @@ const LoginForm = ({ onSubmit, defaultValues }: LoginFormProps) => {
         mt={"4"}
         disabled={isSubmitting}
       >
-        Log In
+        {isSubmitting ? <Spinner size="2" /> : "Log In"}
       </Button>
     </form>
   );

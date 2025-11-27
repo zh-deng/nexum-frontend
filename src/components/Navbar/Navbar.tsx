@@ -7,7 +7,7 @@ import { useAuth } from "../../context/AuthContext";
 import { logoutUser } from "../../lib/api/auth";
 import { useRouter, usePathname } from "next/navigation";
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
-import { Avatar, Button, Flex } from "@radix-ui/themes";
+import { Avatar, Button, Flex, Spinner } from "@radix-ui/themes";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 import { useToast } from "../ToastProvider/ToastProvider";
 import { queryClient } from "../../lib/react-query";
@@ -21,6 +21,7 @@ const Navbar = () => {
   const [navbarHidden, setNavbarHidden] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [hamburgerOpen, setHamburgerOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -35,7 +36,7 @@ const Navbar = () => {
   const isSignupPage = pathname === "/signup";
 
   // Only show auth buttons if we're done loading and no user
-  const showAuthButtons = !isLoading && !user;
+  const showAuthButtons = !isLoading && !user && !isLoggingOut;
 
   useEffect(() => {
     function handleOutsideClick(event: MouseEvent) {
@@ -74,20 +75,33 @@ const Navbar = () => {
     closeHamburger();
   }, [pathname]);
 
+  // When we reach the login page after logout, clear logging-out state
+  useEffect(() => {
+    if (pathname === "/login" && isLoggingOut) {
+      setIsLoggingOut(false);
+    }
+  }, [pathname, isLoggingOut]);
+
   function closeHamburger() {
     setHamburgerOpen(false);
   }
 
   async function handleLogout() {
     try {
+      setIsLoggingOut(true);
+
       await logoutUser();
+
       setUser(null);
-      router.push("/login");
       queryClient.clear();
+
       toast.success("Logout successful");
+      router.replace("/login");
     } catch (error: unknown) {
       console.error("Logout failed:", error);
       toast.error("Logout failed");
+
+      setIsLoggingOut(false);
     }
   }
 
@@ -116,7 +130,14 @@ const Navbar = () => {
 
           {user ? (
             <li>
-              <a onClick={handleLogout}>Log Out</a>
+              {isLoggingOut ? (
+                <Flex align={"center"} gap={"2"}>
+                  <Spinner size="1" />
+                  Logging out...
+                </Flex>
+              ) : (
+                <a onClick={handleLogout}>Log Out</a>
+              )}
             </li>
           ) : (
             showAuthButtons && (
@@ -142,8 +163,12 @@ const Navbar = () => {
           )}
           <div className="desktop-only">
             {user ? (
-              <Button onClick={handleLogout} style={{ cursor: "pointer" }}>
-                Log Out
+              <Button
+                onClick={handleLogout}
+                style={{ cursor: "pointer" }}
+                disabled={isLoggingOut}
+              >
+                {isLoggingOut ? <Spinner size="2" /> : "Log Out"}
               </Button>
             ) : (
               showAuthButtons && (
