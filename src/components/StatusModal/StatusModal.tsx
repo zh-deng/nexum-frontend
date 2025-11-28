@@ -156,7 +156,7 @@ const StatusInputContainer = ({
             <FloatingTextField
               type={"datetime-local"}
               placeholder="Action Date"
-              value={getLocalDatetimeValue(form.date)}
+              value={form.date}
               onChange={(value) =>
                 handleChange({ name: "date", value: value.target.value })
               }
@@ -259,7 +259,7 @@ const StatusModal = ({
     setForm({
       id: logItem?.id ?? -1,
       status: logItem?.status ?? "",
-      date: logItem?.date ?? new Date(Date.now()).toISOString(),
+      date: getLocalDatetimeValue(logItem?.date),
       notes: logItem?.notes ?? "",
     });
   }

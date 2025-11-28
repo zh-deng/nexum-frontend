@@ -5,7 +5,7 @@ import FloatingTextArea from "../../FloatingTextArea/FloatingTextArea";
 import { CreateApplicationDto } from "../../../types/dtos/application/create-application.dto";
 import { UpdateApplicationDto } from "../../../types/dtos/application/update-application.dto";
 import { useEffect, useState } from "react";
-import { Button } from "@radix-ui/themes";
+import { Box, Button } from "@radix-ui/themes";
 import { CreateCompanyDto } from "../../../types/dtos/company/create-company.dto";
 import { UpdateCompanyDto } from "../../../types/dtos/company/update-company.dto";
 
@@ -158,15 +158,14 @@ const CompanyForm = ({ register, watch, errors }: CompanyFormProps) => {
           </div>
         </>
       ) : (
-        <div>
-          <Button
-            type={"button"}
-            style={{ cursor: "pointer" }}
-            onClick={() => setExtraInfoRequired(true)}
-          >
-            Add additional information
-          </Button>
-        </div>
+        <Button
+          className="add-info-button"
+          type={"button"}
+          style={{ cursor: "pointer" }}
+          onClick={() => setExtraInfoRequired(true)}
+        >
+          Add additional information
+        </Button>
       )}
       {/* TODO add company logo? */}
     </div>

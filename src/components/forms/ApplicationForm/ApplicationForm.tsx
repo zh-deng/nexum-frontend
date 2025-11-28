@@ -14,7 +14,11 @@ import Dropdown from "../../Dropdown/Dropdown";
 import React, { useEffect, useMemo, useState } from "react";
 import CompanyForm from "../CompanyForm/CompanyForm";
 import { CreateCompanyDto } from "../../../types/dtos/company/create-company.dto";
-import { ApplicationStatus, WorkLocation } from "../../../types/enums";
+import {
+  ApplicationStatus,
+  Priority,
+  WorkLocation,
+} from "../../../types/enums";
 import {
   getLocalDatetimeValue,
   getPriorityLabel,
@@ -89,22 +93,14 @@ const ApplicationForm = ({
   });
   const statusOptions = useMemo(
     () =>
-      [
-        "DRAFT",
-        "APPLIED",
-        "INTERVIEW",
-        "OFFER",
-        "HIRED",
-        "DECLINED_OFFER",
-        "REJECTED",
-        "GHOSTED",
-        "WITHDRAWN",
-      ].filter((elem) => elem !== watch("status")),
+      Object.values(ApplicationStatus).filter(
+        (elem) => elem !== watch("status"),
+      ),
     [watch("status")],
   );
   const workLocationOptions = useMemo(
     () =>
-      ["ON_SITE", "REMOTE", "HYBRID", "UNSURE"].filter(
+      Object.values(WorkLocation).filter(
         (elem) => elem !== watch("workLocation"),
       ),
     [watch("workLocation")],
@@ -114,8 +110,7 @@ const ApplicationForm = ({
     ? getPriorityLabel(currentPriority)
     : "Priority";
   const priorityOptions = useMemo(
-    () =>
-      ["HIGH", "MEDIUM", "LOW"].filter((elem) => elem !== currentPriorityLabel),
+    () => Object.keys(Priority).filter((elem) => elem !== currentPriorityLabel),
     [currentPriorityLabel],
   );
 
