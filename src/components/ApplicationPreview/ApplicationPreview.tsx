@@ -208,7 +208,7 @@ const ApplicationPreview = ({
               </Flex>
             </Box>
             <Box>
-              <Text weight={"bold"} size={"6"}>
+              <Text weight={"bold"} size={"5"}>
                 {jobTitle}
               </Text>
             </Box>
@@ -244,7 +244,7 @@ const ApplicationPreview = ({
             <LabelValue label="Notes" value={notes} column={true} />
             <Card>
               <Flex direction={"column"} gap={"3"}>
-                <Text weight={"bold"} size={"6"}>
+                <Text weight={"bold"} size={"5"}>
                   {name}
                 </Text>
                 {website && (
