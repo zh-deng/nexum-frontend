@@ -324,7 +324,7 @@ const StatusModal = ({
                     ) : (
                       <Card>
                         <Flex align={"center"} justify={"between"}>
-                          <Text>
+                          <Text weight={"medium"}>
                             {formatDateUs(new Date(logItem.date!), true)}
                           </Text>
                           <Flex align={"center"} gap={"4"}>
@@ -341,7 +341,9 @@ const StatusModal = ({
                             </IconButton>
                           </Flex>
                         </Flex>
-                        <Text>{logItem.notes}</Text>
+                        <Text size={"2"} style={{ whiteSpace: "pre-wrap" }}>
+                          {logItem.notes}
+                        </Text>
                       </Card>
                     )}
                   </div>

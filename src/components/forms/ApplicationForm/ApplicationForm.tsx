@@ -110,7 +110,8 @@ const ApplicationForm = ({
     ? getPriorityLabel(currentPriority)
     : "Priority";
   const priorityOptions = useMemo(
-    () => Object.keys(Priority).filter((elem) => elem !== currentPriorityLabel),
+    () =>
+      ["LOW", "MEDIUM", "HIGH"].filter((elem) => elem !== currentPriorityLabel),
     [currentPriorityLabel],
   );
 

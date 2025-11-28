@@ -331,7 +331,9 @@ const InterviewCard = ({ data }: InterviewCardProps) => {
             wrap={"wrap-reverse"}
           >
             <Flex align={"center"} gap={"4"}>
-              <Text>{formatDateUs(new Date(data.date), true)}</Text>
+              <Text weight={"medium"}>
+                {formatDateUs(new Date(data.date), true)}
+              </Text>
               <Box width={"100px"}>
                 <Badge size={"3"}>{data.status}</Badge>
               </Box>
@@ -351,7 +353,9 @@ const InterviewCard = ({ data }: InterviewCardProps) => {
             </Flex>
           </Flex>
           <Flex direction={"column"}>
-            <Text>{data.application.company.name}</Text>
+            <Text weight={"bold"} size={"5"}>
+              {data.application.company.name}
+            </Text>
             <Text>{data.application.jobTitle}</Text>
           </Flex>
           {data.notes && (
@@ -359,7 +363,7 @@ const InterviewCard = ({ data }: InterviewCardProps) => {
               <Separator size={"4"} my={"2"} />
               <Flex direction={"column"}>
                 <Text weight={"medium"}>Notes: </Text>
-                <Text>{data.notes}</Text>
+                <Text style={{ whiteSpace: "pre-wrap" }}>{data.notes}</Text>
               </Flex>
             </>
           )}
