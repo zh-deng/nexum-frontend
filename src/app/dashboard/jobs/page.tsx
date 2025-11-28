@@ -34,7 +34,7 @@ const JobsPage = () => {
 
   const { isSm, isMd, isLg } = useBreakpoint();
   const debouncedSearch = useDebounce(searchQuery, 300);
-  const { data, isLoading, error } = useApplications({
+  const { data, isLoading, error, isPlaceholderData } = useApplications({
     searchQuery: debouncedSearch,
     status: statusFilter,
     page: currentPage,
@@ -116,7 +116,7 @@ const JobsPage = () => {
   }
 
   return (
-    <QueryState isLoading={isLoading} error={error}>
+    <QueryState isLoading={isLoading && !isPlaceholderData} error={error}>
       <div
         className={`jobs-page ${activeForm ? "no-scroll" : ""}`}
         ref={pageRef}

@@ -77,6 +77,7 @@ export function calculateDays(logItems: LogItemDto[]): {
   additionalInfo: string;
   latestLogSince: string;
   additionalInfoDays: string;
+  finished: boolean;
 } {
   const finishedStatus = new Set([
     ApplicationStatus.OFFER,
@@ -93,6 +94,7 @@ export function calculateDays(logItems: LogItemDto[]): {
   );
 
   const finishedItem = logItems.find((item) => finishedStatus.has(item.status));
+  const finished = Boolean(finishedItem);
 
   const totalDays = appliedItem
     ? Math.floor(
@@ -113,6 +115,7 @@ export function calculateDays(logItems: LogItemDto[]): {
       additionalInfo: "",
       latestLogSince: "",
       additionalInfoDays: "",
+      finished: false,
     };
   }
 
@@ -145,6 +148,7 @@ export function calculateDays(logItems: LogItemDto[]): {
     additionalInfo,
     latestLogSince,
     additionalInfoDays,
+    finished,
   };
 }
 // Get available status options based on existing log items

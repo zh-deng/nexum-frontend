@@ -45,7 +45,7 @@ const LabelValue = ({
     <>
       <Flex direction={column ? "column" : "row"} gap={gap}>
         <Text weight="medium">{label}:</Text>
-        <Text>{value}</Text>
+        <Text style={{ whiteSpace: "pre-wrap" }}>{value}</Text>
       </Flex>
     </>
   );
@@ -313,11 +313,16 @@ const ApplicationPreview = ({
                 return (
                   <Card key={logItem.id}>
                     <Flex gap={"3"} align={"center"} justify={"between"}>
-                      <Text>{formatDateUs(new Date(logItem.date!), true)}</Text>
+                      <Text weight={"medium"}>
+                        {formatDateUs(new Date(logItem.date!), true)}
+                      </Text>
                       <Badge size={"3"}>
                         <Text>{logItem.status}</Text>
                       </Badge>
                     </Flex>
+                    <Text size={"2"} style={{ whiteSpace: "pre-wrap" }}>
+                      {logItem.notes}
+                    </Text>
                   </Card>
                 );
               })}

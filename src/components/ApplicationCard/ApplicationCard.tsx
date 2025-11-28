@@ -34,10 +34,8 @@ const ApplicationCard = ({
 
   const { isMd } = useBreakpoint();
 
-  const { additionalInfo, additionalInfoDays, latestLogSince } = useMemo(
-    () => calculateDays(logItems),
-    [logItems],
-  );
+  const { additionalInfo, additionalInfoDays, latestLogSince, finished } =
+    useMemo(() => calculateDays(logItems), [logItems]);
 
   useEffect(() => {
     // Only scroll when transitioning from collapsed to expanded
@@ -94,7 +92,7 @@ const ApplicationCard = ({
             gap={"2"}
             style={{ textAlign: "right", flexShrink: 0 }}
           >
-            <Badge>
+            <Badge color={finished ? "red" : "indigo"}>
               <Flex justify={"between"} width={"100%"} gap={"1"}>
                 <span>{status}</span>
                 <span>{latestLogSince}</span>

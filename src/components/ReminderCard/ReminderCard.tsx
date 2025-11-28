@@ -261,7 +261,9 @@ const ReminderCard = ({ data }: ReminderCardProps) => {
             wrap={"wrap-reverse"}
           >
             <Flex align={"center"} gap={"4"}>
-              <Text>{formatDateUs(new Date(data.alarmDate), true)}</Text>
+              <Text weight={"medium"}>
+                {formatDateUs(new Date(data.alarmDate), true)}
+              </Text>
               <Badge size={"3"}>{data.status}</Badge>
             </Flex>
             <Flex gap={"2"} justify={"end"} width={"100%"}>
@@ -285,7 +287,9 @@ const ReminderCard = ({ data }: ReminderCardProps) => {
               </IconButton>
             </Flex>
           </Flex>
-          <Text>{data.application.company.name}</Text>
+          <Text weight={"bold"} size={"5"}>
+            {data.application.company.name}
+          </Text>
           <Text>{data.application.jobTitle}</Text>
           {data.message && (
             <>
