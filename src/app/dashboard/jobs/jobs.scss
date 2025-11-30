@@ -65,9 +65,17 @@
     .container-wrapper {
       height: calc(65vh + 1.5rem);
       padding: 0 0.5rem;
+      position: relative;
 
       @include respond-to(md) {
         padding: 0.75rem;
+      }
+
+      .loading-overlay {
+        @include flex-center;
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
       }
 
       .application-card-container {

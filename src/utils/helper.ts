@@ -78,6 +78,8 @@ export function calculateDays(logItems: LogItemDto[]): {
   latestLogSince: string;
   additionalInfoDays: string;
   finished: boolean;
+  isActiveStatus: boolean;
+  ghosted: boolean;
 } {
   const finishedStatus = new Set([
     ApplicationStatus.OFFER,
@@ -116,8 +118,12 @@ export function calculateDays(logItems: LogItemDto[]): {
       latestLogSince: "",
       additionalInfoDays: "",
       finished: false,
+      isActiveStatus: false,
+      ghosted: false,
     };
   }
+
+  const isActiveStatus = recentItem.status === ApplicationStatus.INTERVIEW;
 
   if (finishedItem && appliedItem) {
     additionalInfo = "App-Duration";
@@ -144,11 +150,16 @@ export function calculateDays(logItems: LogItemDto[]): {
         ? `in ${-recentDays}D`
         : `${recentDays}D ago`;
 
+  const ghosted =
+    recentItem.status === ApplicationStatus.APPLIED && recentDays >= 30;
+
   return {
     additionalInfo,
     latestLogSince,
     additionalInfoDays,
     finished,
+    isActiveStatus,
+    ghosted,
   };
 }
 // Get available status options based on existing log items

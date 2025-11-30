@@ -9,6 +9,7 @@ import { ApplicationDto } from "../../types/dtos/application/application.dto";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 import NewBadge from "../NewBadge/NewBadge";
 import ApplicationPreview from "../ApplicationPreview/ApplicationPreview";
+import GhostBadge from "../GhostBadge/GhostBadge";
 
 type ApplicationCardProps = {
   data: ApplicationDto;
@@ -34,8 +35,14 @@ const ApplicationCard = ({
 
   const { isMd } = useBreakpoint();
 
-  const { additionalInfo, additionalInfoDays, latestLogSince, finished } =
-    useMemo(() => calculateDays(logItems), [logItems]);
+  const {
+    additionalInfo,
+    additionalInfoDays,
+    latestLogSince,
+    isActiveStatus,
+    finished,
+    ghosted,
+  } = useMemo(() => calculateDays(logItems), [logItems]);
 
   useEffect(() => {
     // Only scroll when transitioning from collapsed to expanded
@@ -66,6 +73,7 @@ const ApplicationCard = ({
         className={isActive ? "card active" : "card"}
       >
         <NewBadge date={data.createdAt} />
+        {ghosted && <GhostBadge />}
         <Flex align={"center"} justify={"between"} gap={"2"}>
           <Box className="application-card-company">
             <Flex align={"center"} gap={"3"}>
@@ -92,7 +100,9 @@ const ApplicationCard = ({
             gap={"2"}
             style={{ textAlign: "right", flexShrink: 0 }}
           >
-            <Badge color={finished ? "red" : "indigo"}>
+            <Badge
+              color={finished ? "red" : isActiveStatus ? "mint" : "indigo"}
+            >
               <Flex justify={"between"} width={"100%"} gap={"1"}>
                 <span>{status}</span>
                 <span>{latestLogSince}</span>
