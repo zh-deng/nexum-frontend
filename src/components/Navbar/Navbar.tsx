@@ -25,7 +25,7 @@ const Navbar = () => {
 
   const menuRef = useRef<HTMLDivElement>(null);
 
-  const { user, setUser, isLoading } = useAuth();
+  const { user, setUser } = useAuth();
   const router = useRouter();
   const { isSm } = useBreakpoint();
   const toast = useToast();
@@ -36,7 +36,7 @@ const Navbar = () => {
   const isSignupPage = pathname === "/signup";
 
   // Only show auth buttons if we're done loading and no user
-  const showAuthButtons = !isLoading && !user && !isLoggingOut;
+  const showAuthButtons = !user && !isLoggingOut;
 
   useEffect(() => {
     function handleOutsideClick(event: MouseEvent) {
@@ -163,11 +163,7 @@ const Navbar = () => {
           )}
           <div className="desktop-only">
             {user ? (
-              <Button
-                onClick={handleLogout}
-                style={{ cursor: "pointer" }}
-                disabled={isLoggingOut}
-              >
+              <Button onClick={handleLogout} style={{ cursor: "pointer" }}>
                 {isLoggingOut ? <Spinner size="2" /> : "Log Out"}
               </Button>
             ) : (

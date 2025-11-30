@@ -11,7 +11,6 @@ import { AuthUser } from "../types/auth";
 type AuthContextType = {
   user: AuthUser | null;
   setUser: React.Dispatch<React.SetStateAction<AuthUser | null>>;
-  isLoading: boolean;
 };
 
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -20,17 +19,15 @@ export const AuthContext = createContext<AuthContextType | undefined>(
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     getCurrentUser()
       .then(setUser)
-      .catch(() => setUser(null))
-      .finally(() => setIsLoading(false));
+      .catch(() => setUser(null));
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, setUser, isLoading }}>
+    <AuthContext.Provider value={{ user, setUser }}>
       {children}
     </AuthContext.Provider>
   );

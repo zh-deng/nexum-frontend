@@ -1,7 +1,7 @@
 "use client";
 
 import "./jobs.scss";
-import { Box, Card, Flex, IconButton, Text } from "@radix-ui/themes";
+import { Box, Card, Flex, IconButton, Text, Spinner } from "@radix-ui/themes";
 import { MixerHorizontalIcon, PlusIcon } from "@radix-ui/react-icons";
 import { useEffect, useMemo, useRef, useState } from "react";
 import ApplicationForm from "../../../components/forms/ApplicationForm/ApplicationForm";
@@ -34,13 +34,20 @@ const JobsPage = () => {
 
   const { isSm, isMd, isLg } = useBreakpoint();
   const debouncedSearch = useDebounce(searchQuery, 300);
-  const { data, isLoading, error, isPlaceholderData } = useApplications({
+  const { data, isLoading, isFetching, error } = useApplications({
     searchQuery: debouncedSearch,
     status: statusFilter,
     page: currentPage,
     limit: pageSize,
     sortBy: sortBy,
   });
+  const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
+
+  useEffect(() => {
+    if (data && !hasLoadedOnce) setHasLoadedOnce(true);
+  }, [data, hasLoadedOnce]);
+
+  const showContainerSpinner = hasLoadedOnce && (isLoading || isFetching);
 
   const applications = data?.data || [];
   const pagination = data?.pagination;
@@ -53,12 +60,15 @@ const JobsPage = () => {
   );
 
   // Memoized sorted applications with favorited ones on top
-  const favoritedApplications = useMemo(() => {
+  const favoritedApplications = useMemo<ApplicationDto[]>(() => {
     if (!applications) return [];
 
     return applications
       .slice()
-      .sort((a, b) => Number(b.favorited) - Number(a.favorited));
+      .sort(
+        (a: ApplicationDto, b: ApplicationDto) =>
+          Number(b.favorited) - Number(a.favorited),
+      );
   }, [applications]);
 
   useEffect(() => {
@@ -71,7 +81,9 @@ const JobsPage = () => {
   useEffect(() => {
     // Update expandedCard when applications data changes
     if (expandedCard) {
-      const updatedApp = applications.find((app) => app.id === expandedCard.id);
+      const updatedApp = applications.find(
+        (app: ApplicationDto) => app.id === expandedCard.id,
+      );
       if (updatedApp) {
         setExpandedCard(updatedApp);
       }
@@ -116,7 +128,7 @@ const JobsPage = () => {
   }
 
   return (
-    <QueryState isLoading={isLoading && !isPlaceholderData} error={error}>
+    <QueryState isLoading={!hasLoadedOnce && isLoading} error={error}>
       <div
         className={`jobs-page ${activeForm ? "no-scroll" : ""}`}
         ref={pageRef}
@@ -215,33 +227,51 @@ const JobsPage = () => {
               <Box className="jobs-list-wrapper">
                 {isMd ? (
                   <Card className="container-wrapper">
-                    <div className="application-card-container">
-                      {favoritedApplications.map((app) => (
-                        <div className="application-card-wrapper" key={app.id}>
-                          <ApplicationCard
-                            data={app}
-                            expandedCard={expandedCard}
-                            setExpandedCard={setExpandedCard}
-                            editApplication={() => openAppForm(true)}
-                          />
-                        </div>
-                      ))}
-                    </div>
+                    {showContainerSpinner ? (
+                      <div className="loading-overlay">
+                        <Spinner size="2" />
+                      </div>
+                    ) : (
+                      <div className="application-card-container">
+                        {favoritedApplications.map((app) => (
+                          <div
+                            className="application-card-wrapper"
+                            key={app.id}
+                          >
+                            <ApplicationCard
+                              data={app}
+                              expandedCard={expandedCard}
+                              setExpandedCard={setExpandedCard}
+                              editApplication={() => openAppForm(true)}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </Card>
                 ) : (
                   <div className="container-wrapper">
-                    <div className="application-card-container">
-                      {favoritedApplications.map((app) => (
-                        <div className="application-card-wrapper" key={app.id}>
-                          <ApplicationCard
-                            data={app}
-                            expandedCard={expandedCard}
-                            setExpandedCard={setExpandedCard}
-                            editApplication={() => openAppForm(true)}
-                          />
-                        </div>
-                      ))}
-                    </div>
+                    {showContainerSpinner ? (
+                      <div className="loading-overlay">
+                        <Spinner size="2" />
+                      </div>
+                    ) : (
+                      <div className="application-card-container">
+                        {favoritedApplications.map((app) => (
+                          <div
+                            className="application-card-wrapper"
+                            key={app.id}
+                          >
+                            <ApplicationCard
+                              data={app}
+                              expandedCard={expandedCard}
+                              setExpandedCard={setExpandedCard}
+                              editApplication={() => openAppForm(true)}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
               </Box>
