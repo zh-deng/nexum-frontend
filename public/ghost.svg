@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="none"/>
+
+  <!-- Ghost Body -->
+  <path fill="none" stroke="red" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"
+        d="M100 20
+           C60 20 30 50 30 95
+           V135
+           C30 150 40 160 52 150
+           C60 145 66 155 75 160
+           C88 167 95 155 100 150
+           C108 160 120 170 130 155
+           C138 145 150 160 165 150
+           C172 145 170 130 170 120
+           V95
+           C170 50 140 20 100 20Z"/>
+
+  <!-- Eyes -->
+  <circle cx="75" cy="85" r="12" fill="red"/>
+  <circle cx="125" cy="85" r="12" fill="red"/>
+
+  <!-- Tongue -->
+  <path d="M90 120 Q100 140 110 120 Q100 145 90 120Z" fill="#FF4B4B" stroke="red" stroke-width="5"/>
+
+  <!-- Smile -->
+  <path d="M70 110 Q100 135 130 110" stroke="red" stroke-width="8" fill="none" stroke-linecap="round"/>
+</svg>
