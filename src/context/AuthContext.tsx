@@ -5,6 +5,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import { Spinner } from "@radix-ui/themes";
 import { getCurrentUser } from "../lib/api/auth";
 import { AuthUser } from "../types/auth";
 
@@ -29,6 +30,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .catch(() => setUser(null))
       .finally(() => setIsLoading(false));
   }, []);
+
+  if (isLoading) {
+    return (
+      <div
+        style={{
+          height: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Spinner size="3" />
+      </div>
+    );
+  }
 
   return (
     <AuthContext.Provider value={{ user, setUser, isLoading }}>
