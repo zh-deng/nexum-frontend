@@ -48,3 +48,8 @@ export type GetApplicationsParams = {
   limit?: number;
   sortBy?: SortType;
 };
+
+export type ExtractJobInfoDto = {
+  jobLink?: string;
+  jobDescription?: string;
+};

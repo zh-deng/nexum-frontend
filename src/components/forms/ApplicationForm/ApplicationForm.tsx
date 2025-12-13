@@ -6,7 +6,6 @@ import {
   Flex,
   IconButton,
   Spinner,
-  Text,
 } from "@radix-ui/themes";
 import "./ApplicationForm.scss";
 import { Cross1Icon } from "@radix-ui/react-icons";
@@ -14,11 +13,7 @@ import Dropdown from "../../Dropdown/Dropdown";
 import React, { useEffect, useMemo, useState } from "react";
 import CompanyForm from "../CompanyForm/CompanyForm";
 import { CreateCompanyDto } from "../../../types/dtos/company/create-company.dto";
-import {
-  ApplicationStatus,
-  Priority,
-  WorkLocation,
-} from "../../../types/enums";
+import { ApplicationStatus, WorkLocation } from "../../../types/enums";
 import {
   getLocalDatetimeValue,
   getPriorityLabel,
@@ -37,6 +32,7 @@ import QueryState from "../../QueryState/QueryState";
 import { useToast } from "../../ToastProvider/ToastProvider";
 import { useBreakpoint } from "../../../hooks/useBreakpoint";
 import { ApplicationDto } from "../../../types/dtos/application/application.dto";
+import ApplicationAutofill from "../../ApplicationAutofill/ApplicationAutofill";
 
 const defaultCompany: CreateCompanyDto = {
   name: "",
@@ -122,7 +118,7 @@ const ApplicationForm = ({
   const createApplication = useCreateApplication();
   const updateApplication = useUpdateApplication();
   const toast = useToast();
-  const { isSm, isMd } = useBreakpoint();
+  const { isSm } = useBreakpoint();
 
   useEffect(() => {
     if (!data) return;
@@ -257,9 +253,9 @@ const ApplicationForm = ({
             >
               <Box className="form-container">
                 <Box>
-                  <Flex justify={"end"}>
+                  <Flex justify={"between"} align={"center"}>
+                    <ApplicationAutofill resetAppForm={reset} />
                     <IconButton
-                      className="cancel-button"
                       style={{ cursor: "pointer" }}
                       onClick={handleClose}
                       size={"3"}
@@ -352,7 +348,7 @@ const ApplicationForm = ({
                   >
                     <Box width={isSm ? "50%" : "100%"}>
                       <Card>
-                        <Flex direction={"column"} gap={"3"} align={"center"}>
+                        <Flex direction={"column"} gap={"4"} align={"center"}>
                           <Dropdown
                             name={watch("status") || "Status"}
                             options={statusOptions}
@@ -360,20 +356,13 @@ const ApplicationForm = ({
                               setValue("status", selected as ApplicationStatus)
                             }
                           />
-                          <Flex
-                            direction={isMd ? "row" : "column"}
-                            align={"center"}
-                            gap={"4"}
-                          >
-                            <Text weight={"bold"}>SINCE</Text>
-                            <FloatingTextField
-                              className="radix-textfield"
-                              placeholder="Status Date"
-                              type={"datetime-local"}
-                              {...register("logItemDate")}
-                              value={watch("logItemDate") ?? ""}
-                            />
-                          </Flex>
+                          <FloatingTextField
+                            className="radix-textfield"
+                            placeholder="Status Date"
+                            type={"datetime-local"}
+                            {...register("logItemDate")}
+                            value={watch("logItemDate") ?? ""}
+                          />
                         </Flex>
                       </Card>
                     </Box>
