@@ -1,26 +1,14 @@
 import {
-  ApplicationDto,
   ExtractJobInfoDto,
+  ExtractJobInfoResultDto,
 } from "../../types/dtos/application/application.dto";
+import { apiClient } from "../api-client";
 
 export async function extractJobInfo(
   data: ExtractJobInfoDto,
-): Promise<ApplicationDto> {
-  const res = await fetch(`FASTAPI_BASEURL/ai/extract-job-info`, {
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
+): Promise<ExtractJobInfoResultDto> {
+  return apiClient<ExtractJobInfoResultDto>("/ai/extract-job-info", {
     method: "POST",
     body: JSON.stringify(data),
   });
-
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error(
-      error.message || `Request failed with status ${res.status}`,
-    );
-  }
-
-  return await res.json();
 }

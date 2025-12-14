@@ -23,42 +23,13 @@ import { useToast } from "../ToastProvider/ToastProvider";
 import { extractJobInfo } from "../../lib/api/ai";
 import { CreateApplicationDto } from "../../types/dtos/application/create-application.dto";
 import { UpdateApplicationDto } from "../../types/dtos/application/update-application.dto";
-import { CreateCompanyDto } from "../../types/dtos/company/create-company.dto";
-import { getLocalDatetimeValue } from "../../utils/helper";
-
-//TESTING DATA
-const defaultCompany: CreateCompanyDto = {
-  name: "",
-  website: "",
-  street: "",
-  city: "",
-  state: "",
-  zipCode: "",
-  country: "",
-  industry: "",
-  companySize: "",
-  contactName: "",
-  contactEmail: "",
-  contactPhone: "",
-  notes: "",
-  logoUrl: "",
-};
-
-const defaultApplication = {
-  jobTitle: "Hello",
-  company: defaultCompany,
-  jobLink: "",
-  jobDescription: "",
-  workLocation: undefined,
-  priority: undefined,
-  notes: "",
-  status: undefined,
-  logItemDate: getLocalDatetimeValue(),
-  fileUrls: [],
-};
+import { ExtractCompanyInfoResultDto } from "../../types/dtos/company/company.dto";
 
 type ApplicationAutofillProps = {
   resetAppForm: UseFormReset<CreateApplicationDto | UpdateApplicationDto>;
+  handleAutoFillCompany: (
+    companyInfo: ExtractCompanyInfoResultDto | undefined,
+  ) => void;
 };
 
 const defaultInfo = {
@@ -66,12 +37,14 @@ const defaultInfo = {
   jobDescription: "",
 };
 
-const ApplicationAutofill = ({ resetAppForm }: ApplicationAutofillProps) => {
+const ApplicationAutofill = ({
+  resetAppForm,
+  handleAutoFillCompany,
+}: ApplicationAutofillProps) => {
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    setValue,
     watch,
     reset,
   } = useForm<ExtractJobInfoDto>({
@@ -83,15 +56,19 @@ const ApplicationAutofill = ({ resetAppForm }: ApplicationAutofillProps) => {
 
   const toast = useToast();
 
-  function onSubmit(data: ExtractJobInfoDto) {
+  async function onSubmit(data: ExtractJobInfoDto) {
     if (data.jobLink?.trim() === "" && data.jobDescription?.trim() === "") {
       setShowEmptyError(true);
       return;
     }
 
     try {
-      // const extractedData = extractJobInfo(data)
-      resetAppForm(defaultApplication);
+      const extractedData = await extractJobInfo(data);
+      console.log("Extracted Data:", extractedData);
+      resetAppForm(extractedData);
+
+      handleAutoFillCompany(extractedData.company);
+
       handleClose();
       toast.success("Successfully extracted job information");
     } catch (error: unknown) {
