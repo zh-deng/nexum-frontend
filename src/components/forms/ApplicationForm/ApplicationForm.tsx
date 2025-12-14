@@ -33,6 +33,7 @@ import { useToast } from "../../ToastProvider/ToastProvider";
 import { useBreakpoint } from "../../../hooks/useBreakpoint";
 import { ApplicationDto } from "../../../types/dtos/application/application.dto";
 import ApplicationAutofill from "../../ApplicationAutofill/ApplicationAutofill";
+import { ExtractCompanyInfoResultDto } from "../../../types/dtos/company/company.dto";
 
 const defaultCompany: CreateCompanyDto = {
   name: "",
@@ -171,6 +172,24 @@ const ApplicationForm = ({
     onClose();
   }
 
+  // handles company data separately after successful autofill
+  function handleAutoFillCompany(
+    companyInfo: ExtractCompanyInfoResultDto | undefined,
+  ) {
+    if (!companyInfo) return;
+
+    const isNewCompany = !getCompanyNames().some(
+      (companyName) => companyName === companyInfo.name,
+    );
+
+    if (isNewCompany) {
+      handleCompanyChange("Add new company");
+      setValue("company", companyInfo as CreateCompanyDto);
+    } else {
+      handleCompanyChange(companyInfo.name ?? "");
+    }
+  }
+
   async function onSubmit(data: CreateApplicationDto | UpdateApplicationDto) {
     if (company === "Company*") {
       setShowCompanyError(true);
@@ -253,8 +272,11 @@ const ApplicationForm = ({
             >
               <Box className="form-container">
                 <Box>
-                  <Flex justify={"between"} align={"center"}>
-                    <ApplicationAutofill resetAppForm={reset} />
+                  <Flex justify={"between"} align={"start"}>
+                    <ApplicationAutofill
+                      resetAppForm={reset}
+                      handleAutoFillCompany={handleAutoFillCompany}
+                    />
                     <IconButton
                       style={{ cursor: "pointer" }}
                       onClick={handleClose}
