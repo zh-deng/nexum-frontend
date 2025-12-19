@@ -34,6 +34,7 @@ import { useBreakpoint } from "../../../hooks/useBreakpoint";
 import { ApplicationDto } from "../../../types/dtos/application/application.dto";
 import ApplicationAutofill from "../../ApplicationAutofill/ApplicationAutofill";
 import { ExtractCompanyInfoResultDto } from "../../../types/dtos/company/company.dto";
+import RadioCardGroup from "../../RadioCardGroup/RadioCardGroup";
 
 const defaultCompany: CreateCompanyDto = {
   name: "",
@@ -95,22 +96,8 @@ const ApplicationForm = ({
       ),
     [watch("status")],
   );
-  const workLocationOptions = useMemo(
-    () =>
-      Object.values(WorkLocation).filter(
-        (elem) => elem !== watch("workLocation"),
-      ),
-    [watch("workLocation")],
-  );
-  const currentPriority = watch("priority");
-  const currentPriorityLabel = currentPriority
-    ? getPriorityLabel(currentPriority)
-    : "Priority";
-  const priorityOptions = useMemo(
-    () =>
-      ["LOW", "MEDIUM", "HIGH"].filter((elem) => elem !== currentPriorityLabel),
-    [currentPriorityLabel],
-  );
+  const workLocationOptions = Object.values(WorkLocation);
+  const priorityOptions = ["LOW", "MEDIUM", "HIGH"];
 
   const [company, setCompany] = useState<string>("Company*");
   const [showCompanyError, setShowCompanyError] = useState<boolean>(false);
@@ -266,36 +253,33 @@ const ApplicationForm = ({
           <form onSubmit={handleSubmit(onSubmit)} style={{ height: "100%" }}>
             <Flex
               direction={"column"}
-              gap={"4"}
+              gap={"2"}
               justify={"between"}
               height={"100%"}
             >
+              <Flex justify={"between"} align={"start"}>
+                <ApplicationAutofill
+                  resetAppForm={reset}
+                  handleAutoFillCompany={handleAutoFillCompany}
+                />
+                <IconButton
+                  style={{ cursor: "pointer" }}
+                  onClick={handleClose}
+                  size={"3"}
+                  radius={"small"}
+                  type={"button"}
+                  color={"crimson"}
+                >
+                  <Cross1Icon width={"32"} height={"32"} />
+                </IconButton>
+              </Flex>
               <Box className="form-container">
-                <Box>
-                  <Flex justify={"between"} align={"start"}>
-                    <ApplicationAutofill
-                      resetAppForm={reset}
-                      handleAutoFillCompany={handleAutoFillCompany}
-                    />
-                    <IconButton
-                      style={{ cursor: "pointer" }}
-                      onClick={handleClose}
-                      size={"3"}
-                      radius={"small"}
-                      type={"button"}
-                      color={"crimson"}
-                    >
-                      <Cross1Icon width={"32"} height={"32"} />
-                    </IconButton>
-                  </Flex>
-                  <Dialog.Title align={"center"}>
-                    {data ? "Edit" : "Create new"} application
-                  </Dialog.Title>
-                </Box>
+                <Dialog.Title align={"center"} style={{ marginBottom: 0 }}>
+                  {data ? "Edit" : "Create new"} application
+                </Dialog.Title>
                 <div>
                   <p className="required-tooltip">required*</p>
                   <FloatingTextField
-                    className="radix-textfield"
                     placeholder={"Job Title*"}
                     {...register("jobTitle", {
                       required: "Job title is required",
@@ -308,60 +292,48 @@ const ApplicationForm = ({
                     <span className="error">{errors.jobTitle.message}</span>
                   )}
                 </div>
-                <div>
-                  <FloatingTextArea
-                    className="radix-textfield"
-                    placeholder={"Job Description"}
-                    hasTrigger={false}
-                    {...register("jobDescription")}
-                    value={watch("jobDescription") ?? ""}
-                  />
-                </div>
-                <div>
-                  <FloatingTextField
-                    className="radix-textfield"
-                    placeholder={"Job Link"}
-                    {...register("jobLink")}
-                    value={watch("jobLink") ?? ""}
-                  />
-                </div>
-                <div>
-                  <Dropdown
-                    name={company}
-                    options={getCompanyNames()}
-                    onChange={handleCompanyChange}
-                  />
-                  {showCompanyError && company === "Company*" && (
-                    <span className="error">Please select a company</span>
-                  )}
-                </div>
-                {company !== "Company*" && (
-                  <div>
-                    <CompanyForm
-                      register={register}
-                      watch={watch}
-                      errors={errors}
-                    />
-                  </div>
+                <FloatingTextArea
+                  placeholder={"Job Description"}
+                  hasTrigger={false}
+                  {...register("jobDescription")}
+                  value={watch("jobDescription") ?? ""}
+                />
+                <FloatingTextField
+                  placeholder={"Job Link"}
+                  {...register("jobLink")}
+                  value={watch("jobLink") ?? ""}
+                />
+                <Dropdown
+                  name={company}
+                  options={getCompanyNames()}
+                  onChange={handleCompanyChange}
+                />
+                {showCompanyError && company === "Company*" && (
+                  <span className="error">Please select a company</span>
                 )}
-                <div>
-                  <Dropdown
-                    name={watch("workLocation") || "Work Location"}
-                    options={workLocationOptions}
-                    onChange={(selected) =>
-                      setValue("workLocation", selected as WorkLocation)
-                    }
+                {company !== "Company*" && (
+                  <CompanyForm
+                    register={register}
+                    watch={watch}
+                    errors={errors}
                   />
-                </div>
-                <div>
-                  <Dropdown
-                    name={currentPriorityLabel}
-                    options={priorityOptions}
-                    onChange={(selected) =>
-                      setValue("priority", getPriorityValue(selected))
-                    }
-                  />
-                </div>
+                )}
+                <RadioCardGroup
+                  options={workLocationOptions}
+                  defaultValue={watch("workLocation") ?? "UNSURE"}
+                  title={"Work Location"}
+                  onChange={(selected) =>
+                    setValue("workLocation", selected as WorkLocation)
+                  }
+                />
+                <RadioCardGroup
+                  options={priorityOptions}
+                  defaultValue={getPriorityLabel(watch("priority") ?? 2)}
+                  title={"Priority"}
+                  onChange={(selected) =>
+                    setValue("priority", getPriorityValue(selected))
+                  }
+                />
                 {!data && (
                   <Flex
                     direction={isSm ? "row" : "column"}
@@ -379,7 +351,6 @@ const ApplicationForm = ({
                             }
                           />
                           <FloatingTextField
-                            className="radix-textfield"
                             placeholder="Status Date"
                             type={"datetime-local"}
                             {...register("logItemDate")}
@@ -413,20 +384,20 @@ const ApplicationForm = ({
                   {...register("notes")}
                   value={watch("notes") ?? ""}
                 />
+                <Button
+                  type={"submit"}
+                  style={{ cursor: "pointer", width: "100%" }}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <Spinner size="2" />
+                  ) : data ? (
+                    "Update"
+                  ) : (
+                    "Create"
+                  )}
+                </Button>
               </Box>
-              <Button
-                type={"submit"}
-                style={{ cursor: "pointer", width: "100%" }}
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? (
-                  <Spinner size="2" />
-                ) : data ? (
-                  "Update"
-                ) : (
-                  "Create"
-                )}
-              </Button>
             </Flex>
           </form>
         </Dialog.Content>

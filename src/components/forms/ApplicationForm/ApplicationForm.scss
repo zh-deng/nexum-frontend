@@ -1,6 +1,9 @@
 .app-form {
   height: 700px;
   max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 
   form {
     height: 100%;

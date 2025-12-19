@@ -24,6 +24,7 @@ import { extractJobInfo } from "../../lib/api/ai";
 import { CreateApplicationDto } from "../../types/dtos/application/create-application.dto";
 import { UpdateApplicationDto } from "../../types/dtos/application/update-application.dto";
 import { ExtractCompanyInfoResultDto } from "../../types/dtos/company/company.dto";
+import { getLocalDatetimeValue } from "../../utils/helper";
 
 type ApplicationAutofillProps = {
   resetAppForm: UseFormReset<CreateApplicationDto | UpdateApplicationDto>;
@@ -64,8 +65,8 @@ const ApplicationAutofill = ({
 
     try {
       const extractedData = await extractJobInfo(data);
-      console.log("Extracted Data:", extractedData);
-      resetAppForm(extractedData);
+
+      resetAppForm({ ...extractedData, logItemDate: getLocalDatetimeValue() });
 
       handleAutoFillCompany(extractedData.company);
 

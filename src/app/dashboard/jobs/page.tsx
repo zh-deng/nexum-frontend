@@ -52,12 +52,8 @@ const JobsPage = () => {
   const applications = data?.data || [];
   const pagination = data?.pagination;
 
-  const sortOptions = Object.values(SortType).filter(
-    (option) => option !== sortBy,
-  );
-  const statusOptions = ["ALL", ...Object.values(ApplicationStatus)].filter(
-    (option) => option !== statusFilter,
-  );
+  const sortOptions = Object.values(SortType);
+  const statusOptions = ["ALL", ...Object.values(ApplicationStatus)];
 
   // Memoized sorted applications with favorited ones on top
   const favoritedApplications = useMemo<ApplicationDto[]>(() => {
