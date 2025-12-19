@@ -1,11 +1,12 @@
 "use client";
 
-import { Button, Spinner } from "@radix-ui/themes";
+import { Box, Button, Flex, Spinner } from "@radix-ui/themes";
 import "./SignupForm.scss";
 import { useForm } from "react-hook-form";
 import FloatingTextField from "../../FloatingTextField/FloatingTextField";
 import { validateEmail } from "../../../utils/helper";
 import InfoBox from "../../InfoBox/InfoBox";
+import Link from "next/link";
 
 export type SignUpFormData = {
   username: string;
@@ -36,7 +37,6 @@ const SignupForm = ({ onSubmit, defaultValues }: SignupFormProps) => {
     <form className="signup-form" onSubmit={handleSubmit(onSubmit)}>
       <div>
         <FloatingTextField
-          className="radix-textfield"
           placeholder="Username"
           type="text"
           {...register("username", { required: "Name is required" })}
@@ -47,7 +47,6 @@ const SignupForm = ({ onSubmit, defaultValues }: SignupFormProps) => {
       </div>
       <div>
         <FloatingTextField
-          className="radix-textfield"
           placeholder="Email"
           type="email"
           {...register("email", {
@@ -62,7 +61,6 @@ const SignupForm = ({ onSubmit, defaultValues }: SignupFormProps) => {
       </div>
       <div>
         <FloatingTextField
-          className="radix-textfield"
           placeholder={"Password"}
           type={"password"}
           {...register("password", { required: "Password is required" })}
@@ -73,7 +71,6 @@ const SignupForm = ({ onSubmit, defaultValues }: SignupFormProps) => {
       </div>
       <div>
         <FloatingTextField
-          className="radix-textfield"
           placeholder={"Repeat-Password"}
           type={"password"}
           {...register("repeatPassword", {
@@ -88,7 +85,6 @@ const SignupForm = ({ onSubmit, defaultValues }: SignupFormProps) => {
       </div>
       <div>
         <FloatingTextField
-          className="radix-textfield"
           placeholder={"Signup Access Code"}
           type={"text"}
           {...register("signupAccessCode", {
@@ -99,7 +95,19 @@ const SignupForm = ({ onSubmit, defaultValues }: SignupFormProps) => {
           <span className="error">{errors.signupAccessCode.message}</span>
         )}
       </div>
-      <InfoBox text={"Currently in closed Beta. Signup access code required"} />
+      <InfoBox
+        text={"Currently in closed Beta. Signup access code required."}
+      />
+      <Flex align={"center"} gap={"4"}>
+        <Box width={"100%"}>
+          <InfoBox text={"Try out the demo version instead."} />
+        </Box>
+        <Link href="/login" className="demo-link">
+          <Button size={"3"} style={{ cursor: "pointer" }}>
+            Demo
+          </Button>
+        </Link>
+      </Flex>
       <Button
         type={"submit"}
         style={{ cursor: "pointer" }}

@@ -57,7 +57,6 @@ const LoginForm = ({ onSubmit, defaultValues }: LoginFormProps) => {
       <InfoBox text={"Demo data will be reset every day"} />
       <div>
         <FloatingTextField
-          className="radix-textfield"
           placeholder={"Email"}
           type={"email"}
           disabled={isDemo}
@@ -73,7 +72,6 @@ const LoginForm = ({ onSubmit, defaultValues }: LoginFormProps) => {
       </div>
       <div>
         <FloatingTextField
-          className="radix-textfield"
           placeholder={"Password"}
           type={"password"}
           {...register("password", { required: "Password is required" })}
