@@ -8,15 +8,20 @@
     @include flex-center;
     width: 100%;
     padding: 1rem 0;
-  }
 
-  .timeframe-dropdown {
-    @include flex-center;
-    width: 100%;
-    padding: 1rem 0;
+    // Spread tabs evenly across available width
+    .tabs-list {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      gap: 0.5rem;
 
-    & > * {
-      max-width: 300px;
+      // Make each trigger share equal space and center text
+      [role="tab"] {
+        flex: 1 1 0;
+        text-align: center;
+      }
     }
   }
 

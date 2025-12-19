@@ -12,7 +12,11 @@ import {
   Spinner,
   Text,
 } from "@radix-ui/themes";
-import { formatDateUs, getPriorityLabel } from "../../utils/helper";
+import {
+  formatDateUs,
+  getPriorityLabel,
+  humanizeEnumLabel,
+} from "../../utils/helper";
 import { LogItemDto } from "../../types/dtos/log-item/log-item.dto";
 import {
   Pencil2Icon,
@@ -203,7 +207,9 @@ const ApplicationPreview = ({
                   <Text size={"3"}>Priority: {getPriorityLabel(priority)}</Text>
                 </Badge>
                 <Badge size={"3"} color="cyan">
-                  <Text size={"3"}>Type: {workLocation}</Text>
+                  <Text size={"3"}>
+                    Type: {humanizeEnumLabel(workLocation)}
+                  </Text>
                 </Badge>
               </Flex>
             </Box>
