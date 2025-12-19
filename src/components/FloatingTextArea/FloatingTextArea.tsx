@@ -43,6 +43,7 @@ function FloatingTextArea({
             value={value}
             placeholder={placeholder}
             onChange={handleChange}
+            className="radix-textfield"
           />
           {hasValue && placeholder && isFloating && (
             <label className="floating-label">{placeholder}</label>

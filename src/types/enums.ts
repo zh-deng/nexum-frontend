@@ -32,12 +32,12 @@ export enum SortType {
 }
 
 export enum TimeFrameType {
-  PAST_MONTH = "Past Month",
-  PAST_3_MONTHS = "Past 3 Months",
-  PAST_6_MONTHS = "Past 6 Months",
-  PAST_12_MONTHS = "Past 12 Months",
-  THIS_YEAR = "This Year",
-  ALL_TIME = "All Time",
+  PAST_MONTH = "1M",
+  PAST_3_MONTHS = "3M",
+  PAST_6_MONTHS = "6M",
+  PAST_12_MONTHS = "1Y",
+  THIS_YEAR = "Ytd",
+  ALL_TIME = "All",
 }
 
 export enum InterviewStatus {

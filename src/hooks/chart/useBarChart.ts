@@ -6,5 +6,7 @@ export const useBarChart = (timeFrame: TimeFrameType) => {
   return useQuery({
     queryKey: ["bar-chart", timeFrame],
     queryFn: () => getBarChartData(timeFrame),
+    placeholderData: (prev) => prev,
+    staleTime: 60_000,
   });
 };

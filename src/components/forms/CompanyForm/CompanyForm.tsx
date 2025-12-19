@@ -44,7 +44,6 @@ const CompanyForm = ({ register, watch, errors }: CompanyFormProps) => {
     <div className="company-form">
       <div>
         <FloatingTextField
-          className="radix-textfield"
           placeholder={"Company Name*"}
           {...register("company.name", {
             required: "Company name is required",
@@ -59,103 +58,68 @@ const CompanyForm = ({ register, watch, errors }: CompanyFormProps) => {
       </div>
       {extraInfoRequired ? (
         <>
-          <div>
-            <FloatingTextField
-              className="radix-textfield"
-              placeholder={"Website"}
-              {...register("company.website")}
-              value={watch("company.website") ?? ""}
-            />
-          </div>
-          <div>
-            <FloatingTextField
-              className="radix-textfield"
-              placeholder={"Street"}
-              {...register("company.street")}
-              value={watch("company.street") ?? ""}
-            />
-          </div>
-          <div>
-            <FloatingTextField
-              className="radix-textfield"
-              placeholder={"City"}
-              {...register("company.city")}
-              value={watch("company.city") ?? ""}
-            />
-          </div>
-          <div>
-            <FloatingTextField
-              className="radix-textfield"
-              placeholder={"State"}
-              {...register("company.state")}
-              value={watch("company.state") ?? ""}
-            />
-          </div>
-          <div>
-            <FloatingTextField
-              className="radix-textfield"
-              placeholder={"ZIP Code"}
-              {...register("company.zipCode")}
-              value={watch("company.zipCode") ?? ""}
-            />
-          </div>
-          <div>
-            <FloatingTextField
-              className="radix-textfield"
-              placeholder={"Country"}
-              {...register("company.country")}
-              value={watch("company.country") ?? ""}
-            />
-          </div>
-          <div>
-            <FloatingTextField
-              className="radix-textfield"
-              placeholder={"Industry"}
-              {...register("company.industry")}
-              value={watch("company.industry") ?? ""}
-            />
-          </div>
-          <div>
-            <FloatingTextField
-              className="radix-textfield"
-              placeholder={"Company Size"}
-              {...register("company.companySize")}
-              value={watch("company.companySize") ?? ""}
-            />
-          </div>
-          <div>
-            <FloatingTextField
-              className="radix-textfield"
-              placeholder={"Contact Name"}
-              {...register("company.contactName")}
-              value={watch("company.contactName") ?? ""}
-            />
-          </div>
-          <div>
-            <FloatingTextField
-              className="radix-textfield"
-              placeholder={"Contact Email"}
-              {...register("company.contactEmail")}
-              value={watch("company.contactEmail") ?? ""}
-            />
-          </div>
+          <FloatingTextField
+            placeholder={"Website"}
+            {...register("company.website")}
+            value={watch("company.website") ?? ""}
+          />
+          <FloatingTextField
+            placeholder={"Street"}
+            {...register("company.street")}
+            value={watch("company.street") ?? ""}
+          />
+          <FloatingTextField
+            placeholder={"City"}
+            {...register("company.city")}
+            value={watch("company.city") ?? ""}
+          />
+          <FloatingTextField
+            placeholder={"State"}
+            {...register("company.state")}
+            value={watch("company.state") ?? ""}
+          />
+          <FloatingTextField
+            placeholder={"ZIP Code"}
+            {...register("company.zipCode")}
+            value={watch("company.zipCode") ?? ""}
+          />
+          <FloatingTextField
+            placeholder={"Country"}
+            {...register("company.country")}
+            value={watch("company.country") ?? ""}
+          />
+          <FloatingTextField
+            placeholder={"Industry"}
+            {...register("company.industry")}
+            value={watch("company.industry") ?? ""}
+          />
+          <FloatingTextField
+            placeholder={"Company Size"}
+            {...register("company.companySize")}
+            value={watch("company.companySize") ?? ""}
+          />
+          <FloatingTextField
+            placeholder={"Contact Name"}
+            {...register("company.contactName")}
+            value={watch("company.contactName") ?? ""}
+          />
+          <FloatingTextField
+            placeholder={"Contact Email"}
+            {...register("company.contactEmail")}
+            value={watch("company.contactEmail") ?? ""}
+          />
           {/* TODO handle email inputs better with validaton */}
-          <div>
-            <FloatingTextField
-              className="radix-textfield"
-              placeholder={"Contact Phone"}
-              {...register("company.contactPhone")}
-              value={watch("company.contactPhone") ?? ""}
-            />
-          </div>
-          <div>
-            <FloatingTextArea
-              placeholder={"Company Notes"}
-              size={"3"}
-              {...register("company.notes")}
-              value={watch("company.notes") ?? ""}
-            />
-          </div>
+          <FloatingTextField
+            placeholder={"Contact Phone"}
+            {...register("company.contactPhone")}
+            value={watch("company.contactPhone") ?? ""}
+          />
+          <FloatingTextArea
+            placeholder={"Company Notes"}
+            size={"3"}
+            {...register("company.notes")}
+            value={watch("company.notes") ?? ""}
+          />
         </>
       ) : (
         <Button

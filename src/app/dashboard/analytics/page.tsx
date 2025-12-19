@@ -1,7 +1,14 @@
 "use client";
 
 import "./analytics.scss";
-import { Box, RadioCards, Text } from "@radix-ui/themes";
+import {
+  Box,
+  Flex,
+  RadioCards,
+  SegmentedControl,
+  Tabs,
+  Text,
+} from "@radix-ui/themes";
 import PieChart from "../../../components/PieChart/PieChart";
 import { useState } from "react";
 import BarChart from "../../../components/BarChart/BarChart";
@@ -24,9 +31,7 @@ const AnalyticsPage = () => {
     TimeFrameType.PAST_MONTH,
   );
 
-  const timeFrameOptions = Object.values(TimeFrameType).filter(
-    (option) => option !== timeFrame,
-  );
+  const timeFrameOptions = Object.values(TimeFrameType);
 
   const { isSm, isMd, isLg } = useBreakpoint();
   const {
@@ -65,7 +70,10 @@ const AnalyticsPage = () => {
       data: barChartData,
       isPending: barPending,
       error: barError,
-      isEmpty: !barChartData || barChartData[0].total === 0,
+      isEmpty:
+        !barChartData ||
+        barChartData.length === 0 ||
+        barChartData.every((item) => item.total === 0),
       element: (
         <BarChart
           barChartData={barChartData!}
@@ -95,38 +103,43 @@ const AnalyticsPage = () => {
       <div className="analytics-page">
         <div className="chart-selector">
           <Box maxWidth={"480px"} width={"100%"}>
-            <RadioCards.Root
+            <Tabs.Root
               defaultValue={ChartStyle.PIE_CHART}
-              columns={{ initial: "1", sm: "3" }}
-              size={"1"}
               onValueChange={(value) => setChartStyle(value as ChartStyle)}
             >
-              <RadioCards.Item value={ChartStyle.PIE_CHART}>
-                <Text weight={"bold"} align={"center"}>
+              <Tabs.List className="tabs-list">
+                <Tabs.Trigger value={ChartStyle.PIE_CHART}>
                   Pie Chart
-                </Text>
-              </RadioCards.Item>
-              <RadioCards.Item value={ChartStyle.BAR_CHART}>
-                <Text weight={"bold"} align={"center"}>
+                </Tabs.Trigger>
+                <Tabs.Trigger value={ChartStyle.BAR_CHART}>
                   Bar Chart
-                </Text>
-              </RadioCards.Item>
-              <RadioCards.Item value={ChartStyle.SANKEY_CHART}>
-                <Text weight={"bold"} align={"center"}>
+                </Tabs.Trigger>
+                <Tabs.Trigger value={ChartStyle.SANKEY_CHART}>
                   Sankey Chart
-                </Text>
-              </RadioCards.Item>
-            </RadioCards.Root>
+                </Tabs.Trigger>
+              </Tabs.List>
+              <Flex justify={"center"} mt={"4"}>
+                <SegmentedControl.Root
+                  defaultValue={timeFrame}
+                  onValueChange={(selected) =>
+                    setTimeFrame(selected as TimeFrameType)
+                  }
+                >
+                  {timeFrameOptions.map((option) => {
+                    return (
+                      <SegmentedControl.Item value={option} key={option}>
+                        {option}
+                      </SegmentedControl.Item>
+                    );
+                  })}
+                </SegmentedControl.Root>
+              </Flex>
+              <Box mt={"6"}>
+                <div className="chart">{chart}</div>
+              </Box>
+            </Tabs.Root>
           </Box>
         </div>
-        <div className="timeframe-dropdown">
-          <Dropdown
-            name={timeFrame}
-            options={timeFrameOptions}
-            onChange={(selected) => setTimeFrame(selected as TimeFrameType)}
-          />
-        </div>
-        <div className="chart">{chart}</div>
       </div>
     </QueryState>
   );

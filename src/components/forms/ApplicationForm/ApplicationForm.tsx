@@ -6,7 +6,6 @@ import {
   Flex,
   IconButton,
   Spinner,
-  Text,
 } from "@radix-ui/themes";
 import "./ApplicationForm.scss";
 import { Cross1Icon } from "@radix-ui/react-icons";
@@ -14,11 +13,7 @@ import Dropdown from "../../Dropdown/Dropdown";
 import React, { useEffect, useMemo, useState } from "react";
 import CompanyForm from "../CompanyForm/CompanyForm";
 import { CreateCompanyDto } from "../../../types/dtos/company/create-company.dto";
-import {
-  ApplicationStatus,
-  Priority,
-  WorkLocation,
-} from "../../../types/enums";
+import { ApplicationStatus, WorkLocation } from "../../../types/enums";
 import {
   getLocalDatetimeValue,
   getPriorityLabel,
@@ -37,6 +32,9 @@ import QueryState from "../../QueryState/QueryState";
 import { useToast } from "../../ToastProvider/ToastProvider";
 import { useBreakpoint } from "../../../hooks/useBreakpoint";
 import { ApplicationDto } from "../../../types/dtos/application/application.dto";
+import ApplicationAutofill from "../../ApplicationAutofill/ApplicationAutofill";
+import { ExtractCompanyInfoResultDto } from "../../../types/dtos/company/company.dto";
+import RadioCardGroup from "../../RadioCardGroup/RadioCardGroup";
 
 const defaultCompany: CreateCompanyDto = {
   name: "",
@@ -98,22 +96,8 @@ const ApplicationForm = ({
       ),
     [watch("status")],
   );
-  const workLocationOptions = useMemo(
-    () =>
-      Object.values(WorkLocation).filter(
-        (elem) => elem !== watch("workLocation"),
-      ),
-    [watch("workLocation")],
-  );
-  const currentPriority = watch("priority");
-  const currentPriorityLabel = currentPriority
-    ? getPriorityLabel(currentPriority)
-    : "Priority";
-  const priorityOptions = useMemo(
-    () =>
-      ["LOW", "MEDIUM", "HIGH"].filter((elem) => elem !== currentPriorityLabel),
-    [currentPriorityLabel],
-  );
+  const workLocationOptions = Object.values(WorkLocation);
+  const priorityOptions = ["LOW", "MEDIUM", "HIGH"];
 
   const [company, setCompany] = useState<string>("Company*");
   const [showCompanyError, setShowCompanyError] = useState<boolean>(false);
@@ -122,7 +106,7 @@ const ApplicationForm = ({
   const createApplication = useCreateApplication();
   const updateApplication = useUpdateApplication();
   const toast = useToast();
-  const { isSm, isMd } = useBreakpoint();
+  const { isSm } = useBreakpoint();
 
   useEffect(() => {
     if (!data) return;
@@ -173,6 +157,24 @@ const ApplicationForm = ({
     setCompany("Company*");
     setShowCompanyError(false);
     onClose();
+  }
+
+  // handles company data separately after successful autofill
+  function handleAutoFillCompany(
+    companyInfo: ExtractCompanyInfoResultDto | undefined,
+  ) {
+    if (!companyInfo) return;
+
+    const isNewCompany = !getCompanyNames().some(
+      (companyName) => companyName === companyInfo.name,
+    );
+
+    if (isNewCompany) {
+      handleCompanyChange("Add new company");
+      setValue("company", companyInfo as CreateCompanyDto);
+    } else {
+      handleCompanyChange(companyInfo.name ?? "");
+    }
   }
 
   async function onSubmit(data: CreateApplicationDto | UpdateApplicationDto) {
@@ -251,33 +253,33 @@ const ApplicationForm = ({
           <form onSubmit={handleSubmit(onSubmit)} style={{ height: "100%" }}>
             <Flex
               direction={"column"}
-              gap={"4"}
+              gap={"2"}
               justify={"between"}
               height={"100%"}
             >
+              <Flex justify={"between"} align={"start"}>
+                <ApplicationAutofill
+                  resetAppForm={reset}
+                  handleAutoFillCompany={handleAutoFillCompany}
+                />
+                <IconButton
+                  style={{ cursor: "pointer" }}
+                  onClick={handleClose}
+                  size={"3"}
+                  radius={"small"}
+                  type={"button"}
+                  color={"crimson"}
+                >
+                  <Cross1Icon width={"32"} height={"32"} />
+                </IconButton>
+              </Flex>
               <Box className="form-container">
-                <Box>
-                  <Flex justify={"end"}>
-                    <IconButton
-                      className="cancel-button"
-                      style={{ cursor: "pointer" }}
-                      onClick={handleClose}
-                      size={"3"}
-                      radius={"small"}
-                      type={"button"}
-                      color={"crimson"}
-                    >
-                      <Cross1Icon width={"32"} height={"32"} />
-                    </IconButton>
-                  </Flex>
-                  <Dialog.Title align={"center"}>
-                    {data ? "Edit" : "Create new"} application
-                  </Dialog.Title>
-                </Box>
+                <Dialog.Title align={"center"} style={{ marginBottom: 0 }}>
+                  {data ? "Edit" : "Create new"} application
+                </Dialog.Title>
                 <div>
                   <p className="required-tooltip">required*</p>
                   <FloatingTextField
-                    className="radix-textfield"
                     placeholder={"Job Title*"}
                     {...register("jobTitle", {
                       required: "Job title is required",
@@ -290,60 +292,48 @@ const ApplicationForm = ({
                     <span className="error">{errors.jobTitle.message}</span>
                   )}
                 </div>
-                <div>
-                  <FloatingTextArea
-                    className="radix-textfield"
-                    placeholder={"Job Description"}
-                    hasTrigger={false}
-                    {...register("jobDescription")}
-                    value={watch("jobDescription") ?? ""}
-                  />
-                </div>
-                <div>
-                  <FloatingTextField
-                    className="radix-textfield"
-                    placeholder={"Job Link"}
-                    {...register("jobLink")}
-                    value={watch("jobLink") ?? ""}
-                  />
-                </div>
-                <div>
-                  <Dropdown
-                    name={company}
-                    options={getCompanyNames()}
-                    onChange={handleCompanyChange}
-                  />
-                  {showCompanyError && company === "Company*" && (
-                    <span className="error">Please select a company</span>
-                  )}
-                </div>
-                {company !== "Company*" && (
-                  <div>
-                    <CompanyForm
-                      register={register}
-                      watch={watch}
-                      errors={errors}
-                    />
-                  </div>
+                <FloatingTextArea
+                  placeholder={"Job Description"}
+                  hasTrigger={false}
+                  {...register("jobDescription")}
+                  value={watch("jobDescription") ?? ""}
+                />
+                <FloatingTextField
+                  placeholder={"Job Link"}
+                  {...register("jobLink")}
+                  value={watch("jobLink") ?? ""}
+                />
+                <Dropdown
+                  name={company}
+                  options={getCompanyNames()}
+                  onChange={handleCompanyChange}
+                />
+                {showCompanyError && company === "Company*" && (
+                  <span className="error">Please select a company</span>
                 )}
-                <div>
-                  <Dropdown
-                    name={watch("workLocation") || "Work Location"}
-                    options={workLocationOptions}
-                    onChange={(selected) =>
-                      setValue("workLocation", selected as WorkLocation)
-                    }
+                {company !== "Company*" && (
+                  <CompanyForm
+                    register={register}
+                    watch={watch}
+                    errors={errors}
                   />
-                </div>
-                <div>
-                  <Dropdown
-                    name={currentPriorityLabel}
-                    options={priorityOptions}
-                    onChange={(selected) =>
-                      setValue("priority", getPriorityValue(selected))
-                    }
-                  />
-                </div>
+                )}
+                <RadioCardGroup
+                  options={workLocationOptions}
+                  defaultValue={watch("workLocation") ?? "UNSURE"}
+                  title={"Work Location"}
+                  onChange={(selected) =>
+                    setValue("workLocation", selected as WorkLocation)
+                  }
+                />
+                <RadioCardGroup
+                  options={priorityOptions}
+                  defaultValue={getPriorityLabel(watch("priority") ?? 2)}
+                  title={"Priority"}
+                  onChange={(selected) =>
+                    setValue("priority", getPriorityValue(selected))
+                  }
+                />
                 {!data && (
                   <Flex
                     direction={isSm ? "row" : "column"}
@@ -352,7 +342,7 @@ const ApplicationForm = ({
                   >
                     <Box width={isSm ? "50%" : "100%"}>
                       <Card>
-                        <Flex direction={"column"} gap={"3"} align={"center"}>
+                        <Flex direction={"column"} gap={"4"} align={"center"}>
                           <Dropdown
                             name={watch("status") || "Status"}
                             options={statusOptions}
@@ -360,20 +350,12 @@ const ApplicationForm = ({
                               setValue("status", selected as ApplicationStatus)
                             }
                           />
-                          <Flex
-                            direction={isMd ? "row" : "column"}
-                            align={"center"}
-                            gap={"4"}
-                          >
-                            <Text weight={"bold"}>SINCE</Text>
-                            <FloatingTextField
-                              className="radix-textfield"
-                              placeholder="Status Date"
-                              type={"datetime-local"}
-                              {...register("logItemDate")}
-                              value={watch("logItemDate") ?? ""}
-                            />
-                          </Flex>
+                          <FloatingTextField
+                            placeholder="Status Date"
+                            type={"datetime-local"}
+                            {...register("logItemDate")}
+                            value={watch("logItemDate") ?? ""}
+                          />
                         </Flex>
                       </Card>
                     </Box>
@@ -402,20 +384,20 @@ const ApplicationForm = ({
                   {...register("notes")}
                   value={watch("notes") ?? ""}
                 />
+                <Button
+                  type={"submit"}
+                  style={{ cursor: "pointer", width: "100%" }}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <Spinner size="2" />
+                  ) : data ? (
+                    "Update"
+                  ) : (
+                    "Create"
+                  )}
+                </Button>
               </Box>
-              <Button
-                type={"submit"}
-                style={{ cursor: "pointer", width: "100%" }}
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? (
-                  <Spinner size="2" />
-                ) : data ? (
-                  "Update"
-                ) : (
-                  "Create"
-                )}
-              </Button>
             </Flex>
           </form>
         </Dialog.Content>

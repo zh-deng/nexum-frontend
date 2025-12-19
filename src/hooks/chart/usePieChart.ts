@@ -6,5 +6,7 @@ export const usePieChart = (timeFrame: TimeFrameType) => {
   return useQuery({
     queryKey: ["pie-chart", timeFrame],
     queryFn: () => getPieChartData(timeFrame),
+    placeholderData: (prev) => prev,
+    staleTime: 60_000,
   });
 };

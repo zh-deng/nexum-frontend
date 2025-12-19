@@ -34,8 +34,14 @@ const BarChart = ({
 
   const { isSm, isMd } = useBreakpoint();
 
+  const formatPeriodLabel = (period: string) => {
+    if (isSm) return period;
+    // For years (4 digits), show last 2 digits; for months, show first 2 chars
+    return /^\d{4}$/.test(period) ? period.slice(2) : period.slice(0, 2);
+  };
+
   const data: BarData[] = barChartData.map((item) => ({
-    label: isSm ? item.period : item.period.slice(0, 2),
+    label: formatPeriodLabel(item.period),
     total: item.total,
     subcategories: [
       { label: "Applied", value: item.APPLIED },
@@ -179,6 +185,9 @@ const BarChart = ({
       .attr("font-weight", "bold")
       .text((d) => (d.total > 0 ? d.total.toString() : ""));
 
+    // Calculate grand total
+    const grandTotal = d3.sum(data, (d) => d.total);
+
     // Legend
     const legend = svg.append("g").attr("class", "legend");
 
@@ -213,6 +222,20 @@ const BarChart = ({
           .attr("fill", "#222")
           .attr("font-weight", "500");
       });
+
+      // Add total below legend for medium+ screens
+      legend
+        .append("text")
+        .attr(
+          "transform",
+          `translate(${innerWidth + margin.left + 10}, ${
+            margin.top + activeSubcats.length * spacing + 20
+          })`,
+        )
+        .attr("font-size", "14px")
+        .attr("font-weight", "bold")
+        .attr("fill", "#111")
+        .text(`Total: ${grandTotal}`);
     } else {
       // Top legend for small screens (wrapped)
       const itemsPerRow = 3;
@@ -254,12 +277,31 @@ const BarChart = ({
 
       legend.attr(
         "transform",
-        `translate(${(width - legendWidth) / 2}, ${(margin.top - legendHeight) / 2})`,
+        `translate(${(width - legendWidth) / 2}, ${(margin.top - legendHeight) / 2 + 10})`,
       );
+
+      // Add total above legend for small screens
+      svg
+        .append("text")
+        .attr("x", width / 2)
+        .attr("y", 20)
+        .attr("text-anchor", "middle")
+        .attr("font-size", "16px")
+        .attr("font-weight", "bold")
+        .attr("fill", "#111")
+        .text(`Total: ${grandTotal}`);
     }
   }, [barChartData, width, height, isSm, isMd]);
 
-  return <svg ref={svgRef} width={width} height={height} />;
+  return (
+    <svg
+      ref={svgRef}
+      width={"100%"}
+      height={"100%"}
+      viewBox={`0 0 ${width} ${height}`}
+      style={{ maxWidth: `${width}px`, maxHeight: `${height}px` }}
+    />
+  );
 };
 
 export default BarChart;

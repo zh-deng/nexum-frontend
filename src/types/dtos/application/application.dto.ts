@@ -4,7 +4,10 @@ import {
   ApplicationStatus,
   SortType,
 } from "../../enums";
-import { CompanyDto } from "../company/company.dto";
+import {
+  CompanyDto,
+  ExtractCompanyInfoResultDto,
+} from "../company/company.dto";
 import { LogItemDto } from "../log-item/log-item.dto";
 
 export type ApplicationDto = {
@@ -47,4 +50,18 @@ export type GetApplicationsParams = {
   page?: number;
   limit?: number;
   sortBy?: SortType;
+};
+
+export type ExtractJobInfoDto = {
+  jobLink?: string;
+  jobDescription?: string;
+};
+
+export type ExtractJobInfoResultDto = {
+  jobTitle?: string;
+  company?: ExtractCompanyInfoResultDto;
+  jobLink?: string;
+  jobDescription?: string;
+  workLocation?: WorkLocation;
+  notes?: string;
 };

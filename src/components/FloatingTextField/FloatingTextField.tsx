@@ -38,6 +38,7 @@ export default function FloatingTextField({
         value={value}
         defaultValue={defaultValue}
         onChange={handleChange}
+        className="radix-textfield"
       />
       {hasValue && placeholder && isFloating && (
         <label className="floating-label">{placeholder}</label>
