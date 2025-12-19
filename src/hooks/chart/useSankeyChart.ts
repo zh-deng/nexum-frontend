@@ -6,5 +6,7 @@ export const useSankesChart = (timeFrame: TimeFrameType) => {
   return useQuery({
     queryKey: ["sankey-chart", timeFrame],
     queryFn: () => getSankeyChartData(timeFrame),
+    placeholderData: (prev) => prev,
+    staleTime: 60_000,
   });
 };
