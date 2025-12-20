@@ -87,6 +87,7 @@ const ApplicationForm = ({
     watch,
     reset,
   } = useForm<CreateApplicationDto | UpdateApplicationDto>({
+    mode: "onTouched",
     defaultValues: data ?? defaultApplication,
   });
   const statusOptions = useMemo(

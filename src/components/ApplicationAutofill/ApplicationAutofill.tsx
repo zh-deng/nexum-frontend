@@ -126,7 +126,8 @@ const ApplicationAutofill = ({
                 </Callout.Icon>
                 <Callout.Text>
                   Provide either the job link or job description. Providing both
-                  will enhance the extraction.
+                  will enhance the extraction. The estimated processing time is
+                  1-2 minutes.
                 </Callout.Text>
               </Flex>
             </Callout.Root>
