@@ -100,7 +100,12 @@ const ApplicationAutofill = ({
       </Dialog.Trigger>
 
       <Dialog.Content maxWidth="450px">
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form
+          onSubmit={(e) => {
+            handleSubmit(onSubmit)(e);
+            e.stopPropagation();
+          }}
+        >
           <Flex justify={"end"}>
             <Dialog.Close>
               <IconButton
@@ -126,8 +131,9 @@ const ApplicationAutofill = ({
                 </Callout.Icon>
                 <Callout.Text>
                   Provide either the job link or job description. Providing both
-                  will enhance the extraction. The estimated processing time is
-                  1-2 minutes.
+                  will enhance the extraction.
+                  <br />
+                  The estimated processing time is 1-2 minutes.
                 </Callout.Text>
               </Flex>
             </Callout.Root>
