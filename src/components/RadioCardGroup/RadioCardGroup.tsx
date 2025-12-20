@@ -6,6 +6,7 @@ type RadioCardGroupProps = {
   title?: string;
   options: string[];
   defaultValue: string;
+  value?: string;
   onChange: (value: string) => void;
 };
 
@@ -13,6 +14,7 @@ const RadioCardGroup = ({
   title,
   options,
   defaultValue,
+  value,
   onChange,
 }: RadioCardGroupProps) => {
   const PATTERN = /^[A-Z0-9_]+$/;
@@ -27,6 +29,7 @@ const RadioCardGroup = ({
           </Text>
         )}
         <RadioCards.Root
+          value={value ?? defaultValue}
           defaultValue={defaultValue}
           columns={{ initial: "1", xs: `${optionsLength}` }}
           size={"1"}

@@ -320,7 +320,8 @@ const ApplicationForm = ({
                 )}
                 <RadioCardGroup
                   options={workLocationOptions}
-                  defaultValue={watch("workLocation") ?? "UNSURE"}
+                  defaultValue="UNSURE"
+                  value={watch("workLocation") ?? "UNSURE"}
                   title={"Work Location"}
                   onChange={(selected) =>
                     setValue("workLocation", selected as WorkLocation)
@@ -328,7 +329,8 @@ const ApplicationForm = ({
                 />
                 <RadioCardGroup
                   options={priorityOptions}
-                  defaultValue={getPriorityLabel(watch("priority") ?? 2)}
+                  defaultValue={getPriorityLabel(2)}
+                  value={getPriorityLabel(watch("priority") ?? 2)}
                   title={"Priority"}
                   onChange={(selected) =>
                     setValue("priority", getPriorityValue(selected))
